@@ -152,6 +152,7 @@ export async function POST(req: Request) {
       amount: Math.round(totalPrice * 100), // cents
       currency: 'eur',
       metadata: {
+        type: 'booking',
         booking_id: booking.id,
         booking_reference: bookingReference,
       },

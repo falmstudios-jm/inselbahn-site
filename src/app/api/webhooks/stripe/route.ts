@@ -31,6 +31,13 @@ export async function POST(req: Request) {
       // ── New: Embedded payment via PaymentIntent ──
       case 'payment_intent.succeeded': {
         const paymentIntent = event.data.object;
+        const metaType = paymentIntent.metadata?.type;
+
+        if (metaType === 'gift_card') {
+          await confirmGiftCardAndSendEmail(paymentIntent);
+          break;
+        }
+
         const bookingId = paymentIntent.metadata?.booking_id;
 
         if (!bookingId) {
@@ -157,6 +164,7 @@ async function confirmBookingAndSendEmail(bookingId: string, paymentIntentId: st
       childrenFree: booking.children_free,
       totalAmount: booking.total_amount,
       cancelUrl: `${BASE_URL}/booking/cancel?id=${booking.id}&token=${booking.cancel_token}`,
+      ticketUrl: `${BASE_URL}/api/booking/${booking.id}/ticket?token=${booking.cancel_token}`,
     }),
   });
 }
@@ -172,6 +180,7 @@ interface EmailParams {
   childrenFree: number;
   totalAmount: number;
   cancelUrl: string;
+  ticketUrl: string;
 }
 
 function buildConfirmationEmail(params: EmailParams): string {
@@ -186,6 +195,7 @@ function buildConfirmationEmail(params: EmailParams): string {
     childrenFree,
     totalAmount,
     cancelUrl,
+    ticketUrl,
   } = params;
 
   const formattedDate = new Date(bookingDate + 'T00:00:00').toLocaleDateString(
@@ -264,6 +274,15 @@ function buildConfirmationEmail(params: EmailParams): string {
                 </tr>
               </table>
 
+              <!-- Ticket Download -->
+              <p style="font-size:14px;color:#555;line-height:1.6;margin:0 0 8px;">
+                Ihre Fahrkarte können Sie hier herunterladen:
+              </p>
+              <a href="${ticketUrl}" style="display:inline-block;background-color:#1a3a5c;color:#ffffff;font-size:14px;font-weight:700;text-decoration:none;padding:10px 20px;border-radius:6px;margin-bottom:24px;">
+                Fahrkarte herunterladen (PDF)
+              </a>
+              <br><br>
+
               <!-- Cancellation -->
               <p style="font-size:14px;color:#555;line-height:1.6;margin:0 0 16px;">
                 Kostenlose Stornierung bis Mitternacht am Vortag:
@@ -271,6 +290,166 @@ function buildConfirmationEmail(params: EmailParams): string {
               <a href="${cancelUrl}" style="display:inline-block;color:#c0392b;font-size:14px;text-decoration:underline;">
                 Buchung stornieren
               </a>
+            </td>
+          </tr>
+
+          <!-- Footer -->
+          <tr>
+            <td style="background-color:#f8f9fa;padding:24px;text-align:center;border-top:1px solid #e0e0e0;">
+              <p style="margin:0 0 4px;font-size:13px;color:#888;">
+                Fragen? Kontaktieren Sie uns:
+              </p>
+              <a href="mailto:info@helgolandbahn.de" style="font-size:13px;color:#1a3a5c;text-decoration:none;">
+                info@helgolandbahn.de
+              </a>
+              <p style="margin:16px 0 0;font-size:11px;color:#aaa;">
+                Inselbahn Helgoland — Geführte Inselrundfahrten
+              </p>
+            </td>
+          </tr>
+        </table>
+      </td>
+    </tr>
+  </table>
+</body>
+</html>`;
+}
+
+// ── Gift Card Confirmation ──
+
+function generateGiftCardCode(): string {
+  const chars = 'ABCDEFGHJKLMNPQRSTUVWXYZ23456789';
+  const block = () => {
+    let s = '';
+    for (let i = 0; i < 4; i++) {
+      s += chars[Math.floor(Math.random() * chars.length)];
+    }
+    return s;
+  };
+  return `IB-GS-${block()}-${block()}`;
+}
+
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+async function confirmGiftCardAndSendEmail(paymentIntent: any) {
+  const supabase = getSupabaseAdmin();
+  const meta = paymentIntent.metadata || {};
+
+  const amount = parseFloat(meta.amount);
+  const code = generateGiftCardCode();
+
+  const { error: insertError } = await supabase.from('gift_cards').insert({
+    code,
+    initial_value: amount,
+    remaining_value: amount,
+    purchaser_email: meta.purchaser_email || null,
+    purchaser_name: meta.purchaser_name || null,
+    recipient_name: meta.recipient_name || null,
+    recipient_message: meta.recipient_message || null,
+    stripe_payment_intent_id: paymentIntent.id,
+  });
+
+  if (insertError) {
+    console.error('Error inserting gift card:', insertError);
+    return;
+  }
+
+  if (!meta.purchaser_email) return;
+
+  await getResend().emails.send({
+    from: 'Inselbahn Helgoland <buchung@helgolandbahn.de>',
+    to: meta.purchaser_email,
+    subject: `Ihr Geschenkgutschein — Inselbahn Helgoland`,
+    html: buildGiftCardEmail({
+      code,
+      amount,
+      purchaserName: meta.purchaser_name || '',
+      recipientName: meta.recipient_name || '',
+      recipientMessage: meta.recipient_message || '',
+    }),
+  });
+}
+
+interface GiftCardEmailParams {
+  code: string;
+  amount: number;
+  purchaserName: string;
+  recipientName: string;
+  recipientMessage: string;
+}
+
+function buildGiftCardEmail(params: GiftCardEmailParams): string {
+  const { code, amount, purchaserName, recipientName, recipientMessage } = params;
+
+  const recipientSection = recipientName
+    ? `
+      <p style="margin:0 0 4px;font-size:12px;color:#888;text-transform:uppercase;letter-spacing:1px;">Für</p>
+      <p style="margin:0 0 16px;font-size:15px;color:#333;">${recipientName}</p>
+      ${recipientMessage ? `
+      <p style="margin:0 0 4px;font-size:12px;color:#888;text-transform:uppercase;letter-spacing:1px;">Persönliche Nachricht</p>
+      <p style="margin:0 0 16px;font-size:15px;color:#333;font-style:italic;">&bdquo;${recipientMessage}&ldquo;</p>
+      ` : ''}
+    `
+    : '';
+
+  return `
+<!DOCTYPE html>
+<html lang="de">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+</head>
+<body style="margin:0;padding:0;background-color:#f4f4f4;font-family:Arial,Helvetica,sans-serif;">
+  <table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="background-color:#f4f4f4;padding:24px 0;">
+    <tr>
+      <td align="center">
+        <table role="presentation" width="600" cellpadding="0" cellspacing="0" style="background-color:#ffffff;border-radius:8px;overflow:hidden;max-width:600px;width:100%;">
+          <!-- Header -->
+          <tr>
+            <td style="background-color:#1a3a5c;padding:32px 24px;text-align:center;">
+              <h1 style="color:#ffffff;margin:0;font-size:24px;font-weight:700;">Inselbahn Helgoland</h1>
+              <p style="color:#a3c4e0;margin:8px 0 0;font-size:14px;">Geschenkgutschein</p>
+            </td>
+          </tr>
+
+          <!-- Body -->
+          <tr>
+            <td style="padding:32px 24px;">
+              <h2 style="color:#1a3a5c;margin:0 0 8px;font-size:20px;">Ihr Geschenkgutschein</h2>
+              <p style="color:#555;font-size:15px;line-height:1.6;margin:0 0 24px;">
+                ${purchaserName ? `Hallo ${purchaserName}, v` : 'V'}ielen Dank für Ihren Kauf! Hier sind die Gutschein-Details:
+              </p>
+
+              <!-- Gift Card Details -->
+              <table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="background-color:#f8f9fa;border-radius:8px;margin-bottom:24px;">
+                <tr>
+                  <td style="padding:20px;">
+                    <p style="margin:0 0 4px;font-size:12px;color:#888;text-transform:uppercase;letter-spacing:1px;">Gutscheincode</p>
+                    <p style="margin:0 0 16px;font-size:22px;font-weight:700;color:#1a3a5c;letter-spacing:2px;">${code}</p>
+
+                    <p style="margin:0 0 4px;font-size:12px;color:#888;text-transform:uppercase;letter-spacing:1px;">Wert</p>
+                    <p style="margin:0 0 16px;font-size:18px;font-weight:700;color:#1a3a5c;">${amount.toFixed(2).replace('.', ',')} &euro;</p>
+
+                    ${recipientSection}
+
+                    <p style="margin:0 0 4px;font-size:12px;color:#888;text-transform:uppercase;letter-spacing:1px;">Gültig bis</p>
+                    <p style="margin:0;font-size:15px;color:#333;">2 Jahre ab Kaufdatum</p>
+                  </td>
+                </tr>
+              </table>
+
+              <!-- Info -->
+              <table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="border-left:4px solid #e8a838;padding-left:16px;margin-bottom:24px;">
+                <tr>
+                  <td>
+                    <p style="margin:0 0 4px;font-size:14px;font-weight:700;color:#333;">So lösen Sie den Gutschein ein</p>
+                    <p style="margin:0;font-size:14px;color:#555;line-height:1.5;">
+                      Geben Sie den Gutscheincode bei der Online-Buchung auf
+                      <a href="${BASE_URL}" style="color:#1a3a5c;">helgolandbahn.de</a>
+                      im Feld &bdquo;Gutscheincode&ldquo; ein. Der Betrag wird automatisch verrechnet.
+                    </p>
+                  </td>
+                </tr>
+              </table>
             </td>
           </tr>
 
