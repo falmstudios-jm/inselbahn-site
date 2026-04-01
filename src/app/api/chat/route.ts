@@ -471,10 +471,10 @@ export async function POST(req: NextRequest) {
           { role: 'system', content: systemPrompt },
           ...recentMessages.map((m: { role: string; content: string }) => ({
             role: m.role,
-            content: m.content.slice(0, 500), // Limit input length
+            content: m.content.slice(0, 1000),
           })),
         ],
-        max_completion_tokens: 300,
+        max_completion_tokens: 1000,
         temperature: 0.7,
       }),
     });

@@ -9,6 +9,7 @@ import BookingWidget from "@/components/BookingWidget";
 import Footer from "@/components/Footer";
 import AnnouncementBanner from "@/components/AnnouncementBanner";
 import InlineChat from "@/components/InlineChat";
+import ChatBubble from "@/components/ChatBubble";
 import { getToursWithFallback, getDeparturesWithFallback } from "@/lib/tours";
 
 export default async function Home() {
@@ -32,6 +33,7 @@ export default async function Home() {
       </main>
       <Footer />
       <AnnouncementBanner />
+      <ChatBubble />
     </>
   );
 }
