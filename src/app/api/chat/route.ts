@@ -495,11 +495,6 @@ export async function POST(req: NextRequest) {
     const data = await response.json();
     const reply = data.choices?.[0]?.message?.content || 'Entschuldigung, ich konnte Ihre Frage nicht verarbeiten.';
 
-    // Log anonymous summary after every response (non-blocking)
-    logChatSummary(apiKey, [...recentMessages, { role: 'assistant', content: reply }], ip).catch((err) => {
-      console.error('Chat log failed:', err);
-    });
-
     return NextResponse.json({ reply });
   } catch (error) {
     console.error('Chat error:', error);

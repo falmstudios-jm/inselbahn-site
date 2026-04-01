@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useRef, useEffect } from "react";
+import { useChatLogger } from "@/lib/useChatLogger";
 
 interface Message {
   role: "user" | "assistant";
@@ -34,6 +35,8 @@ export default function InlineChat() {
   const [loading, setLoading] = useState(false);
   const messagesEndRef = useRef<HTMLDivElement>(null);
   const inputRef = useRef<HTMLInputElement>(null);
+
+  useChatLogger(messages);
 
   const chatContainerRef = useRef<HTMLDivElement>(null);
 
