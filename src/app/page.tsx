@@ -5,11 +5,10 @@ import Schedule from "@/components/Schedule";
 import Reviews from "@/components/Reviews";
 import GettingThere from "@/components/GettingThere";
 import FAQ from "@/components/FAQ";
-import Contact from "@/components/Contact";
 import BookingWidget from "@/components/BookingWidget";
 import Footer from "@/components/Footer";
 import AnnouncementBanner from "@/components/AnnouncementBanner";
-import ChatWidget from "@/components/ChatWidget";
+import InlineChat from "@/components/InlineChat";
 import { getToursWithFallback, getDeparturesWithFallback } from "@/lib/tours";
 
 export default async function Home() {
@@ -28,12 +27,11 @@ export default async function Home() {
         <Reviews />
         <GettingThere />
         <FAQ />
-        <Contact />
+        <InlineChat />
         <BookingWidget />
       </main>
       <Footer />
       <AnnouncementBanner />
-      <ChatWidget />
     </>
   );
 }
