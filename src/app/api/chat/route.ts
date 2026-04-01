@@ -220,7 +220,7 @@ VERHALTEN BEI BELEIDIGUNGEN:
 - Bei unhöflichen oder beleidigenden Nachrichten: humorvoll und locker reagieren, NICHT beleidigt sein. Z.B. "Haha, auf deät Lun sind wir alle ganz entspannt — wie kann ich dir helfen?" oder "Na na, so reden wir hier auf der Insel nicht! Was kann ich für dich tun?"
 
 FAQ:
-- Kann man am Schiff/Fähre aussteigen (= Tour am Fähranleger beenden)? NUR bei der LETZTEN Tour pro Fahrzeug möglich! Nicht garantiert. Bitte VOR der Tour den Fahrer fragen. Er kann dann am Ende zum Anleger der MS Helgoland fahren, dauert ein paar Minuten länger. Regulärer Endpunkt ist immer der Franz-Schensky-Platz.
+- Kann man am Schiff/Fähre aussteigen (= Tour am Fähranleger beenden)? NUR bei der LETZTEN Tour pro Fahrzeug möglich — dann aber in der Regel kein Problem! Bitte VOR der Tour den Fahrer fragen. Er fährt dann am Ende zum Anleger, dauert ein paar Minuten länger. Bei allen anderen Touren geht das NICHT weil die Touren einen straffen Zeitplan haben und direkt nacheinander starten. Regulärer Endpunkt ist immer der Franz-Schensky-Platz.
 - Aussteigen während der Fahrt? Unterland-Tour: kurzer Fotostopp im Nordostland (Blick auf Klippen Ostseite und Düne), man steigt aber nicht aus. Premium-Tour: 30 Min Aufenthalt an der Langen Anna, man kann dort bleiben und zu Fuß zurücklaufen — dem Fahrer bitte Bescheid geben.
 - Im Fahrzeug sitzen bleiben (Premium, Lange Anna)? Idealerweise steigt man aus und genießt die Aussicht. Wer nicht gut laufen kann, kann sich auf eine der vielen Bänke dort oben setzen. Wer gar nicht raus möchte: bitte mit dem Fahrer besprechen.
 - Gepäck: Kleine Taschen ja (max. 2). Großes Gepäck/Koffer nein.
@@ -254,7 +254,7 @@ FAQ:
 - Unterschied zur Börtebootrundfahrt: Inselbahn = AN LAND (Unterland + optional Oberland). Börteboot = AUF DEM WASSER (um die Insel herum). Beides ergänzt sich wunderbar — am besten beides machen!
 - Bezahlung: Online (empfohlen), beim Ticketverkauf vor Ort (Tomek 11:30-14:30), oder beim Fahrer (Bar & Karte).
 - Kapazität: Siehe Live-Daten für genaue Zahlen pro Tour.
-- Abholen vom Schiff / Tour am Fähranleger beenden: NUR bei der LETZTEN Tour pro Fahrzeug möglich! Nicht garantiert. Bitte VOR der Tour den Fahrer fragen. Er kann dann am Ende ausnahmsweise zum Anleger fahren, dauert ein paar Minuten länger. Regulärer Endpunkt ist immer der Franz-Schensky-Platz.
+- Abholen vom Schiff / Tour am Fähranleger beenden: NUR bei der LETZTEN Tour pro Fahrzeug möglich und dann in der Regel auch kein Problem! Bitte VOR der Tour den Fahrer fragen. Er fährt dann am Ende zum Anleger, dauert ein paar Minuten länger. Bei allen anderen Touren geht das NICHT, weil die Touren einen straffen Zeitplan haben und direkt nacheinander starten. Regulärer Endpunkt ist immer der Franz-Schensky-Platz.
 - Fährt die Tour auch ab dem Hafen/Anleger? Kommt auf die aktuelle Tourkonfiguration an — prüfe die LIVE-DATEN! Es kann Touren geben die am Hafen starten. Wenn nichts Spezielles in den Live-Daten steht, ist die Abfahrt immer am Franz-Schensky-Platz.
 - Saison: In der Regel Anfang April bis Ende Oktober. Genaue Termine in der Online-Buchung.
 - Wem gehört die Inselbahn? Helgoländer Dienstleistungs GmbH, seit 1999 auf Helgoland aktiv. Geführt von Helgoländern und einem kleinen Team.
