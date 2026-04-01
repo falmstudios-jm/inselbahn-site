@@ -35,8 +35,13 @@ export default function InlineChat() {
   const messagesEndRef = useRef<HTMLDivElement>(null);
   const inputRef = useRef<HTMLInputElement>(null);
 
+  const chatContainerRef = useRef<HTMLDivElement>(null);
+
   useEffect(() => {
-    messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
+    // Scroll within the chat container only, not the whole page
+    if (chatContainerRef.current) {
+      chatContainerRef.current.scrollTop = chatContainerRef.current.scrollHeight;
+    }
   }, [messages, loading]);
 
   useEffect(() => {
@@ -114,7 +119,7 @@ export default function InlineChat() {
         {/* Chat container */}
         <div className="border border-gray-200 rounded-2xl overflow-hidden bg-white shadow-sm">
           {/* Messages */}
-          <div className="h-[400px] md:h-[480px] overflow-y-auto p-5 md:p-8 space-y-4">
+          <div ref={chatContainerRef} className="h-[400px] md:h-[480px] overflow-y-auto p-5 md:p-8 space-y-4">
             {/* Welcome */}
             <div className="flex gap-3 items-start">
               <div className="w-8 h-8 rounded-full bg-primary/10 flex items-center justify-center shrink-0 mt-0.5">
@@ -187,7 +192,6 @@ export default function InlineChat() {
                 </div>
               </div>
             )}
-            <div ref={messagesEndRef} />
           </div>
 
           {/* Input */}
