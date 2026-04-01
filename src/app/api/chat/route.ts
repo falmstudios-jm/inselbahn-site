@@ -487,11 +487,8 @@ export async function POST(req: NextRequest) {
     const data = await response.json();
     const reply = data.choices?.[0]?.message?.content || 'Entschuldigung, ich konnte Ihre Frage nicht verarbeiten.';
 
-    // Log anonymous summary after 3+ user messages (non-blocking)
-    const userMessageCount = messages.filter((m: { role: string }) => m.role === 'user').length;
-    if (userMessageCount >= 3) {
-      logChatSummary(apiKey, recentMessages, ip).catch(() => {});
-    }
+    // Log anonymous summary after every response (non-blocking)
+    logChatSummary(apiKey, [...recentMessages, { role: 'assistant', content: reply }], ip).catch(() => {});
 
     return NextResponse.json({ reply });
   } catch (error) {
