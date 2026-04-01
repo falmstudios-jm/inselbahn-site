@@ -41,6 +41,22 @@ export async function POST(req: Request) {
     const tour = departure.tours;
     const capacity: number = tour.max_capacity;
 
+    // Check 2-hour cutoff for today's departures
+    const nowBerlin = new Date().toLocaleString('en-US', { timeZone: 'Europe/Berlin' });
+    const nowDate = new Date(nowBerlin);
+    const today = nowDate.toISOString().slice(0, 10);
+    if (input.booking_date === today) {
+      const [depH, depM] = departure.departure_time.split(':').map(Number);
+      const depMinutes = depH * 60 + depM;
+      const nowMinutes = nowDate.getHours() * 60 + nowDate.getMinutes();
+      if (depMinutes <= nowMinutes + 120) {
+        return NextResponse.json(
+          { error: 'Diese Tour kann nicht mehr online gebucht werden (weniger als 2 Stunden bis zur Abfahrt). Tickets sind vor Ort bei Tomek oder beim Fahrer erhältlich.' },
+          { status: 409 }
+        );
+      }
+    }
+
     // Check availability: confirmed + recent pending (< 15 min old)
     const fifteenMinAgo = new Date(Date.now() - 15 * 60 * 1000).toISOString();
 

@@ -69,36 +69,56 @@ export async function GET(req: NextRequest) {
       }
     }
 
-    // Build response slots
-    const slots = (departures || []).map((dep) => {
-      const tour = dep.tours as unknown as {
-        id: string;
-        slug: string;
-        name: string;
-        max_capacity: number;
-        price_adult: number;
-        price_child: number;
-        child_age_limit: number;
-      };
-      const totalBooked = bookingCounts.get(dep.id) || 0;
-      const remaining = tour.max_capacity - totalBooked;
+    // Current time in Berlin for 2-hour cutoff
+    const nowBerlin = new Date().toLocaleString('en-US', { timeZone: 'Europe/Berlin' });
+    const nowDate = new Date(nowBerlin);
+    const today = nowDate.toISOString().slice(0, 10);
+    const nowHours = nowDate.getHours();
+    const nowMinutes = nowDate.getMinutes();
+    const nowTotalMinutes = nowHours * 60 + nowMinutes;
 
-      return {
-        departure_id: dep.id,
-        departure_time: dep.departure_time,
-        departure_notes: dep.notes,
-        tour_id: tour.id,
-        tour_slug: tour.slug,
-        tour_name: tour.name,
-        max_capacity: tour.max_capacity,
-        booked: totalBooked,
-        remaining: Math.max(0, remaining),
-        available: remaining > 0,
-        price_adult: tour.price_adult,
-        price_child: tour.price_child,
-        child_age_limit: tour.child_age_limit,
-      };
-    });
+    // Build response slots, filtering out past/too-late departures
+    const slots = (departures || [])
+      .map((dep) => {
+        const tour = dep.tours as unknown as {
+          id: string;
+          slug: string;
+          name: string;
+          max_capacity: number;
+          price_adult: number;
+          price_child: number;
+          child_age_limit: number;
+        };
+
+        // For today: hide departures less than 2 hours from now
+        if (date === today) {
+          const [depH, depM] = dep.departure_time.split(':').map(Number);
+          const depTotalMinutes = depH * 60 + depM;
+          if (depTotalMinutes <= nowTotalMinutes + 120) {
+            return null; // Too late to book — hide this slot
+          }
+        }
+
+        const totalBooked = bookingCounts.get(dep.id) || 0;
+        const remaining = tour.max_capacity - totalBooked;
+
+        return {
+          departure_id: dep.id,
+          departure_time: dep.departure_time,
+          departure_notes: dep.notes,
+          tour_id: tour.id,
+          tour_slug: tour.slug,
+          tour_name: tour.name,
+          max_capacity: tour.max_capacity,
+          booked: totalBooked,
+          remaining: Math.max(0, remaining),
+          available: remaining > 0,
+          price_adult: tour.price_adult,
+          price_child: tour.price_child,
+          child_age_limit: tour.child_age_limit,
+        };
+      })
+      .filter(Boolean); // Remove null entries (past departures)
 
     return NextResponse.json({ date, slots });
   } catch (error) {
