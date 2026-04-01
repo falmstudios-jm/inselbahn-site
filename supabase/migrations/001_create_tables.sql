@@ -55,8 +55,19 @@ CREATE TABLE IF NOT EXISTS announcements (
   created_at TIMESTAMPTZ DEFAULT now()
 );
 
+-- Chat logs (anonymous summaries for service improvement)
+CREATE TABLE IF NOT EXISTS chat_logs (
+  id UUID DEFAULT gen_random_uuid() PRIMARY KEY,
+  summary TEXT NOT NULL,
+  topics TEXT[] DEFAULT '{}',
+  message_count INT NOT NULL DEFAULT 0,
+  ip_hash TEXT,
+  created_at TIMESTAMPTZ DEFAULT now()
+);
+
 -- Enable RLS
 ALTER TABLE tours ENABLE ROW LEVEL SECURITY;
+ALTER TABLE chat_logs ENABLE ROW LEVEL SECURITY;
 ALTER TABLE departures ENABLE ROW LEVEL SECURITY;
 ALTER TABLE bookings ENABLE ROW LEVEL SECURITY;
 ALTER TABLE announcements ENABLE ROW LEVEL SECURITY;
@@ -67,3 +78,4 @@ CREATE POLICY "Departures are publicly readable" ON departures FOR SELECT USING 
 CREATE POLICY "Announcements are publicly readable" ON announcements FOR SELECT USING (true);
 -- Bookings: insert only (for creating bookings), no public read
 CREATE POLICY "Anyone can create bookings" ON bookings FOR INSERT WITH CHECK (true);
+CREATE POLICY "Chat logs are insert-only" ON chat_logs FOR INSERT WITH CHECK (true);

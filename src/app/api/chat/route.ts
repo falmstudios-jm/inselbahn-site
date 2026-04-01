@@ -487,9 +487,96 @@ export async function POST(req: NextRequest) {
     const data = await response.json();
     const reply = data.choices?.[0]?.message?.content || 'Entschuldigung, ich konnte Ihre Frage nicht verarbeiten.';
 
+    // Log anonymous summary after 3+ user messages (non-blocking)
+    const userMessageCount = messages.filter((m: { role: string }) => m.role === 'user').length;
+    if (userMessageCount >= 3) {
+      logChatSummary(apiKey, recentMessages, ip).catch(() => {});
+    }
+
     return NextResponse.json({ reply });
   } catch (error) {
     console.error('Chat error:', error);
     return NextResponse.json({ error: 'Ein Fehler ist aufgetreten.' }, { status: 500 });
   }
+}
+
+async function logChatSummary(
+  apiKey: string,
+  messages: { role: string; content: string }[],
+  ip: string,
+) {
+  try {
+    // Ask GPT to create a one-line anonymous summary
+    const summaryResponse = await fetch('https://api.openai.com/v1/chat/completions', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': `Bearer ${apiKey}`,
+      },
+      body: JSON.stringify({
+        model: 'gpt-4.1-nano',
+        messages: [
+          {
+            role: 'system',
+            content: `Erstelle eine KURZE anonyme Zusammenfassung (max 1 Satz, auf Deutsch) dieser Chat-Konversation mit der Inselbahn Helgoland.
+Fokus: Was wollte der Gast wissen/buchen? Welches Thema? Gab es Probleme?
+KEINE Namen, E-Mails oder persönliche Daten nennen!
+Beispiele guter Zusammenfassungen:
+- "Gruppe (4 Erw. + 2 Kinder) fragte nach Premium-Tour und Hundemitnahme"
+- "Gast wollte Stornierung, hatte Link nicht gefunden"
+- "Tourist fragte nach Abfahrtszeiten und Weg vom Halunder Jet"
+- "Versuchte Prompt Injection / Missbrauch"`,
+          },
+          ...messages.map((m) => ({
+            role: m.role as 'user' | 'assistant',
+            content: m.content.slice(0, 300),
+          })),
+        ],
+        max_completion_tokens: 100,
+        temperature: 0.3,
+      }),
+    });
+
+    if (!summaryResponse.ok) return;
+    const summaryData = await summaryResponse.json();
+    const summary = summaryData.choices?.[0]?.message?.content;
+    if (!summary) return;
+
+    // Detect topic categories
+    const content = messages.map(m => m.content.toLowerCase()).join(' ');
+    const topics: string[] = [];
+    if (/preis|euro|€|kost|ticket/.test(content)) topics.push('preise');
+    if (/abfahrt|uhr|zeit|wann|fahrplan/.test(content)) topics.push('abfahrtszeiten');
+    if (/hund|tier/.test(content)) topics.push('hunde');
+    if (/rollstuhl|behindert|barriere|rollator|mobil/.test(content)) topics.push('barrierefreiheit');
+    if (/stornier|absa|erstatt|refund/.test(content)) topics.push('stornierung');
+    if (/buch|reserv|ticket|online/.test(content)) topics.push('buchung');
+    if (/gruppe|gruppen|team|firma/.test(content)) topics.push('gruppen');
+    if (/wetter|regen|sturm|wind/.test(content)) topics.push('wetter');
+    if (/premium/.test(content)) topics.push('premium-tour');
+    if (/unterland/.test(content)) topics.push('unterland-tour');
+    if (/schiff|fähre|anleger|hafen|funny|halunder|helgoland.*ms/.test(content)) topics.push('anreise');
+    if (/lang.*anna|oberland|lummen/.test(content)) topics.push('sehenswuerdigkeiten');
+    if (/kind|baby|famil/.test(content)) topics.push('familien');
+    if (/ignore|bypass|system|jailbreak|DAN/.test(content)) topics.push('missbrauch');
+
+    // Save to Supabase
+    const { supabase } = await import('@/lib/supabase');
+    await supabase.from('chat_logs').insert({
+      summary,
+      topics,
+      message_count: messages.length,
+      ip_hash: await hashIP(ip),
+    });
+  } catch (err) {
+    console.error('Failed to log chat summary:', err);
+  }
+}
+
+async function hashIP(ip: string): Promise<string> {
+  const encoder = new TextEncoder();
+  const data = encoder.encode(ip + 'inselbahn-salt-2026');
+  const hashBuffer = await crypto.subtle.digest('SHA-256', data);
+  const hashArray = Array.from(new Uint8Array(hashBuffer));
+  return hashArray.map(b => b.toString(16).padStart(2, '0')).join('').slice(0, 16);
 }
