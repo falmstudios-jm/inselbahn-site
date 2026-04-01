@@ -125,7 +125,7 @@ export async function POST(req: Request) {
         booking_id: booking.id,
         booking_reference: bookingReference,
       },
-      automatic_payment_methods: { enabled: true },
+      payment_method_types: ['card', 'paypal'],
     });
 
     return NextResponse.json({
