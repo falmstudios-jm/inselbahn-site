@@ -21,7 +21,7 @@ export async function GET(req: Request) {
 
     const { data: expired, error } = await supabase
       .from('bookings')
-      .delete()
+      .update({ status: 'cancelled', cancelled_at: new Date().toISOString() })
       .eq('status', 'pending')
       .lt('created_at', cutoff)
       .select('id');

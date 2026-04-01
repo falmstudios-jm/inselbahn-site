@@ -48,10 +48,10 @@ export async function POST(req: Request) {
 
         if (!bookingId) break;
 
-        // Delete pending booking to release capacity
+        // Mark pending booking as cancelled to release capacity
         await getSupabaseAdmin()
           .from('bookings')
-          .delete()
+          .update({ status: 'cancelled', cancelled_at: new Date().toISOString() })
           .eq('id', bookingId)
           .eq('status', 'pending');
 
@@ -83,10 +83,10 @@ export async function POST(req: Request) {
 
         if (!bookingId) break;
 
-        // Delete pending booking to release capacity
+        // Mark pending booking as cancelled to release capacity
         await getSupabaseAdmin()
           .from('bookings')
-          .delete()
+          .update({ status: 'cancelled', cancelled_at: new Date().toISOString() })
           .eq('id', bookingId)
           .eq('status', 'pending');
 
@@ -193,10 +193,13 @@ function buildConfirmationEmail(params: EmailParams): string {
     { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' }
   );
 
+  // Format time: "10:00:00" → "10:00"
+  const formattedTime = departureTime.slice(0, 5);
+
   const passengers: string[] = [];
-  passengers.push(`${adults} Erwachsene`);
-  if (children > 0) passengers.push(`${children} Kinder (6–14 Jahre)`);
-  if (childrenFree > 0) passengers.push(`${childrenFree} Kinder (0–5 Jahre, frei)`);
+  passengers.push(`${adults} ${adults === 1 ? 'Erwachsener' : 'Erwachsene'}`);
+  if (children > 0) passengers.push(`${children} ${children === 1 ? 'Kind' : 'Kinder'} (6–14 Jahre)`);
+  if (childrenFree > 0) passengers.push(`${childrenFree} ${childrenFree === 1 ? 'Kind' : 'Kinder'} (0–5 Jahre, frei)`);
 
   return `
 <!DOCTYPE html>
@@ -237,7 +240,7 @@ function buildConfirmationEmail(params: EmailParams): string {
                     <p style="margin:0 0 16px;font-size:15px;color:#333;">${tourName}</p>
 
                     <p style="margin:0 0 4px;font-size:12px;color:#888;text-transform:uppercase;letter-spacing:1px;">Datum &amp; Uhrzeit</p>
-                    <p style="margin:0 0 16px;font-size:15px;color:#333;">${formattedDate}, ${departureTime} Uhr</p>
+                    <p style="margin:0 0 16px;font-size:15px;color:#333;">${formattedDate}, ${formattedTime} Uhr</p>
 
                     <p style="margin:0 0 4px;font-size:12px;color:#888;text-transform:uppercase;letter-spacing:1px;">Fahrgäste</p>
                     <p style="margin:0 0 16px;font-size:15px;color:#333;">${passengers.join(', ')}</p>
