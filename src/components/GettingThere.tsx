@@ -3,9 +3,10 @@
 import Image from "next/image";
 
 const ferries = [
-  { name: 'HSC "Halunder Jet"', distance: "350m", time: "4 Min" },
-  { name: 'MS "Nordlicht"', distance: "600m", time: "6 Min" },
-  { name: 'MS "Adler Cat"', distance: "600m", time: "6 Min" },
+  { name: 'Dünenanleger', distance: "100m", time: "2 Min" },
+  { name: 'Börteboot-Anleger', distance: "200m", time: "3 Min" },
+  { name: 'HSC "Halunder Jet"', distance: "350m", time: "5 Min" },
+  { name: 'MS "Nordlicht"', distance: "500m", time: "8 Min" },
   { name: 'MS "Funny Girl"', distance: "1.100m", time: "15 Min" },
   { name: 'MS "Helgoland"', distance: "1.100m", time: "15 Min" },
 ];
@@ -31,8 +32,8 @@ export default function GettingThere() {
           {/* Left: text + walking times */}
           <div>
             <p className="text-dark/60 text-base leading-relaxed mb-6">
-              Unsere Inselbahn startet am <strong className="text-dark">Lung Wai</strong>,
-              dem zentralen Platz im Unterland. Von allen Fähranlegern zu Fuß erreichbar.
+              Unsere Inselbahn startet am <strong className="text-dark">Franz-Schensky-Platz</strong>,
+              direkt neben der Tourist-Information und der Büste von Heinrich Hoffmann von Fallersleben, am Landungsbrückenvorplatz. Von allen Fähranlegern bequem zu Fuß erreichbar.
             </p>
 
             {/* Walking times table */}
