@@ -71,7 +71,9 @@ export default function LangeAnnaPage() {
               einer ehemaligen Felsbrücke, die vor Jahrhunderten durch die Kraft
               der Nordsee abgetrennt wurde. Mit ihren 47 Metern Höhe und einer
               Grundfläche von etwa 180 Quadratmetern ist sie ein beeindruckendes
-              Zeugnis der Naturgewalten.
+              Zeugnis der Naturgewalten. Der charakteristische rote Buntsandstein
+              ist dasselbe Gestein, das die gesamte Insel prägt und Helgoland
+              seine einzigartige Farbe verleiht.
             </p>
             <p className="text-dark/60 text-base md:text-lg leading-relaxed">
               Der Felsen steht unter Naturschutz und darf nicht betreten werden.
@@ -83,15 +85,44 @@ export default function LangeAnnaPage() {
 
           <section>
             <h2 className="text-2xl md:text-3xl font-bold text-dark mb-4">
-              Heimat tausender Seevögel
+              Der Lummenfelsen — Heimat tausender Seevögel
+            </h2>
+            <p className="text-dark/60 text-base md:text-lg leading-relaxed mb-4">
+              Die Lange Anna und die angrenzenden Klippen bilden den berühmten
+              Lummenfelsen — Deutschlands kleinstes Naturschutzgebiet und eine
+              der bedeutendsten Seevogelkolonien des Landes. In den Sommermonaten
+              nisten hier vier Hauptarten: <strong>Trottellummen</strong> (die
+              Namensgeber des Felsens), <strong>Basstölpel</strong> mit ihrer
+              beeindruckenden Flügelspannweite, <strong>Dreizehenmöwen</strong> und
+              die seltenen <strong>Tordalke</strong>.
+            </p>
+            <p className="text-dark/60 text-base md:text-lg leading-relaxed mb-4">
+              Das spektakulärste Naturschauspiel ist der <strong>Lummensprung
+              im Juni</strong>: Die noch flugunfähigen Trottellummen-Küken springen
+              in der Abenddämmerung von den bis zu 40 Meter hohen Klippen ins Meer,
+              wo ihre Väter sie bereits rufend erwarten. Dieses einzigartige Ereignis
+              lockt jedes Jahr Naturbeobachter aus ganz Europa an.
+            </p>
+            <p className="text-dark/60 text-base md:text-lg leading-relaxed">
+              Besondere Aufmerksamkeit erregt auch der gelegentliche Besuch eines
+              <strong> Schwarzbrauenalbatros</strong> — ein Irrgast der Südhalbkugel,
+              der die Helgoländer Kolonie manchmal für mehrere Wochen besucht und
+              für Aufsehen unter Vogelkundlern sorgt.
+            </p>
+          </section>
+
+          <section>
+            <h2 className="text-2xl md:text-3xl font-bold text-dark mb-4">
+              Der Klippenrandweg
             </h2>
             <p className="text-dark/60 text-base md:text-lg leading-relaxed">
-              Die Lange Anna und die angrenzenden Klippen bilden den berühmten
-              Lummenfelsen, Deutschlands kleinste Seevogelkolonie. In den
-              Sommermonaten nisten hier Basstölpel, Trottellummen, Dreizehenmöwen
-              und Tordalken. Das Naturschauspiel der brütenden Vögel macht den
-              Besuch besonders zwischen Mai und August zu einem unvergesslichen
-              Erlebnis.
+              Der ca. 3 Kilometer lange Klippenrandweg führt entlang der gesamten
+              Oberkante der roten Felsklippen und bietet durchgehend atemberaubende
+              Ausblicke auf die Nordsee, die Düne und natürlich die Lange Anna.
+              Planen Sie etwa 1,5 Stunden für den Rundweg ein. Der Weg ist gut
+              befestigt und ausgeschildert, festes Schuhwerk wird dennoch empfohlen.
+              Vom Oberland aus (erreichbar per Fahrstuhl oder 182 bis 260 Stufen)
+              starten Sie bequem in den Rundgang.
             </p>
           </section>
 

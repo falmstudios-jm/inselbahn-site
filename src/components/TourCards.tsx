@@ -171,16 +171,21 @@ export default function TourCards() {
                 inkl. kurzem Fotostopp im Nordostland
               </p>
               <p className="text-dark/60 text-sm leading-relaxed mb-4">
-                Die klassische Inselrundfahrt durch das Unterland. Sie fahren entlang
-                der Landungsbrücke, durch das malerische Unterland und erhalten einen
-                Fotostopp im Nordostland mit Blick auf die Düne.
+                An Bord unseres elektrischen Oldtimers aus den späten 1970er-Jahren
+                gleiten Sie mit maximal 6 km/h durch das Unterland &mdash; vorbei an den
+                legendären Hummerbuden mit ihren Galerien und Schmuckläden, dem
+                historischen Binnenhafen (von den Helgoländern &bdquo;Scheibenhafen&rdquo;
+                genannt), dem Seenotrettungskreuzer Hermann Marwede und dem
+                Alfred-Wegener-Institut für Meeresforschung. Ihr Guide erzählt vom
+                &bdquo;Big Bang&rdquo; 1947, der Rückkehr der Insel 1952 und dem
+                zollfreien Alltag auf Deutschlands einziger Hochseeinsel.
               </p>
 
               <ul className="space-y-2 mb-5">
-                <CheckItem text="Hafen & Landungsbrücke" />
-                <CheckItem text="Nordostland erkunden" />
-                <CheckItem text="Historische Gebäude" />
-                <CheckItem text="Fotostopp an den Hummerbuden" />
+                <CheckItem text="Hafen, Landungsbrücke & Südstrandpromenade" />
+                <CheckItem text="Hummerbuden & historischer Binnenhafen" />
+                <CheckItem text="Hermann Marwede & AWI Meeresforschung" />
+                <CheckItem text="Fotostopp im Nordostland mit Dünenblick" />
               </ul>
 
               <div className="flex items-baseline gap-2 mb-1">
@@ -229,16 +234,20 @@ export default function TourCards() {
                 inkl. Ausstieg an der Langen Anna
               </p>
               <p className="text-dark/60 text-sm leading-relaxed mb-4">
-                Das komplette Helgoland-Erlebnis. Ober- und Unterland, mit 30 Minuten
-                freier Erkundung an der berühmten Langen Anna. Exklusive Kleingruppe
-                für ein besonderes Erlebnis.
+                Das komplette Helgoland-Erlebnis in der exklusiven Kleingruppe.
+                Zunächst erkunden Sie das Unterland, dann geht es hinauf ins Oberland
+                (&bdquo;deät Bopperlun&rdquo;) bis zum Pinneberg auf 61,3 m &mdash;
+                Deutschlands kleinster Gemeinde auf dem höchsten Punkt. Vorbei am
+                stärksten Leuchtturm Deutschlands (ehemaliger Flak-Turm!), den rund
+                70 Kleingärten und dem Lummenfelsen mit 30 Minuten freier
+                Erkundungszeit an der Langen Anna, dem berühmten 47-Meter-Wahrzeichen.
               </p>
 
               <ul className="space-y-2 mb-5">
-                <CheckItem text="Ober- und Unterland komplett" />
-                <CheckItem text="30 Min freie Erkundung" />
-                <CheckItem text="Exklusive Kleingruppe" />
-                <CheckItem text="Ausstieg an der Langen Anna" />
+                <CheckItem text="Unterland & Oberland mit Pinneberg (61,3 m)" />
+                <CheckItem text="30 Min freie Erkundung an der Langen Anna" />
+                <CheckItem text="Leuchtturm, Kleingärten & Lummenfelsen" />
+                <CheckItem text="Exklusive Kleingruppe (max. 18 Personen)" />
               </ul>
 
               <div className="flex items-baseline gap-2 mb-1">

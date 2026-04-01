@@ -5,6 +5,11 @@ import Image from "next/image";
 
 const faqs = [
   {
+    question: "Was ist die Inselbahn für ein Fahrzeug?",
+    answer:
+      "Unsere Inselbahn ist ein elektrischer Oldtimer aus den späten 1970er-Jahren mit 11 PS Antrieb. Das Fahrzeug wiegt mit Passagieren rund 5 Tonnen und fährt maximal 6 km/h in der Stadt und 10 km/h außerhalb. Fußgänger haben auf Helgoland immer Vorrang — hupen ist verboten!",
+  },
+  {
     question: "Darf ich mir aussuchen, wo ich sitzen möchte?",
     answer:
       "Ja, grundsätzlich dürfen Sie. Unsere Mitarbeiter bemühen sich, die Sitzplätze so zu organisieren, dass jeder mit seinen Bekannten zusammensitzen kann. Wenn die Tour nicht voll ausgelastet ist, dürfen Sie Ihren Platz natürlich selbst aussuchen. Generell gilt bei uns: first come, first serve.",
@@ -22,12 +27,22 @@ const faqs = [
   {
     question: "Wie sieht es mit Rollatoren oder Rollstühlen aus?",
     answer:
-      "Mobilität ist uns sehr wichtig und wir geben unser Bestes, um jeden Gast auf unserer malerischen Inselreise willkommen zu heißen. Rollatoren können bei der Unterland-Tour beim Ticketverkäufer deponiert werden oder in vielen Fällen auch mitgenommen werden. Die Premium-Tour empfehlen wir hingegen eher für die \u2018Bergziegen\u2019 unter unseren Gästen.",
+      "Mobilität ist uns sehr wichtig und wir geben unser Bestes, um jeden Gast auf unserer malerischen Inselreise willkommen zu heißen. Die Unterland-Tour bietet einen Rollstuhlplatz und Rollatoren können beim Ticketverkäufer deponiert oder mitgenommen werden. Zum Oberland gibt es einen Fahrstuhl (alternativ 182-260 Stufen). Die Premium-Tour empfehlen wir hingegen eher für die \u2018Bergziegen\u2019 unter unseren Gästen, da die Wege im Oberland nicht vollständig barrierefrei sind.",
   },
   {
     question: "Kann ich meinen Hund mitnehmen?",
     answer:
       "Kleinere Hunde, die auf dem Schoß mitfahren könnten, sind in der Regel erlaubt. Größere Hunde können im hinteren Teil der Inselbahn Platz finden, aber dies hängt von der aktuellen Kapazität ab. Bei der Premium-Tour müssen wir aus Platzgründen und zum Wohl aller Passagiere leider grundsätzlich auf alle Hunde verzichten.",
+  },
+  {
+    question: "Wie komme ich zur Düne und was kostet die Fähre?",
+    answer:
+      "Die Dünenfähre \u201eWitte Kliff\u201c fährt alle 30 Minuten vom Helgoländer Hafen zur Nachbarinsel Düne. Erwachsene zahlen 6 \u20AC, Kinder den halben Preis. Auf der Düne erwarten Sie ca. 130.000 m\u00B2 Sandstrand, neugierige Kegelrobben und Seehunde und den weltweit einzigartigen Roten Flint — einen roten Feuerstein, den es nur hier gibt.",
+  },
+  {
+    question: "Wann ist die beste Zeit für Vogelbeobachtung?",
+    answer:
+      "Die Brutkolonie am Lummenfelsen ist von Mai bis August am aktivsten, mit Trottellummen, Basstölpeln, Dreizehenmöwen und Tordalken. Das absolute Highlight ist der Lummensprung im Juni, wenn die flugunfähigen Küken von den Klippen ins Meer springen. Die Vogelwarte auf dem Oberland beringt jährlich bis zu 15.000 Vögel. Auf der Düne können Sie ganzjährig Robben beobachten, besonders im Winter gibt es Robbenbabys.",
   },
   {
     question: "Gibt es Toiletten in der Nähe?",
