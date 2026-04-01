@@ -9,6 +9,7 @@ import Contact from "@/components/Contact";
 import BookingWidget from "@/components/BookingWidget";
 import Footer from "@/components/Footer";
 import AnnouncementBanner from "@/components/AnnouncementBanner";
+import ChatWidget from "@/components/ChatWidget";
 
 export default function Home() {
   return (
@@ -26,6 +27,7 @@ export default function Home() {
       </main>
       <Footer />
       <AnnouncementBanner />
+      <ChatWidget />
     </>
   );
 }

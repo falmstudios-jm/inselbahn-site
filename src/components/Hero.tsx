@@ -43,7 +43,7 @@ export default function Hero() {
         {/* Hero image container with rounded corners */}
         <div className="relative w-full aspect-[16/7] md:aspect-[16/6] rounded-2xl overflow-hidden">
           <Image
-            src="/images/abfahrt-inselbahn.jpg"
+            src="/images/topdown.jpg"
             alt="Helgoland Luftaufnahme"
             fill
             priority

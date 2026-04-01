@@ -247,10 +247,61 @@ export default function DatenschutzPage() {
             </p>
           </section>
 
-          {/* 9. Änderung */}
+          {/* 9. KI-Chatbot */}
           <section>
             <h2 className="text-xl font-semibold text-dark mb-3">
-              9. &Auml;nderung der Datenschutzerkl&auml;rung
+              9. KI-Chatbot
+            </h2>
+            <p>
+              Auf unserer Website bieten wir einen KI-gest&uuml;tzten Chatbot an, der von OpenAI
+              (OpenAI, L.L.C., 3180 18th Street, San Francisco, CA 94110, USA) betrieben wird.
+              Der Chatbot dient ausschlie&szlig;lich der Beantwortung h&auml;ufiger Fragen zu
+              unseren Touren, Preisen und Abfahrtszeiten.
+            </p>
+            <p className="mt-2">
+              <strong className="text-dark">Keine Speicherung von Gespr&auml;chsdaten:</strong>{" "}
+              Die Chatverl&auml;ufe werden nicht gespeichert. Sobald Sie den Chat schlie&szlig;en
+              oder die Seite verlassen, werden alle Nachrichten gel&ouml;scht.
+            </p>
+            <p className="mt-2">
+              <strong className="text-dark">Datenverarbeitung durch OpenAI:</strong>{" "}
+              Ihre Nachrichten werden zur Verarbeitung an die Server von OpenAI in den USA
+              &uuml;bermittelt. OpenAI hat einen Auftragsverarbeitungsvertrag (Data Processing
+              Agreement) mit EU-Standardvertragsklauseln abgeschlossen, der den Schutz Ihrer
+              Daten gem&auml;&szlig; DSGVO gew&auml;hrleistet.
+            </p>
+            <p className="mt-2">
+              <strong className="text-dark">Keine Erhebung personenbezogener Daten:</strong>{" "}
+              Der Chatbot erfragt und speichert keine personenbezogenen Daten. Bitte geben Sie
+              im Chat keine pers&ouml;nlichen Informationen wie Namen, Adressen oder
+              Zahlungsdaten ein.
+            </p>
+            <p className="mt-2">
+              <strong className="text-dark">Missbrauchsschutz:</strong>{" "}
+              Zum Schutz vor Missbrauch ist die Anzahl der Nachrichten pro Minute begrenzt
+              (Rate-Limiting). Dabei wird Ihre IP-Adresse tempor&auml;r verarbeitet, jedoch
+              nicht dauerhaft gespeichert.
+            </p>
+            <p className="mt-2">
+              Die Nutzung des Chatbots erfolgt auf Grundlage von Art. 6 Abs. 1 lit. f DSGVO
+              (berechtigtes Interesse an einer schnellen und effizienten Beantwortung von
+              Kundenanfragen). Weitere Informationen finden Sie in der Datenschutzerkl&auml;rung
+              von OpenAI unter{" "}
+              <a
+                href="https://openai.com/policies/privacy-policy"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="text-primary hover:underline"
+              >
+                openai.com/policies/privacy-policy
+              </a>.
+            </p>
+          </section>
+
+          {/* 10. Änderung */}
+          <section>
+            <h2 className="text-xl font-semibold text-dark mb-3">
+              10. &Auml;nderung der Datenschutzerkl&auml;rung
             </h2>
             <p>
               Wir behalten uns vor, diese Datenschutzerkl&auml;rung bei Bedarf anzupassen,
