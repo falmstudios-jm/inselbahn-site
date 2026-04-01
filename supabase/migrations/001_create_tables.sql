@@ -60,6 +60,7 @@ CREATE TABLE IF NOT EXISTS chat_logs (
   id UUID DEFAULT gen_random_uuid() PRIMARY KEY,
   summary TEXT NOT NULL,
   topics TEXT[] DEFAULT '{}',
+  status TEXT DEFAULT 'unknown' CHECK (status IN ('success', 'partial', 'failed', 'abuse', 'unknown')),
   message_count INT NOT NULL DEFAULT 0,
   ip_hash TEXT,
   created_at TIMESTAMPTZ DEFAULT now()
