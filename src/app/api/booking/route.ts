@@ -41,13 +41,26 @@ export async function POST(req: Request) {
     const tour = departure.tours;
     const capacity: number = tour.max_capacity;
 
-    // Check availability: count existing bookings for this departure + date
-    const { data: existingBookings, error: bookingsError } = await supabaseAdmin
+    // Check availability: confirmed + recent pending (< 15 min old)
+    const fifteenMinAgo = new Date(Date.now() - 15 * 60 * 1000).toISOString();
+
+    const { data: confirmedBookings } = await supabaseAdmin
       .from('bookings')
       .select('adults, children, children_free, ghost_seats')
       .eq('departure_id', input.departure_id)
       .eq('booking_date', input.booking_date)
-      .in('status', ['pending', 'confirmed']);
+      .eq('status', 'confirmed');
+
+    const { data: recentPending } = await supabaseAdmin
+      .from('bookings')
+      .select('adults, children, children_free, ghost_seats')
+      .eq('departure_id', input.departure_id)
+      .eq('booking_date', input.booking_date)
+      .eq('status', 'pending')
+      .gte('created_at', fifteenMinAgo);
+
+    const existingBookings = [...(confirmedBookings || []), ...(recentPending || [])];
+    const bookingsError = null;
 
     if (bookingsError) {
       return NextResponse.json(

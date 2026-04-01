@@ -33,11 +33,24 @@ export async function GET(req: NextRequest) {
     }
 
     // Fetch bookings for the given date
-    const { data: bookings, error: bookError } = await supabase
+    // Only count confirmed bookings + pending bookings less than 15 min old
+    const fifteenMinAgo = new Date(Date.now() - 15 * 60 * 1000).toISOString();
+
+    const { data: confirmedBookings, error: confError } = await supabase
       .from('bookings')
       .select('departure_id, adults, children, ghost_seats, children_free')
       .eq('booking_date', date)
-      .in('status', ['confirmed', 'pending']);
+      .eq('status', 'confirmed');
+
+    const { data: pendingBookings, error: pendError } = await supabase
+      .from('bookings')
+      .select('departure_id, adults, children, ghost_seats, children_free')
+      .eq('booking_date', date)
+      .eq('status', 'pending')
+      .gte('created_at', fifteenMinAgo);
+
+    const bookings = [...(confirmedBookings || []), ...(pendingBookings || [])];
+    const bookError = confError || pendError;
 
     if (bookError) {
       console.error('Supabase bookings error:', bookError);
