@@ -9,8 +9,6 @@ import {
   generateCancelToken,
 } from '@/lib/booking-utils';
 
-const BASE_URL = process.env.NEXT_PUBLIC_BASE_URL || 'https://helgolandbahn.de';
-
 export async function POST(req: Request) {
   try {
     const body = await req.json();
@@ -121,34 +119,19 @@ export async function POST(req: Request) {
       );
     }
 
-    // Create Stripe Checkout Session
-    const session = await getStripe().checkout.sessions.create({
-      payment_method_types: ['card'],
-      locale: 'de',
-      line_items: [
-        {
-          price_data: {
-            currency: 'eur',
-            product_data: {
-              name: tour.name,
-              description: `${input.adults} Erwachsene${input.children > 0 ? `, ${input.children} Kinder (6–14)` : ''}${input.children_free > 0 ? `, ${input.children_free} Kinder (0–5, frei)` : ''}`,
-            },
-            unit_amount: totalPrice * 100, // cents
-          },
-          quantity: 1,
-        },
-      ],
+    // Create Stripe PaymentIntent for embedded payment
+    const paymentIntent = await getStripe().paymentIntents.create({
+      amount: Math.round(totalPrice * 100), // cents
+      currency: 'eur',
       metadata: {
         booking_id: booking.id,
         booking_reference: bookingReference,
       },
-      success_url: `${BASE_URL}/booking/confirm/${booking.id}`,
-      cancel_url: `${BASE_URL}/#buchung`,
-      expires_at: Math.floor(Date.now() / 1000) + 30 * 60, // 30 minutes
+      automatic_payment_methods: { enabled: true },
     });
 
     return NextResponse.json({
-      checkout_url: session.url,
+      client_secret: paymentIntent.client_secret,
       booking_id: booking.id,
       booking_reference: bookingReference,
     });

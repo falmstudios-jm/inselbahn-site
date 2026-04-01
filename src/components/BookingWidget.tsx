@@ -1,6 +1,13 @@
 "use client";
 
-import { useState, useMemo, useEffect, useCallback } from "react";
+import { useState, useMemo, useEffect, useCallback, useRef } from "react";
+import { loadStripe } from "@stripe/stripe-js";
+import { Elements, PaymentElement, useStripe, useElements } from "@stripe/react-stripe-js";
+
+/* ─── Stripe singleton ─── */
+const stripePromise = loadStripe(
+  process.env.NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY!
+);
 
 /* ─── Types ─── */
 interface AvailabilitySlot {
@@ -40,7 +47,8 @@ const tourOptions = [
   },
 ];
 
-const steps = ["Datum", "Tour", "Uhrzeit", "Personen", "Kontakt"];
+const STEPS = ["Datum", "Tour", "Uhrzeit", "Personen", "Kontakt", "Zahlung"];
+const RESERVATION_SECONDS = 15 * 60; // 15 minutes
 
 function generateCalendarDays(year: number, month: number) {
   const firstDay = new Date(year, month, 1).getDay();
@@ -73,7 +81,95 @@ function Spinner({ className = "" }: { className?: string }) {
   );
 }
 
-/* ─── Component ─── */
+/* ─── Countdown Timer Hook ─── */
+function useCountdown(startedAt: number | null) {
+  const [secondsLeft, setSecondsLeft] = useState(RESERVATION_SECONDS);
+
+  useEffect(() => {
+    if (!startedAt) return;
+    const tick = () => {
+      const elapsed = Math.floor((Date.now() - startedAt) / 1000);
+      setSecondsLeft(Math.max(0, RESERVATION_SECONDS - elapsed));
+    };
+    tick();
+    const id = setInterval(tick, 1000);
+    return () => clearInterval(id);
+  }, [startedAt]);
+
+  const minutes = Math.floor(secondsLeft / 60);
+  const seconds = secondsLeft % 60;
+  const display = `${minutes.toString().padStart(2, "0")}:${seconds.toString().padStart(2, "0")}`;
+  const expired = secondsLeft <= 0;
+  const urgent = secondsLeft <= 120; // last 2 minutes
+
+  return { secondsLeft, display, expired, urgent };
+}
+
+/* ─── Stripe Payment Form (inner, must be inside <Elements>) ─── */
+function CheckoutForm({
+  totalPrice,
+  onSuccess,
+  onError,
+}: {
+  totalPrice: number;
+  onSuccess: () => void;
+  onError: (msg: string) => void;
+}) {
+  const stripe = useStripe();
+  const elements = useElements();
+  const [processing, setProcessing] = useState(false);
+  const [ready, setReady] = useState(false);
+
+  async function handleSubmit(e: React.FormEvent) {
+    e.preventDefault();
+    if (!stripe || !elements) return;
+
+    setProcessing(true);
+    onError("");
+
+    const { error } = await stripe.confirmPayment({
+      elements,
+      confirmParams: {
+        return_url: window.location.href, // fallback, not normally used
+      },
+      redirect: "if_required",
+    });
+
+    if (error) {
+      onError(error.message || "Zahlung fehlgeschlagen. Bitte versuchen Sie es erneut.");
+      setProcessing(false);
+    } else {
+      onSuccess();
+    }
+  }
+
+  return (
+    <form onSubmit={handleSubmit} className="space-y-6">
+      <PaymentElement
+        onReady={() => setReady(true)}
+        options={{
+          layout: "tabs",
+        }}
+      />
+      <button
+        type="submit"
+        disabled={!stripe || !elements || processing || !ready}
+        className={`w-full py-4 rounded-xl font-semibold text-base transition-colors flex items-center justify-center gap-2 ${
+          processing || !ready
+            ? "bg-dark/10 text-dark/30 cursor-not-allowed"
+            : "bg-dark text-white hover:bg-dark/85"
+        }`}
+      >
+        {processing && <Spinner className="w-5 h-5" />}
+        {processing
+          ? "Wird verarbeitet..."
+          : `Jetzt bezahlen — ${totalPrice.toFixed(2).replace(".", ",")} \u20AC`}
+      </button>
+    </form>
+  );
+}
+
+/* ─── Main Component ─── */
 export default function BookingWidget() {
   const [step, setStep] = useState(0);
   const [selectedDate, setSelectedDate] = useState<string>("");
@@ -96,13 +192,22 @@ export default function BookingWidget() {
   // Submit state
   const [submitting, setSubmitting] = useState(false);
   const [submitError, setSubmitError] = useState<string>("");
-  const [redirecting, setRedirecting] = useState(false);
 
-  const now = new Date();
+  // Payment state
+  const [clientSecret, setClientSecret] = useState<string | null>(null);
+  const [bookingReference, setBookingReference] = useState<string>("");
+  const [paymentError, setPaymentError] = useState<string>("");
+  const [paymentSuccess, setPaymentSuccess] = useState(false);
+  const [reservationStart, setReservationStart] = useState<number | null>(null);
+
+  const now = useRef(new Date()).current;
   const [calMonth, setCalMonth] = useState(now.getMonth());
   const [calYear, setCalYear] = useState(now.getFullYear());
 
   const calDays = generateCalendarDays(calYear, calMonth);
+
+  // Countdown
+  const { display: countdownDisplay, expired: countdownExpired, urgent: countdownUrgent } = useCountdown(reservationStart);
 
   // Filtered slots for selected tour
   const filteredSlots = useMemo(
@@ -161,6 +266,15 @@ export default function BookingWidget() {
     }
   }, [remaining, adults, children, childrenFree]);
 
+  /* ─── Handle countdown expiry ─── */
+  useEffect(() => {
+    if (countdownExpired && step === 5 && !paymentSuccess) {
+      // Timer ran out — reservation expired
+      setClientSecret(null);
+      setReservationStart(null);
+    }
+  }, [countdownExpired, step, paymentSuccess]);
+
   const canProceed = useMemo(() => {
     switch (step) {
       case 0:
@@ -184,7 +298,7 @@ export default function BookingWidget() {
     }
   }, [step, selectedDate, selectedTour, selectedTime, selectedSlot, adults, contactName, contactEmail, contactPhone, gdprConsent, submitting]);
 
-  /* ─── Submit booking ─── */
+  /* ─── Submit booking → get client_secret → go to payment step ─── */
   async function handleSubmit() {
     if (!selectedSlot) return;
     setSubmitting(true);
@@ -210,7 +324,6 @@ export default function BookingWidget() {
         setStep(2);
         setSelectedTime("");
         setSelectedSlot(null);
-        // Refresh availability
         fetchAvailability(selectedDate);
         return;
       }
@@ -226,8 +339,12 @@ export default function BookingWidget() {
       }
 
       const data = await res.json();
-      setRedirecting(true);
-      window.location.href = data.checkout_url;
+      setClientSecret(data.client_secret);
+      setBookingReference(data.booking_reference);
+      setReservationStart(Date.now());
+      setPaymentError("");
+      setPaymentSuccess(false);
+      setStep(5); // Go to payment step
     } catch {
       setSubmitError("Verbindung fehlgeschlagen. Bitte versuchen Sie es erneut.");
     } finally {
@@ -239,14 +356,35 @@ export default function BookingWidget() {
     setSubmitError("");
     if (step < 4) {
       setStep(step + 1);
-    } else {
+    } else if (step === 4) {
       handleSubmit();
     }
   }
 
   function handleBack() {
     setSubmitError("");
-    if (step > 0) setStep(step - 1);
+    if (step > 0 && step <= 4) setStep(step - 1);
+  }
+
+  function handleStartOver() {
+    setStep(0);
+    setSelectedDate("");
+    setSelectedTour("");
+    setSelectedTime("");
+    setSelectedSlot(null);
+    setAdults(2);
+    setChildren(0);
+    setChildrenFree(0);
+    setContactName("");
+    setContactEmail("");
+    setContactPhone("");
+    setGdprConsent(false);
+    setClientSecret(null);
+    setBookingReference("");
+    setPaymentError("");
+    setPaymentSuccess(false);
+    setReservationStart(null);
+    setSubmitError("");
   }
 
   function nextMonth() {
@@ -271,32 +409,265 @@ export default function BookingWidget() {
   }
 
   function formatTime(t: string) {
-    // "14:00:00" → "14:00"
     return t.slice(0, 5);
   }
 
   const totalPassengers = adults + children + childrenFree;
   const canAddMore = totalPassengers < remaining;
 
-  /* ─── Redirecting state ─── */
-  if (redirecting) {
+  /* ─── Payment Success ─── */
+  if (paymentSuccess) {
     return (
       <section id="buchung" className="px-5 md:px-10 lg:px-20 py-20 md:py-28">
-        <div className="max-w-2xl mx-auto text-center animate-fade-in-up">
+        <div className="max-w-lg mx-auto text-center animate-fade-in-up">
+          {/* Green checkmark */}
           <div className="flex justify-center mb-6">
-            <Spinner className="w-12 h-12 text-dark" />
+            <div className="w-20 h-20 rounded-full bg-green-100 flex items-center justify-center">
+              <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="#16a34a" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+                <polyline points="20 6 9 17 4 12" />
+              </svg>
+            </div>
           </div>
           <h2 className="text-[28px] md:text-[40px] font-bold text-dark mb-4">
-            Weiterleitung zur Zahlung...
+            Buchung best&auml;tigt!
           </h2>
-          <p className="text-dark/60 text-lg">
-            Sie werden in Kürze zu unserem Zahlungsanbieter weitergeleitet.
+          <p className="text-dark/60 text-lg mb-2">
+            Vielen Dank f&uuml;r Ihre Buchung.
           </p>
+          <div className="bg-white rounded-2xl p-6 border border-gray-100 shadow-sm mt-8 text-left space-y-3">
+            <div className="flex justify-between text-sm">
+              <span className="text-dark/50">Buchungsnummer</span>
+              <span className="text-dark font-bold text-base">{bookingReference}</span>
+            </div>
+            {selectedSlot && (
+              <div className="flex justify-between text-sm">
+                <span className="text-dark/50">Tour</span>
+                <span className="text-dark font-medium">{selectedSlot.tour_name}</span>
+              </div>
+            )}
+            {selectedDate && (
+              <div className="flex justify-between text-sm">
+                <span className="text-dark/50">Datum</span>
+                <span className="text-dark font-medium">
+                  {new Date(selectedDate + "T00:00:00").toLocaleDateString("de-DE", { day: "2-digit", month: "long", year: "numeric" })}
+                </span>
+              </div>
+            )}
+            {selectedTime && (
+              <div className="flex justify-between text-sm">
+                <span className="text-dark/50">Uhrzeit</span>
+                <span className="text-dark font-medium">{selectedTime} Uhr</span>
+              </div>
+            )}
+            <div className="border-t border-gray-100 pt-3 flex justify-between">
+              <span className="text-dark font-medium">Gesamt</span>
+              <span className="text-xl font-bold text-dark">{totalPrice.toFixed(2).replace(".", ",")}&euro;</span>
+            </div>
+          </div>
+          <p className="text-dark/50 text-sm mt-6">
+            Eine Best&auml;tigung wurde an <strong>{contactEmail}</strong> gesendet.
+          </p>
+          <button
+            onClick={handleStartOver}
+            className="mt-8 px-8 py-3 rounded-full font-semibold bg-dark text-white hover:bg-dark/85 transition-colors"
+          >
+            Neue Buchung
+          </button>
         </div>
       </section>
     );
   }
 
+  /* ─── Timer expired on payment step ─── */
+  if (step === 5 && countdownExpired && !paymentSuccess) {
+    return (
+      <section id="buchung" className="px-5 md:px-10 lg:px-20 py-20 md:py-28">
+        <div className="max-w-lg mx-auto text-center animate-fade-in-up">
+          <div className="flex justify-center mb-6">
+            <div className="w-20 h-20 rounded-full bg-red-100 flex items-center justify-center">
+              <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="#dc2626" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+                <circle cx="12" cy="12" r="10" />
+                <polyline points="12 6 12 12 16 14" />
+              </svg>
+            </div>
+          </div>
+          <h2 className="text-[28px] md:text-[40px] font-bold text-dark mb-4">
+            Zeit abgelaufen
+          </h2>
+          <p className="text-dark/60 text-lg mb-8">
+            Die Reservierungszeit ist abgelaufen. Ihre Pl&auml;tze wurden freigegeben. Bitte starten Sie eine neue Buchung.
+          </p>
+          <button
+            onClick={handleStartOver}
+            className="px-8 py-3 rounded-full font-semibold bg-dark text-white hover:bg-dark/85 transition-colors"
+          >
+            Neue Buchung starten
+          </button>
+        </div>
+      </section>
+    );
+  }
+
+  /* ─── Payment step (step 5) ─── */
+  if (step === 5 && clientSecret) {
+    return (
+      <section id="buchung" className="px-5 md:px-10 lg:px-20 py-20 md:py-28">
+        <div className="max-w-7xl mx-auto">
+          <h2 className="text-[28px] md:text-[40px] font-bold text-dark mb-12 text-center">
+            Online buchen
+          </h2>
+
+          {/* Progress bar */}
+          <div className="max-w-2xl mx-auto mb-10">
+            <div className="flex items-center justify-between mb-2">
+              {STEPS.map((s, i) => (
+                <div key={s} className="flex items-center">
+                  <div
+                    className={`w-8 h-8 rounded-full flex items-center justify-center text-sm font-medium transition-colors ${
+                      i <= step
+                        ? "bg-dark text-white"
+                        : "bg-dark/10 text-dark/40"
+                    }`}
+                  >
+                    {i < 5 ? (
+                      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round"><polyline points="20 6 9 17 4 12" /></svg>
+                    ) : (
+                      i + 1
+                    )}
+                  </div>
+                  {i < STEPS.length - 1 && (
+                    <div
+                      className={`hidden sm:block w-8 md:w-14 h-0.5 mx-1 transition-colors ${
+                        i < step ? "bg-dark" : "bg-dark/10"
+                      }`}
+                    />
+                  )}
+                </div>
+              ))}
+            </div>
+            <div className="flex justify-between">
+              {STEPS.map((s, i) => (
+                <p
+                  key={s}
+                  className={`text-xs ${
+                    i <= step ? "text-dark" : "text-dark/30"
+                  }`}
+                >
+                  {s}
+                </p>
+              ))}
+            </div>
+          </div>
+
+          <div className="flex flex-col lg:flex-row gap-8">
+            {/* Payment form */}
+            <div className="flex-1">
+              <div className="max-w-md mx-auto">
+                {/* Countdown timer */}
+                <div className={`rounded-2xl p-4 mb-6 text-center border ${
+                  countdownUrgent
+                    ? "bg-red-50 border-red-200"
+                    : "bg-amber-50 border-amber-200"
+                }`}>
+                  <p className={`text-sm font-medium ${countdownUrgent ? "text-red-700" : "text-amber-700"}`}>
+                    Ihre Pl&auml;tze sind noch reserviert
+                  </p>
+                  <p className={`text-3xl font-bold font-mono mt-1 ${countdownUrgent ? "text-red-600" : "text-amber-600"}`}>
+                    {countdownDisplay}
+                  </p>
+                </div>
+
+                {/* Error banner */}
+                {paymentError && (
+                  <div className="bg-red-50 border border-red-200 text-red-800 rounded-xl px-5 py-4 text-sm mb-6">
+                    {paymentError}
+                  </div>
+                )}
+
+                {/* Stripe Elements */}
+                <div className="bg-white rounded-2xl p-6 md:p-8 border border-gray-100 shadow-sm">
+                  <Elements
+                    stripe={stripePromise}
+                    options={{
+                      clientSecret,
+                      appearance: {
+                        theme: "stripe",
+                        variables: {
+                          colorPrimary: "#1a1a1a",
+                          borderRadius: "12px",
+                          fontFamily: "inherit",
+                        },
+                      },
+                      locale: "de",
+                    }}
+                  >
+                    <CheckoutForm
+                      totalPrice={totalPrice}
+                      onSuccess={() => setPaymentSuccess(true)}
+                      onError={(msg) => setPaymentError(msg)}
+                    />
+                  </Elements>
+                </div>
+              </div>
+            </div>
+
+            {/* Summary sidebar */}
+            <div className="lg:w-[320px] flex-shrink-0">
+              <div className="bg-white rounded-2xl p-6 border border-gray-100 shadow-sm sticky top-32">
+                <h3 className="text-lg font-bold text-dark mb-4">Ihre Buchung</h3>
+                <div className="space-y-3 text-sm">
+                  {selectedDate && (
+                    <div className="flex justify-between">
+                      <span className="text-dark/50">Datum</span>
+                      <span className="text-dark font-medium">
+                        {new Date(selectedDate + "T00:00:00").toLocaleDateString("de-DE", { day: "2-digit", month: "2-digit", year: "numeric" })}
+                      </span>
+                    </div>
+                  )}
+                  {selectedSlot && (
+                    <div className="flex justify-between">
+                      <span className="text-dark/50">Tour</span>
+                      <span className="text-dark font-medium">{selectedSlot.tour_name}</span>
+                    </div>
+                  )}
+                  {selectedTime && (
+                    <div className="flex justify-between">
+                      <span className="text-dark/50">Uhrzeit</span>
+                      <span className="text-dark font-medium">{selectedTime} Uhr</span>
+                    </div>
+                  )}
+                  <div className="flex justify-between">
+                    <span className="text-dark/50">Erwachsene</span>
+                    <span className="text-dark font-medium">{adults} &times; {adultPrice}&euro;</span>
+                  </div>
+                  {children > 0 && (
+                    <div className="flex justify-between">
+                      <span className="text-dark/50">Kinder (6–14)</span>
+                      <span className="text-dark font-medium">{children} &times; {childPrice}&euro;</span>
+                    </div>
+                  )}
+                  {childrenFree > 0 && (
+                    <div className="flex justify-between">
+                      <span className="text-dark/50">Kinder (0–5)</span>
+                      <span className="text-dark font-medium">kostenlos</span>
+                    </div>
+                  )}
+                </div>
+                <div className="border-t border-gray-100 mt-4 pt-4">
+                  <div className="flex justify-between items-center">
+                    <span className="text-dark font-medium">Gesamt</span>
+                    <span className="text-2xl font-bold text-dark">{totalPrice}&euro;</span>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+    );
+  }
+
+  /* ─── Steps 0–4: Normal booking flow ─── */
   return (
     <section
       id="buchung"
@@ -310,7 +681,7 @@ export default function BookingWidget() {
         {/* Progress bar */}
         <div className="max-w-2xl mx-auto mb-10">
           <div className="flex items-center justify-between mb-2">
-            {steps.map((s, i) => (
+            {STEPS.map((s, i) => (
               <div key={s} className="flex items-center">
                 <div
                   className={`w-8 h-8 rounded-full flex items-center justify-center text-sm font-medium transition-colors ${
@@ -321,9 +692,9 @@ export default function BookingWidget() {
                 >
                   {i + 1}
                 </div>
-                {i < steps.length - 1 && (
+                {i < STEPS.length - 1 && (
                   <div
-                    className={`hidden sm:block w-12 md:w-20 h-0.5 mx-1 transition-colors ${
+                    className={`hidden sm:block w-8 md:w-14 h-0.5 mx-1 transition-colors ${
                       i < step ? "bg-dark" : "bg-dark/10"
                     }`}
                   />
@@ -332,7 +703,7 @@ export default function BookingWidget() {
             ))}
           </div>
           <div className="flex justify-between">
-            {steps.map((s, i) => (
+            {STEPS.map((s, i) => (
               <p
                 key={s}
                 className={`text-xs ${
@@ -622,7 +993,7 @@ export default function BookingWidget() {
                   <div className="flex justify-between">
                     <span className="text-dark/50">Datum</span>
                     <span className="text-dark font-medium">
-                      {new Date(selectedDate).toLocaleDateString("de-DE", { day: "2-digit", month: "2-digit", year: "numeric" })}
+                      {new Date(selectedDate + "T00:00:00").toLocaleDateString("de-DE", { day: "2-digit", month: "2-digit", year: "numeric" })}
                     </span>
                   </div>
                 )}

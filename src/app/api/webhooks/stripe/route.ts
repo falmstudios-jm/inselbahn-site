@@ -28,6 +28,37 @@ export async function POST(req: Request) {
 
   try {
     switch (event.type) {
+      // ── New: Embedded payment via PaymentIntent ──
+      case 'payment_intent.succeeded': {
+        const paymentIntent = event.data.object;
+        const bookingId = paymentIntent.metadata?.booking_id;
+
+        if (!bookingId) {
+          console.error('No booking_id in paymentIntent metadata');
+          break;
+        }
+
+        await confirmBookingAndSendEmail(bookingId, paymentIntent.id);
+        break;
+      }
+
+      case 'payment_intent.payment_failed': {
+        const paymentIntent = event.data.object;
+        const bookingId = paymentIntent.metadata?.booking_id;
+
+        if (!bookingId) break;
+
+        // Delete pending booking to release capacity
+        await getSupabaseAdmin()
+          .from('bookings')
+          .delete()
+          .eq('id', bookingId)
+          .eq('status', 'pending');
+
+        break;
+      }
+
+      // ── Legacy: Stripe Checkout redirect (kept for safety) ──
       case 'checkout.session.completed': {
         const session = event.data.object;
         const bookingId = session.metadata?.booking_id;
@@ -37,50 +68,12 @@ export async function POST(req: Request) {
           break;
         }
 
-        // Update booking to confirmed
-        const { data: booking, error: updateError } = await getSupabaseAdmin()
-          .from('bookings')
-          .update({
-            status: 'confirmed',
-            stripe_session_id: session.id,
-            stripe_payment_intent_id:
-              typeof session.payment_intent === 'string'
-                ? session.payment_intent
-                : session.payment_intent?.id || null,
-          })
-          .eq('id', bookingId)
-          .select(
-            '*, departures:departure_id(*, tours:tour_id(*))'
-          )
-          .single();
+        const paymentIntentId =
+          typeof session.payment_intent === 'string'
+            ? session.payment_intent
+            : session.payment_intent?.id || null;
 
-        if (updateError || !booking) {
-          console.error('Error updating booking:', updateError);
-          break;
-        }
-
-        // Send confirmation email
-        const dep = booking.departures;
-        const tour = dep?.tours;
-
-        await getResend().emails.send({
-          from: 'Inselbahn Helgoland <buchung@helgolandbahn.de>',
-          to: booking.customer_email,
-          subject: `Buchungsbestätigung ${booking.booking_reference} — Inselbahn Helgoland`,
-          html: buildConfirmationEmail({
-            bookingReference: booking.booking_reference,
-            customerName: booking.customer_name,
-            tourName: tour?.name || 'Inselbahn Tour',
-            bookingDate: booking.booking_date,
-            departureTime: dep?.departure_time || '',
-            adults: booking.adults,
-            children: booking.children,
-            childrenFree: booking.children_free,
-            totalPrice: booking.total_price,
-            cancelUrl: `${BASE_URL}/booking/cancel?id=${booking.id}&token=${booking.cancel_token}`,
-          }),
-        });
-
+        await confirmBookingAndSendEmail(bookingId, paymentIntentId);
         break;
       }
 
@@ -109,6 +102,48 @@ export async function POST(req: Request) {
   }
 
   return NextResponse.json({ received: true });
+}
+
+async function confirmBookingAndSendEmail(bookingId: string, paymentIntentId: string | null) {
+  const { data: booking, error: updateError } = await getSupabaseAdmin()
+    .from('bookings')
+    .update({
+      status: 'confirmed',
+      stripe_payment_intent_id: paymentIntentId,
+    })
+    .eq('id', bookingId)
+    .select(
+      '*, departures:departure_id(*, tours:tour_id(*))'
+    )
+    .single();
+
+  if (updateError || !booking) {
+    console.error('Error updating booking:', updateError);
+    return;
+  }
+
+  // Send confirmation email
+  const dep = booking.departures;
+  const tour = dep?.tours;
+
+  await getResend().emails.send({
+    // TODO: Change to 'Inselbahn Helgoland <buchung@helgolandbahn.de>' once Resend domain is verified
+    from: 'Inselbahn Helgoland <onboarding@resend.dev>',
+    to: booking.customer_email,
+    subject: `Buchungsbestätigung ${booking.booking_reference} — Inselbahn Helgoland`,
+    html: buildConfirmationEmail({
+      bookingReference: booking.booking_reference,
+      customerName: booking.customer_name,
+      tourName: tour?.name || 'Inselbahn Tour',
+      bookingDate: booking.booking_date,
+      departureTime: dep?.departure_time || '',
+      adults: booking.adults,
+      children: booking.children,
+      childrenFree: booking.children_free,
+      totalPrice: booking.total_price,
+      cancelUrl: `${BASE_URL}/booking/cancel?id=${booking.id}&token=${booking.cancel_token}`,
+    }),
+  });
 }
 
 interface EmailParams {
