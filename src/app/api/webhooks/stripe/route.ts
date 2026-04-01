@@ -127,8 +127,7 @@ async function confirmBookingAndSendEmail(bookingId: string, paymentIntentId: st
   const tour = dep?.tours;
 
   await getResend().emails.send({
-    // TODO: Change to 'Inselbahn Helgoland <buchung@helgolandbahn.de>' once Resend domain is verified
-    from: 'Inselbahn Helgoland <onboarding@resend.dev>',
+    from: 'Inselbahn Helgoland <buchung@helgolandbahn.de>',
     to: booking.customer_email,
     subject: `Buchungsbestätigung ${booking.booking_reference} — Inselbahn Helgoland`,
     html: buildConfirmationEmail({
