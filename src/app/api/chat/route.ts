@@ -81,17 +81,17 @@ KONTAKT:
 - E-Mail: info@helgolandbahn.de
 
 ANFAHRT:
-- Abfahrt am DEN Lung Wai, dem zentralen Platz im Unterland
-- Vom Börteboot-Anleger: 3 Min zu Fuß
-- Von MS Helgoland: 4 Min zu Fuß
-- Vom Katamaran Halunder Jet: 6 Min zu Fuß
+- Abfahrt am Lung Wai, dem zentralen Platz im Unterland
+- Vom Börteboot-Anleger: ca. 5 Min zu Fuß
+- Von MS Helgoland: ca. 15 Min zu Fuß
+- Vom Katamaran Halunder Jet: ca. 10 Min zu Fuß
 
 WETTER:
 - Bei extremem Wetter können Fahrten ausfallen
 - Bei Regen fahren wir trotzdem (überdachte Wagen)
 
 HELGOLAND ALLGEMEIN:
-- Helgoland heißt auf Helgoländisch "deet Lunn" ("das Land")
+- Helgoland heißt auf Helgoländisch "deät Lun" (Helgoland). "Welkoam iip Lun" bedeutet "Willkommen auf Helgoland" ("das Land")
 - Ca. 60 km vom Festland entfernt, im Golfstrom → mildes Klima
 - 1,7 km² Fläche, ca. 1.500 Einwohner
 - Tidenhub ca. 2,8 m

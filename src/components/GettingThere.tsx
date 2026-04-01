@@ -31,7 +31,7 @@ export default function GettingThere() {
           {/* Left: text + walking times */}
           <div>
             <p className="text-dark/60 text-base leading-relaxed mb-6">
-              Unsere Inselbahn startet am <strong className="text-dark">DEN Lung Wai</strong>,
+              Unsere Inselbahn startet am <strong className="text-dark">Lung Wai</strong>,
               dem zentralen Platz im Unterland. Von allen Fähranlegern zu Fuß erreichbar.
             </p>
 

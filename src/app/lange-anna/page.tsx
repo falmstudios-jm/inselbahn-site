@@ -176,7 +176,7 @@ export default function LangeAnnaPage() {
           </h2>
           <p className="text-dark/60 text-base md:text-lg mb-8 max-w-2xl mx-auto">
             Buchen Sie jetzt die Premium-Tour mit exklusivem Ausstieg an der
-            Langen Anna. Täglich mehrere Abfahrten ab DEN Lung Wai.
+            Langen Anna. Täglich mehrere Abfahrten ab Lung Wai.
           </p>
           <Link
             href="/#buchung"

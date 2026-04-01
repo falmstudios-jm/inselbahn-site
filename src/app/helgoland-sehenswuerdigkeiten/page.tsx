@@ -143,7 +143,7 @@ export default function SehenswuerdigkeitenPage() {
           </h2>
           <p className="text-dark/60 text-base md:text-lg mb-8 max-w-2xl mx-auto">
             Mit der Inselbahn sehen Sie alle Sehenswürdigkeiten Helgolands entspannt
-            und ohne anstrengende Fußwege. Geführte Touren ab DEN Lung Wai.
+            und ohne anstrengende Fußwege. Geführte Touren ab Lung Wai.
           </p>
           <div className="flex flex-col sm:flex-row items-center justify-center gap-4">
             <Link

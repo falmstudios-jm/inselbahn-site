@@ -34,7 +34,7 @@ const timelineSteps = [
     time: "09:00 - 11:30",
     title: "Ankunft auf Helgoland",
     description:
-      "Je nach Fähre erreichen Sie Helgoland zwischen 9:00 und 11:30 Uhr. Vom Anleger sind es nur wenige Minuten zu Fuß zum DEN Lung Wai, dem Startpunkt der Inselbahn.",
+      "Je nach Fähre erreichen Sie Helgoland zwischen 9:00 und 11:30 Uhr. Vom Anleger sind es nur wenige Minuten zu Fuß zum Lung Wai, dem Startpunkt der Inselbahn.",
   },
   {
     time: "11:00 - 12:30",
@@ -165,7 +165,7 @@ export default function TagesausflugPage() {
           </h2>
           <p className="text-dark/60 text-base md:text-lg mb-8 max-w-2xl mx-auto">
             Buchen Sie jetzt Ihre Inselbahn-Tour und sichern Sie sich Ihren
-            Platz. Abfahrt ab DEN Lung Wai, nur wenige Minuten von allen
+            Platz. Abfahrt ab Lung Wai, nur wenige Minuten von allen
             Fähranlegern entfernt.
           </p>
           <div className="flex flex-col sm:flex-row items-center justify-center gap-4">

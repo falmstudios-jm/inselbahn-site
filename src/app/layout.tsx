@@ -14,7 +14,7 @@ export const metadata: Metadata = {
   metadataBase: new URL("https://helgolandbahn.de"),
   title: "Inselbahn Helgoland — Geführte Inselrundfahrten & Touren",
   description:
-    "Entdecken Sie Helgoland mit der Inselbahn! Geführte Rundfahrten ab DEN Lung Wai. Unterland-Tour (45 Min, ab 11\u20AC) und exklusive Premium-Tour (90 Min, ab 22\u20AC) mit Ausstieg an der Langen Anna. Jetzt online buchen!",
+    "Entdecken Sie Helgoland mit der Inselbahn! Geführte Rundfahrten ab Lung Wai. Unterland-Tour (45 Min, ab 11\u20AC) und exklusive Premium-Tour (90 Min, ab 22\u20AC) mit Ausstieg an der Langen Anna. Jetzt online buchen!",
   keywords: [
     "Helgoland",
     "Inselbahn",
@@ -36,7 +36,7 @@ export const metadata: Metadata = {
   openGraph: {
     title: "Inselbahn Helgoland — Geführte Inselrundfahrten & Touren",
     description:
-      "Entdecken Sie Helgoland mit der Inselbahn! Geführte Rundfahrten ab DEN Lung Wai. Unterland-Tour und exklusive Premium-Tour mit Ausstieg an der Langen Anna.",
+      "Entdecken Sie Helgoland mit der Inselbahn! Geführte Rundfahrten ab Lung Wai. Unterland-Tour und exklusive Premium-Tour mit Ausstieg an der Langen Anna.",
     url: "https://helgolandbahn.de",
     siteName: "Inselbahn Helgoland",
     locale: "de_DE",
@@ -73,7 +73,7 @@ const jsonLd = {
   telephone: "+491604170905",
   address: {
     "@type": "PostalAddress",
-    streetAddress: "DEN Lung Wai",
+    streetAddress: "Lung Wai",
     addressLocality: "Helgoland",
     postalCode: "27498",
     addressCountry: "DE",
