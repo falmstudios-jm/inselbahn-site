@@ -466,7 +466,7 @@ export async function POST(req: NextRequest) {
         'Authorization': `Bearer ${apiKey}`,
       },
       body: JSON.stringify({
-        model: 'gpt-5.4-2026-03-05',
+        model: 'gpt-5.4-mini-2026-03-17',
         messages: [
           { role: 'system', content: systemPrompt },
           ...recentMessages.map((m: { role: string; content: string }) => ({
