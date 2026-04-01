@@ -140,7 +140,7 @@ async function confirmBookingAndSendEmail(bookingId: string, paymentIntentId: st
       adults: booking.adults,
       children: booking.children,
       childrenFree: booking.children_free,
-      totalPrice: booking.total_price,
+      totalAmount: booking.total_amount,
       cancelUrl: `${BASE_URL}/booking/cancel?id=${booking.id}&token=${booking.cancel_token}`,
     }),
   });
@@ -155,7 +155,7 @@ interface EmailParams {
   adults: number;
   children: number;
   childrenFree: number;
-  totalPrice: number;
+  totalAmount: number;
   cancelUrl: string;
 }
 
@@ -169,7 +169,7 @@ function buildConfirmationEmail(params: EmailParams): string {
     adults,
     children,
     childrenFree,
-    totalPrice,
+    totalAmount,
     cancelUrl,
   } = params;
 
@@ -228,7 +228,7 @@ function buildConfirmationEmail(params: EmailParams): string {
                     <p style="margin:0 0 16px;font-size:15px;color:#333;">${passengers.join(', ')}</p>
 
                     <p style="margin:0 0 4px;font-size:12px;color:#888;text-transform:uppercase;letter-spacing:1px;">Gesamtpreis</p>
-                    <p style="margin:0;font-size:18px;font-weight:700;color:#1a3a5c;">${totalPrice.toFixed(2).replace('.', ',')} €</p>
+                    <p style="margin:0;font-size:18px;font-weight:700;color:#1a3a5c;">${totalAmount.toFixed(2).replace('.', ',')} €</p>
                   </td>
                 </tr>
               </table>
