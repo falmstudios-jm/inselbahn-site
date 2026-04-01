@@ -75,10 +75,11 @@ UNSERE FAHRZEUGE:
 - Kein WLAN im Fahrzeug. Keine Toilette im Fahrzeug.
 
 TOUREN:
-- Unterland-Tour (~45 Min): Landungsbrücke, Südstrandpromenade, Kurpromenade, Hummerbuden, Binnenhafen ("Scheibenhafen"), Hermann Marwede, AWI, Nordostland mit kurzem Fotostopp (Blick auf Klippen von der Ostseite und Düne). Ab 11€ Erw. / 6€ Kinder. Bei der Tour um 14:30 fahren Kinder GRATIS!
-- Premium-Tour (~90 Min): Alles aus der Unterland-Tour PLUS Oberland ("deät Bopperlun"), Pinneberg (61,3 m), Leuchtturm, Kleingärten, Lummenfelsen, 30 Min freie Erkundung an der Langen Anna. Ab 22€ Erw. / 15€ Kinder.
-- Die Unterland-Tour fährt NICHT ins Oberland (Fahrzeug zu groß für die Wege dort oben)
-- Audioguide: Alle Touren haben eine Ansage vom Band (Lautsprecher, keine Kopfhörer). Aktuell nur Deutsch. Englische Touren nur bei komplett englischsprachigen Gruppen möglich (auf Anfrage).
+- WICHTIG: Die genauen Touren, Preise, Abfahrtszeiten und Kapazitäten stehen im Abschnitt "TOUR-INFORMATIONEN (LIVE)" weiter unten! Nutze IMMER die Live-Daten, NICHT die folgenden allgemeinen Infos.
+- Allgemeine Hinweise (gelten für alle Touren sofern nicht anders in den Live-Daten):
+  - Audioguide: Ansage vom Band über Lautsprecher (keine Kopfhörer). Fahrer ergänzen gelegentlich live, müssen sich aber auf die Straße konzentrieren. Aktuell einsprachig pro Tour. Englische Tour nur bei komplett englischsprachiger Gruppe auf Anfrage.
+  - Abfahrt: Immer am Franz-Schensky-Platz, sofern in den Live-Daten nicht anders angegeben!
+  - Es kann auch weitere Touren oder Abfahrtsorte geben — orientiere dich immer an den Live-Daten!
 
 SAISON:
 - In der Regel von Anfang April bis Ende Oktober. Genaue Termine siehe Online-Buchung.
@@ -252,8 +253,9 @@ FAQ:
 - Wie früh da sein? Ca. 15 Minuten vor Abfahrt am Franz-Schensky-Platz.
 - Unterschied zur Börtebootrundfahrt: Inselbahn = AN LAND (Unterland + optional Oberland). Börteboot = AUF DEM WASSER (um die Insel herum). Beides ergänzt sich wunderbar — am besten beides machen!
 - Bezahlung: Online (empfohlen), beim Ticketverkauf vor Ort (Tomek 11:30-14:30), oder beim Fahrer (Bar & Karte).
-- Kapazität: Unterland max. 42 + 1 Rollstuhl. Premium max. 18 (exklusive Kleingruppe). 2 Premium-Fahrzeuge, 1 Unterland-Fahrzeug.
-- Abholen vom Schiff: Leider nein. Aber bei der LETZTEN Tour kann der Fahrer zum Anleger fahren (s.o.).
+- Kapazität: Siehe Live-Daten für genaue Zahlen pro Tour.
+- Abholen vom Schiff / Tour am Fähranleger beenden: NUR bei der LETZTEN Tour pro Fahrzeug möglich! Nicht garantiert. Bitte VOR der Tour den Fahrer fragen. Er kann dann am Ende ausnahmsweise zum Anleger fahren, dauert ein paar Minuten länger. Regulärer Endpunkt ist immer der Franz-Schensky-Platz.
+- Fährt die Tour auch ab dem Hafen/Anleger? Kommt auf die aktuelle Tourkonfiguration an — prüfe die LIVE-DATEN! Es kann Touren geben die am Hafen starten. Wenn nichts Spezielles in den Live-Daten steht, ist die Abfahrt immer am Franz-Schensky-Platz.
 - Saison: In der Regel Anfang April bis Ende Oktober. Genaue Termine in der Online-Buchung.
 - Wem gehört die Inselbahn? Helgoländer Dienstleistungs GmbH, seit 1999 auf Helgoland aktiv. Geführt von Helgoländern und einem kleinen Team.
 - Fahrer/Team: Unsere Fahrer sind alle sehr freundlich! Namen nennen wir aus Datenschutzgründen nicht.
