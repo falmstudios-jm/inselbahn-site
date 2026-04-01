@@ -3,6 +3,7 @@
 import Image from "next/image";
 import CountdownTimer from "./CountdownTimer";
 import WeatherWidget from "./WeatherWidget";
+import type { Tour, DepartureWithTour } from "@/lib/tours";
 
 function SectionPill({ label }: { label: string }) {
   return (
@@ -12,7 +13,35 @@ function SectionPill({ label }: { label: string }) {
   );
 }
 
-export default function Schedule() {
+/** Map tour slugs to schedule photos */
+const SCHEDULE_PHOTOS: Record<string, { src: string; alt: string }> = {
+  "unterland-tour": { src: "/images/helgolandbahn-photo-1.jpg", alt: "Unterland-Tour Inselbahn" },
+  "premium-tour": { src: "/images/helgolandbahn-photo-2.jpg", alt: "Premium-Tour Inselbahn" },
+};
+
+const DEFAULT_PHOTO = { src: "/images/helgolandbahn-photo-1.jpg", alt: "Inselbahn Tour" };
+
+function formatTime(timeStr: string): string {
+  // departure_time is "HH:MM:SS" or "HH:MM" — display as "HH:MM Uhr"
+  return timeStr.slice(0, 5) + " Uhr";
+}
+
+interface ScheduleProps {
+  tours: Tour[];
+  departures: DepartureWithTour[];
+}
+
+export default function Schedule({ tours, departures }: ScheduleProps) {
+  // Group departures by tour
+  const departuresByTour = new Map<string, DepartureWithTour[]>();
+  for (const dep of departures) {
+    const tourId = dep.tour_id;
+    if (!departuresByTour.has(tourId)) {
+      departuresByTour.set(tourId, []);
+    }
+    departuresByTour.get(tourId)!.push(dep);
+  }
+
   return (
     <section id="fahrplan" className="px-5 md:px-10 lg:px-20 py-20 md:py-28">
       <div className="max-w-7xl mx-auto">
@@ -35,87 +64,47 @@ export default function Schedule() {
           <WeatherWidget />
         </div>
 
-        {/* Unterland-Tour Row */}
-        <div className="grid md:grid-cols-2 gap-6 mb-8">
-          <div className="bg-surface rounded-2xl p-6 md:p-8">
-            <h3 className="text-lg font-bold text-dark uppercase tracking-wide mb-5">
-              Unterland-Tour
-            </h3>
-            <div className="space-y-3 mb-6">
-              <div className="flex items-center justify-between">
-                <span className="text-dark font-semibold text-lg">13:30 Uhr</span>
-                <span className="text-dark/50 text-sm">Abfahrt</span>
-              </div>
-              <div className="flex items-center justify-between">
-                <span className="text-dark font-semibold text-lg">14:30 Uhr</span>
-                <span className="text-dark/50 text-sm">Abfahrt</span>
-              </div>
-            </div>
-            <div className="border-t border-dark/10 pt-4">
-              <p className="text-dark/60 text-sm">
-                Erwachsene: <span className="font-semibold text-dark">11&euro;</span> &middot;
-                Kinder (unter 15): <span className="font-semibold text-dark">6&euro;</span>
-              </p>
-            </div>
-          </div>
-          <div className="relative w-full aspect-[16/10] rounded-2xl overflow-hidden">
-            <Image
-              src="/images/helgolandbahn-photo-1.jpg"
-              alt="Unterland-Tour Inselbahn"
-              fill
-              className="object-cover"
-            />
-          </div>
-        </div>
+        {/* Tour schedule rows */}
+        {tours.map((tour) => {
+          const tourDepartures = departuresByTour.get(tour.id) || [];
+          const photo = SCHEDULE_PHOTOS[tour.slug] || DEFAULT_PHOTO;
 
-        {/* Premium-Tour Row */}
-        <div className="grid md:grid-cols-2 gap-6 mb-8">
-          <div className="bg-surface rounded-2xl p-6 md:p-8">
-            <h3 className="text-lg font-bold text-dark uppercase tracking-wide mb-5">
-              Premium-Tour
-            </h3>
-            <div className="space-y-3 mb-6">
-              <div className="flex items-center justify-between">
-                <span className="text-dark font-semibold text-lg">11:00 Uhr</span>
-                <span className="text-dark/50 text-sm">Abfahrt</span>
+          return (
+            <div key={tour.id} className="grid md:grid-cols-2 gap-6 mb-8">
+              <div className="bg-surface rounded-2xl p-6 md:p-8">
+                <h3 className="text-lg font-bold text-dark uppercase tracking-wide mb-5">
+                  {tour.name}
+                </h3>
+                <div className="space-y-3 mb-6">
+                  {tourDepartures.map((dep) => (
+                    <div key={dep.id} className="flex items-center justify-between">
+                      <span className="text-dark font-semibold text-lg">
+                        {dep.notes ? `(${formatTime(dep.departure_time)})` : formatTime(dep.departure_time)}
+                      </span>
+                      <span className="text-dark/50 text-sm">
+                        {dep.notes || "Abfahrt"}
+                      </span>
+                    </div>
+                  ))}
+                </div>
+                <div className="border-t border-dark/10 pt-4">
+                  <p className="text-dark/60 text-sm">
+                    Erwachsene: <span className="font-semibold text-dark">{tour.price_adult}&euro;</span> &middot;
+                    Kinder (unter {tour.child_age_limit}): <span className="font-semibold text-dark">{tour.price_child}&euro;</span>
+                  </p>
+                </div>
               </div>
-              <div className="flex items-center justify-between">
-                <span className="text-dark font-semibold text-lg">(12:15 Uhr)</span>
-                <span className="text-dark/50 text-sm">Schiffsankunft</span>
-              </div>
-              <div className="flex items-center justify-between">
-                <span className="text-dark font-semibold text-lg">13:15 Uhr</span>
-                <span className="text-dark/50 text-sm">Abfahrt</span>
-              </div>
-              <div className="flex items-center justify-between">
-                <span className="text-dark font-semibold text-lg">14:00 Uhr</span>
-                <span className="text-dark/50 text-sm">Abfahrt</span>
-              </div>
-              <div className="flex items-center justify-between">
-                <span className="text-dark font-semibold text-lg">15:00 Uhr</span>
-                <span className="text-dark/50 text-sm">Abfahrt</span>
-              </div>
-              <div className="flex items-center justify-between">
-                <span className="text-dark font-semibold text-lg">16:00 Uhr</span>
-                <span className="text-dark/50 text-sm">Abfahrt</span>
+              <div className="relative w-full aspect-[16/10] rounded-2xl overflow-hidden">
+                <Image
+                  src={photo.src}
+                  alt={photo.alt}
+                  fill
+                  className="object-cover"
+                />
               </div>
             </div>
-            <div className="border-t border-dark/10 pt-4">
-              <p className="text-dark/60 text-sm">
-                Erwachsene: <span className="font-semibold text-dark">22&euro;</span> &middot;
-                Kinder (unter 15): <span className="font-semibold text-dark">15&euro;</span>
-              </p>
-            </div>
-          </div>
-          <div className="relative w-full aspect-[16/10] rounded-2xl overflow-hidden">
-            <Image
-              src="/images/helgolandbahn-photo-2.jpg"
-              alt="Premium-Tour Inselbahn"
-              fill
-              className="object-cover"
-            />
-          </div>
-        </div>
+          );
+        })}
 
         <p className="text-sm text-dark/50 text-center">
           *Bei den letzten Fahrten ist ein Ausstieg am Hafen / Schiff möglich.

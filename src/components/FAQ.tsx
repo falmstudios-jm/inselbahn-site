@@ -7,7 +7,7 @@ const faqs = [
   {
     question: "Was ist die Inselbahn für ein Fahrzeug?",
     answer:
-      "Unsere Inselbahn ist ein elektrischer Oldtimer aus den späten 1970er-Jahren mit 11 PS Antrieb. Das Fahrzeug wiegt mit Passagieren rund 5 Tonnen und fährt maximal 6 km/h in der Stadt und 10 km/h außerhalb. Fußgänger haben auf Helgoland immer Vorrang — hupen ist verboten!",
+      "Unsere Inselbahn besteht aus drei Sonderanfertigungen aus dem Jahr 2025, die speziell für Helgoland gebaut wurden: zwei Premium-Tour-Fahrzeuge (je max. 18 Personen) und ein großes Unterland-Tour-Fahrzeug (max. 42 Personen + 1 Rollstuhlplatz). Die Fahrzeuge fahren maximal 6 km/h in der Stadt und 10 km/h außerhalb. Fußgänger haben auf Helgoland immer Vorrang — hupen ist verboten!",
   },
   {
     question: "Darf ich mir aussuchen, wo ich sitzen möchte?",

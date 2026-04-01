@@ -1,6 +1,7 @@
 "use client";
 
 import Image from "next/image";
+import type { Tour } from "@/lib/tours";
 
 const galleryRow1 = [
   { src: "/images/tour-photo-1.jpg", alt: "Helgoland Klippen" },
@@ -14,6 +15,29 @@ const galleryRow2 = [
   { src: "/images/tour-photo-1.jpg", alt: "Helgoland Natur" },
   { src: "/images/helgolandbahn-photo-1.jpg", alt: "Inselbahn vor Häusern" },
 ];
+
+/** Map tour slugs to their illustration and photo assets */
+const TOUR_ASSETS: Record<string, { illustration: string; illustrationAlt: string; photo: string; photoAlt: string }> = {
+  "unterland-tour": {
+    illustration: "/images/inselbahn-illustration-unterland.svg",
+    illustrationAlt: "Illustration der Unterland-Tour",
+    photo: "/images/helgolandbahn-photo-1.jpg",
+    photoAlt: "Inselbahn Unterland-Tour",
+  },
+  "premium-tour": {
+    illustration: "/images/inselbahn-illustration-premium.svg",
+    illustrationAlt: "Illustration der Premium-Tour",
+    photo: "/images/helgolandbahn-photo-2.jpg",
+    photoAlt: "Inselbahn Premium-Tour",
+  },
+};
+
+const DEFAULT_ASSETS = {
+  illustration: "/images/inselbahn-illustration-unterland.svg",
+  illustrationAlt: "Illustration der Tour",
+  photo: "/images/helgolandbahn-photo-1.jpg",
+  photoAlt: "Inselbahn Tour",
+};
 
 function SectionPill({ label }: { label: string }) {
   return (
@@ -32,7 +56,79 @@ function CheckItem({ text }: { text: string }) {
   );
 }
 
-export default function TourCards() {
+function TourCard({ tour }: { tour: Tour }) {
+  const assets = TOUR_ASSETS[tour.slug] || DEFAULT_ASSETS;
+
+  const capacityLabel = tour.wheelchair_accessible
+    ? `${tour.max_capacity} Personen + 1 Rollstuhl`
+    : `${tour.max_capacity} Personen`;
+
+  return (
+    <div>
+      <div className="flex items-center justify-center h-[180px] bg-surface/50 rounded-xl mb-4">
+        <Image
+          src={assets.illustration}
+          alt={assets.illustrationAlt}
+          width={300}
+          height={160}
+          className="w-auto h-auto max-h-[150px]"
+        />
+      </div>
+      <div className="relative w-full aspect-[16/10] rounded-2xl overflow-hidden mb-5">
+        <Image
+          src={assets.photo}
+          alt={assets.photoAlt}
+          fill
+          className="object-cover"
+        />
+      </div>
+
+      {/* Meta */}
+      <div className="flex items-center gap-4 mb-3 text-xs text-dark/50 uppercase tracking-wide font-medium">
+        <span className="flex items-center gap-1.5">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+          {tour.duration_minutes} Minuten
+        </span>
+        <span className="flex items-center gap-1.5">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/></svg>
+          {capacityLabel}
+        </span>
+      </div>
+
+      <h3 className="text-2xl md:text-[28px] font-bold text-dark mb-1">
+        {tour.name}
+      </h3>
+      {tour.notes && (
+        <p className="text-dark font-semibold text-sm mb-3">
+          {tour.notes}
+        </p>
+      )}
+      <p className="text-dark/60 text-sm leading-relaxed mb-4">
+        {tour.description}
+      </p>
+
+      <ul className="space-y-2 mb-5">
+        {tour.highlights.map((highlight, i) => (
+          <CheckItem key={i} text={highlight} />
+        ))}
+      </ul>
+
+      <div className="flex items-baseline gap-2 mb-1">
+        <span className="text-2xl font-bold text-dark">ab {tour.price_adult}&euro;</span>
+        <span className="text-dark/50 text-sm">Erwachsene</span>
+      </div>
+      <p className="text-dark/50 text-sm">
+        {tour.price_child}&euro; Kinder (unter {tour.child_age_limit})
+      </p>
+    </div>
+  );
+}
+
+interface TourCardsProps {
+  tours: Tour[];
+}
+
+export default function TourCards({ tours }: TourCardsProps) {
   return (
     <section id="touren">
       {/* ===== ZU WENIG ZEIT SECTION ===== */}
@@ -132,132 +228,9 @@ export default function TourCards() {
           </div>
 
           <div className="grid md:grid-cols-2 gap-10 lg:gap-14">
-            {/* Unterland-Tour */}
-            <div>
-              <div className="flex items-center justify-center h-[180px] bg-surface/50 rounded-xl mb-4">
-                <Image
-                  src="/images/inselbahn-illustration-unterland.svg"
-                  alt="Illustration der Unterland-Tour"
-                  width={300}
-                  height={160}
-                  className="w-auto h-auto max-h-[150px]"
-                />
-              </div>
-              <div className="relative w-full aspect-[16/10] rounded-2xl overflow-hidden mb-5">
-                <Image
-                  src="/images/helgolandbahn-photo-1.jpg"
-                  alt="Inselbahn Unterland-Tour"
-                  fill
-                  className="object-cover"
-                />
-              </div>
-
-              {/* Meta */}
-              <div className="flex items-center gap-4 mb-3 text-xs text-dark/50 uppercase tracking-wide font-medium">
-                <span className="flex items-center gap-1.5">
-                  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
-                  40 Minuten
-                </span>
-                <span className="flex items-center gap-1.5">
-                  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/></svg>
-                  40 Personen + 1 Rollstuhl
-                </span>
-              </div>
-
-              <h3 className="text-2xl md:text-[28px] font-bold text-dark mb-1">
-                Unterland-Tour
-              </h3>
-              <p className="text-dark font-semibold text-sm mb-3">
-                inkl. kurzem Fotostopp im Nordostland
-              </p>
-              <p className="text-dark/60 text-sm leading-relaxed mb-4">
-                An Bord unseres elektrischen Oldtimers aus den späten 1970er-Jahren
-                gleiten Sie mit maximal 6 km/h durch das Unterland &mdash; vorbei an den
-                legendären Hummerbuden mit ihren Galerien und Schmuckläden, dem
-                historischen Binnenhafen (von den Helgoländern &bdquo;Scheibenhafen&rdquo;
-                genannt), dem Seenotrettungskreuzer Hermann Marwede und dem
-                Alfred-Wegener-Institut für Meeresforschung. Ihr Guide erzählt vom
-                &bdquo;Big Bang&rdquo; 1947, der Rückkehr der Insel 1952 und dem
-                zollfreien Alltag auf Deutschlands einziger Hochseeinsel.
-              </p>
-
-              <ul className="space-y-2 mb-5">
-                <CheckItem text="Hafen, Landungsbrücke & Südstrandpromenade" />
-                <CheckItem text="Hummerbuden & historischer Binnenhafen" />
-                <CheckItem text="Hermann Marwede & AWI Meeresforschung" />
-                <CheckItem text="Fotostopp im Nordostland mit Dünenblick" />
-              </ul>
-
-              <div className="flex items-baseline gap-2 mb-1">
-                <span className="text-2xl font-bold text-dark">ab 11&euro;</span>
-                <span className="text-dark/50 text-sm">Erwachsene</span>
-              </div>
-              <p className="text-dark/50 text-sm">6&euro; Kinder (unter 15)</p>
-            </div>
-
-            {/* Premium-Tour */}
-            <div>
-              <div className="flex items-center justify-center h-[180px] bg-surface/50 rounded-xl mb-4">
-                <Image
-                  src="/images/inselbahn-illustration-premium.svg"
-                  alt="Illustration der Premium-Tour"
-                  width={300}
-                  height={160}
-                  className="w-auto h-auto max-h-[150px]"
-                />
-              </div>
-              <div className="relative w-full aspect-[16/10] rounded-2xl overflow-hidden mb-5">
-                <Image
-                  src="/images/helgolandbahn-photo-2.jpg"
-                  alt="Inselbahn Premium-Tour"
-                  fill
-                  className="object-cover"
-                />
-              </div>
-
-              {/* Meta */}
-              <div className="flex items-center gap-4 mb-3 text-xs text-dark/50 uppercase tracking-wide font-medium">
-                <span className="flex items-center gap-1.5">
-                  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
-                  90 Minuten
-                </span>
-                <span className="flex items-center gap-1.5">
-                  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/></svg>
-                  18 Personen
-                </span>
-              </div>
-
-              <h3 className="text-2xl md:text-[28px] font-bold text-dark mb-1">
-                Premium-Tour
-              </h3>
-              <p className="text-dark font-semibold text-sm mb-3">
-                inkl. Ausstieg an der Langen Anna
-              </p>
-              <p className="text-dark/60 text-sm leading-relaxed mb-4">
-                Das komplette Helgoland-Erlebnis in der exklusiven Kleingruppe.
-                Zunächst erkunden Sie das Unterland, dann geht es hinauf ins Oberland
-                (&bdquo;deät Bopperlun&rdquo;) bis zum Pinneberg auf 61,3 m &mdash;
-                Deutschlands kleinster Gemeinde auf dem höchsten Punkt. Vorbei am
-                stärksten Leuchtturm Deutschlands (ehemaliger Flak-Turm!), den rund
-                70 Kleingärten und dem Lummenfelsen mit 30 Minuten freier
-                Erkundungszeit an der Langen Anna, dem berühmten 47-Meter-Wahrzeichen.
-              </p>
-
-              <ul className="space-y-2 mb-5">
-                <CheckItem text="Unterland & Oberland mit Pinneberg (61,3 m)" />
-                <CheckItem text="30 Min freie Erkundung an der Langen Anna" />
-                <CheckItem text="Leuchtturm, Kleingärten & Lummenfelsen" />
-                <CheckItem text="Exklusive Kleingruppe (max. 18 Personen)" />
-              </ul>
-
-              <div className="flex items-baseline gap-2 mb-1">
-                <span className="text-2xl font-bold text-dark">ab 22&euro;</span>
-                <span className="text-dark/50 text-sm">Erwachsene</span>
-              </div>
-              <p className="text-dark/50 text-sm">
-                15&euro; Kinder (unter 15)
-              </p>
-            </div>
+            {tours.map((tour) => (
+              <TourCard key={tour.id} tour={tour} />
+            ))}
           </div>
 
           {/* Group booking */}

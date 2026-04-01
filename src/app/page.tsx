@@ -10,15 +10,21 @@ import BookingWidget from "@/components/BookingWidget";
 import Footer from "@/components/Footer";
 import AnnouncementBanner from "@/components/AnnouncementBanner";
 import ChatWidget from "@/components/ChatWidget";
+import { getToursWithFallback, getDeparturesWithFallback } from "@/lib/tours";
 
-export default function Home() {
+export default async function Home() {
+  const [tours, departures] = await Promise.all([
+    getToursWithFallback(),
+    getDeparturesWithFallback(),
+  ]);
+
   return (
     <>
       <Header />
       <main>
         <Hero />
-        <TourCards />
-        <Schedule />
+        <TourCards tours={tours} />
+        <Schedule tours={tours} departures={departures} />
         <Reviews />
         <GettingThere />
         <FAQ />
