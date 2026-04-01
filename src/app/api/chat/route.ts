@@ -496,7 +496,9 @@ export async function POST(req: NextRequest) {
     const reply = data.choices?.[0]?.message?.content || 'Entschuldigung, ich konnte Ihre Frage nicht verarbeiten.';
 
     // Log anonymous summary after every response (non-blocking)
-    logChatSummary(apiKey, [...recentMessages, { role: 'assistant', content: reply }], ip).catch(() => {});
+    logChatSummary(apiKey, [...recentMessages, { role: 'assistant', content: reply }], ip).catch((err) => {
+      console.error('Chat log failed:', err);
+    });
 
     return NextResponse.json({ reply });
   } catch (error) {
@@ -584,13 +586,16 @@ Beispiele:
 
     // Save to Supabase
     const { supabase } = await import('@/lib/supabase');
-    await supabase.from('chat_logs').insert({
+    const { error: insertError } = await supabase.from('chat_logs').insert({
       summary,
       topics,
       status,
       message_count: messages.length,
       ip_hash: await hashIP(ip),
     });
+    if (insertError) {
+      console.error('Supabase chat_logs insert failed:', insertError.message, insertError.code, insertError.details);
+    }
   } catch (err) {
     console.error('Failed to log chat summary:', err);
   }
