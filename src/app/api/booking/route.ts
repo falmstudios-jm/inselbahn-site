@@ -39,7 +39,7 @@ export async function POST(req: Request) {
     }
 
     const tour = departure.tours;
-    const capacity: number = tour.capacity;
+    const capacity: number = tour.max_capacity;
 
     // Check availability: count existing bookings for this departure + date
     const { data: existingBookings, error: bookingsError } = await supabaseAdmin
@@ -101,9 +101,7 @@ export async function POST(req: Request) {
         customer_name: input.customer_name,
         customer_email: input.customer_email,
         customer_phone: input.customer_phone || null,
-        discount_code: input.discount_code || null,
-        gift_card_code: input.gift_card_code || null,
-        total_price: totalPrice,
+        total_amount: totalPrice,
         booking_reference: bookingReference,
         cancel_token: cancelToken,
         status: 'pending',
