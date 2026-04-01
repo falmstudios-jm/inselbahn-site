@@ -12,9 +12,9 @@ const montserrat = Montserrat({
 
 export const metadata: Metadata = {
   metadataBase: new URL("https://helgolandbahn.de"),
-  title: "Inselbahn Helgoland — Rundfahrten & Touren",
+  title: "Inselbahn Helgoland — Geführte Inselrundfahrten & Touren",
   description:
-    "Entdecken Sie Helgoland mit der Inselbahn! Unterland-Tour (45 Min) und exklusive Premium-Tour (90 Min) mit Ausstieg an der Langen Anna. Tickets online buchen.",
+    "Entdecken Sie Helgoland mit der Inselbahn! Geführte Rundfahrten ab DEN Lung Wai. Unterland-Tour (45 Min, ab 11\u20AC) und exklusive Premium-Tour (90 Min, ab 22\u20AC) mit Ausstieg an der Langen Anna. Jetzt online buchen!",
   keywords: [
     "Helgoland",
     "Inselbahn",
@@ -25,11 +25,18 @@ export const metadata: Metadata = {
     "Inselbahn Helgoland",
     "Helgoland Sehenswürdigkeiten",
     "Helgoland Ausflug",
+    "Helgoland Tagesausflug",
+    "Lange Anna Helgoland",
+    "Helgoland Aktivitäten",
+    "Helgoland Rundfahrt buchen",
   ],
+  alternates: {
+    canonical: "https://helgolandbahn.de",
+  },
   openGraph: {
-    title: "Inselbahn Helgoland — Rundfahrten & Touren",
+    title: "Inselbahn Helgoland — Geführte Inselrundfahrten & Touren",
     description:
-      "Entdecken Sie Helgoland mit der Inselbahn! Unterland-Tour und exklusive Premium-Tour mit Ausstieg an der Langen Anna.",
+      "Entdecken Sie Helgoland mit der Inselbahn! Geführte Rundfahrten ab DEN Lung Wai. Unterland-Tour und exklusive Premium-Tour mit Ausstieg an der Langen Anna.",
     url: "https://helgolandbahn.de",
     siteName: "Inselbahn Helgoland",
     locale: "de_DE",
@@ -45,7 +52,7 @@ export const metadata: Metadata = {
   },
   twitter: {
     card: "summary_large_image",
-    title: "Inselbahn Helgoland — Rundfahrten & Touren",
+    title: "Inselbahn Helgoland — Geführte Inselrundfahrten & Touren",
     description:
       "Entdecken Sie Helgoland mit der Inselbahn! Unterland-Tour und exklusive Premium-Tour.",
     images: ["/images/inselbahn-hero.png"],
@@ -66,7 +73,7 @@ const jsonLd = {
   telephone: "+491604170905",
   address: {
     "@type": "PostalAddress",
-    streetAddress: "Am Falm",
+    streetAddress: "DEN Lung Wai",
     addressLocality: "Helgoland",
     postalCode: "27498",
     addressCountry: "DE",

@@ -4,7 +4,7 @@ import Image from "next/image";
 
 const reviews = [
   {
-    text: "Es ist sein Geld wert. Man erfaehrt viel ueber die Insel und seine Geschichte. Kann es nur empfehlen!",
+    text: "Es ist sein Geld wert. Man erfährt viel über die Insel und seine Geschichte. Kann es nur empfehlen!",
     author: "Michael M.",
     stars: 5,
   },
@@ -14,12 +14,12 @@ const reviews = [
     stars: 5,
   },
   {
-    text: "Perfekt fuer den ersten Ueberblick nach der Ankunft mit dem Schiff. In 45 Minuten alles Wichtige gesehen!",
+    text: "Perfekt für den ersten Überblick nach der Ankunft mit dem Schiff. In 45 Minuten alles Wichtige gesehen!",
     author: "Thomas R.",
     stars: 5,
   },
   {
-    text: "Super Erlebnis fuer die ganze Familie! Die Kinder waren begeistert und die Fuehrung war informativ und unterhaltsam.",
+    text: "Super Erlebnis für die ganze Familie! Die Kinder waren begeistert und die Führung war informativ und unterhaltsam.",
     author: "Julia H.",
     stars: 5,
   },

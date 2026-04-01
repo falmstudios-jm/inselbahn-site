@@ -5,39 +5,39 @@ import Image from "next/image";
 
 const faqs = [
   {
-    question: "Darf ich mir aussuchen, wo ich sitzen moechte?",
+    question: "Darf ich mir aussuchen, wo ich sitzen möchte?",
     answer:
-      "Ja, grundsaetzlich duerfen Sie. Unsere Mitarbeiter bemuehen sich, die Sitzplaetze so zu organisieren, dass jeder mit seinen Bekannten zusammensitzen kann. Wenn die Tour nicht voll ausgelastet ist, duerfen Sie Ihren Platz natuerlich selbst aussuchen. Generell gilt bei uns: first come, first serve.",
+      "Ja, grundsätzlich dürfen Sie. Unsere Mitarbeiter bemühen sich, die Sitzplätze so zu organisieren, dass jeder mit seinen Bekannten zusammensitzen kann. Wenn die Tour nicht voll ausgelastet ist, dürfen Sie Ihren Platz natürlich selbst aussuchen. Generell gilt bei uns: first come, first serve.",
   },
   {
-    question: "Darf ich Snacks und Getraenke mitbringen?",
+    question: "Darf ich Snacks und Getränke mitbringen?",
     answer:
-      "Gerne duerfen Sie sich Snacks und Getraenke mitbringen. Allerdings bitten wir darum, Speisen zu vermeiden, die leicht kleckern oder verschuetten koennen. Wasser, Gummibaerchen und aehnliches sind in Ordnung. Eis, Nutella, Fischbroetchen oder Ketchup sind leider verboten.",
+      "Gerne dürfen Sie sich Snacks und Getränke mitbringen. Allerdings bitten wir darum, Speisen zu vermeiden, die leicht kleckern oder verschütten können. Wasser, Gummibärchen und ähnliches sind in Ordnung. Eis, Nutella, Fischbrötchen oder Ketchup sind leider verboten.",
   },
   {
-    question: "Kann ich mein Gepaeck mitnehmen?",
+    question: "Kann ich mein Gepäck mitnehmen?",
     answer:
-      "Leider koennen wir weder Gepaecktransport, noch Gepaeckmitnahme anbieten. Wir bitten Sie, nur das mitzubringen, was Sie waehrend der Fahrt benoetigen.",
+      "Leider können wir weder Gepäcktransport, noch Gepäckmitnahme anbieten. Wir bitten Sie, nur das mitzubringen, was Sie während der Fahrt benötigen.",
   },
   {
-    question: "Wie sieht es mit Rollatoren oder Rollstuehlen aus?",
+    question: "Wie sieht es mit Rollatoren oder Rollstühlen aus?",
     answer:
-      "Mobilitaet ist uns sehr wichtig und wir geben unser Bestes, um jeden Gast auf unserer malerischen Inselreise willkommen zu heissen. Rollatoren koennen bei der Unterland-Tour beim Ticketverkaeufer deponiert werden oder in vielen Faellen auch mitgenommen werden. Die Premium-Tour empfehlen wir hingegen eher fuer die \u2018Bergziegen\u2019 unter unseren Gaesten.",
+      "Mobilität ist uns sehr wichtig und wir geben unser Bestes, um jeden Gast auf unserer malerischen Inselreise willkommen zu heißen. Rollatoren können bei der Unterland-Tour beim Ticketverkäufer deponiert werden oder in vielen Fällen auch mitgenommen werden. Die Premium-Tour empfehlen wir hingegen eher für die \u2018Bergziegen\u2019 unter unseren Gästen.",
   },
   {
     question: "Kann ich meinen Hund mitnehmen?",
     answer:
-      "Kleinere Hunde, die auf dem Schoss mitfahren koennten, sind in der Regel erlaubt. Groessere Hunde koennen im hinteren Teil der Inselbahn Platz finden, aber dies haengt von der aktuellen Kapazitaet ab. Bei der Premium-Tour muessen wir aus Platzgruenden und zum Wohl aller Passagiere leider grundsaetzlich auf alle Hunde verzichten.",
+      "Kleinere Hunde, die auf dem Schoß mitfahren könnten, sind in der Regel erlaubt. Größere Hunde können im hinteren Teil der Inselbahn Platz finden, aber dies hängt von der aktuellen Kapazität ab. Bei der Premium-Tour müssen wir aus Platzgründen und zum Wohl aller Passagiere leider grundsätzlich auf alle Hunde verzichten.",
   },
   {
-    question: "Gibt es Toiletten in der Naehe?",
+    question: "Gibt es Toiletten in der Nähe?",
     answer:
-      "Ja, es gibt kostenpflichtige Toiletten an der Landungsbruecke. Am Hafen gibt es auch welche, aber zwischen Schiffsausstieg und Bahnabfahrt haben Sie wahrscheinlich keine Zeit, diese zu erreichen. Daher empfehlen wir Ihnen, vor der Abfahrt das stille Oertchen auf dem Schiff aufzusuchen.",
+      "Ja, es gibt kostenpflichtige Toiletten an der Landungsbrücke. Am Hafen gibt es auch welche, aber zwischen Schiffsausstieg und Bahnabfahrt haben Sie wahrscheinlich keine Zeit, diese zu erreichen. Daher empfehlen wir Ihnen, vor der Abfahrt das stille Örtchen auf dem Schiff aufzusuchen.",
   },
   {
     question: "Was passiert bei schlechtem Wetter?",
     answer:
-      "Wir Helgolaender sind hart im Nehmen, aber wenn selbst die Schafe sich an Masten festklammern, um nicht wegzufliegen, dann ist es Zeit, die Fahrten abzusagen. Wir tun unser Bestes, um Sie rechtzeitig zu informieren. Bei Online-Buchungen gibt es eine Rueckerstattung.",
+      "Wir Helgoländer sind hart im Nehmen, aber wenn selbst die Schafe sich an Masten festklammern, um nicht wegzufliegen, dann ist es Zeit, die Fahrten abzusagen. Wir tun unser Bestes, um Sie rechtzeitig zu informieren. Bei Online-Buchungen gibt es eine Rückerstattung.",
   },
 ];
 
@@ -63,7 +63,7 @@ export default function FAQ() {
           <div>
             <SectionPill label="FAQ" />
             <h2 className="text-[28px] md:text-[40px] font-bold text-dark leading-tight">
-              Haeufig gestellte Fragen (FAQ)
+              Häufig gestellte Fragen (FAQ)
             </h2>
           </div>
           <a
@@ -83,7 +83,7 @@ export default function FAQ() {
           <div className="relative w-full aspect-[3/4] md:aspect-auto md:h-full rounded-2xl overflow-hidden min-h-[400px]">
             <Image
               src="/images/helgolandbahn-photo-1.jpg"
-              alt="Inselbahn vor bunten Haeusern"
+              alt="Inselbahn vor bunten Häusern"
               fill
               className="object-cover"
             />

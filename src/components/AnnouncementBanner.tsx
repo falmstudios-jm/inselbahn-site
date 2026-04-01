@@ -32,7 +32,7 @@ export default function AnnouncementBanner() {
         </div>
         <button
           onClick={dismiss}
-          aria-label="Schliessen"
+          aria-label="Schließen"
           className="absolute right-4 top-1/2 -translate-y-1/2 p-1.5 hover:bg-white/20 rounded-full transition-colors"
         >
           <svg

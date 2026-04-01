@@ -37,7 +37,7 @@ function generateCalendarDays(year: number, month: number) {
 }
 
 const monthNames = [
-  "Januar", "Februar", "Maerz", "April", "Mai", "Juni",
+  "Januar", "Februar", "März", "April", "Mai", "Juni",
   "Juli", "August", "September", "Oktober", "November", "Dezember",
 ];
 
@@ -152,10 +152,10 @@ export default function BookingWidget() {
             </svg>
           </div>
           <h2 className="text-[28px] md:text-[40px] font-bold text-dark mb-4">
-            Buchung bestaetigt!
+            Buchung bestätigt!
           </h2>
           <p className="text-dark/60 text-lg">
-            Vielen Dank! Sie erhalten eine Bestaetigung per E-Mail.
+            Vielen Dank! Sie erhalten eine Bestätigung per E-Mail.
           </p>
         </div>
       </section>
@@ -368,8 +368,8 @@ export default function BookingWidget() {
                     <label className="flex items-start gap-3 cursor-pointer">
                       <input type="checkbox" checked={gdprConsent} onChange={(e) => setGdprConsent(e.target.checked)} className="mt-1 w-4 h-4 rounded accent-dark" />
                       <span className="text-sm text-dark/60">
-                        Ich stimme der Verarbeitung meiner Daten gemaess der{" "}
-                        <a href="#" className="underline text-dark">Datenschutzerklaerung</a>{" "}
+                        Ich stimme der Verarbeitung meiner Daten gemäß der{" "}
+                        <a href="#" className="underline text-dark">Datenschutzerklärung</a>{" "}
                         zu.
                       </span>
                     </label>
@@ -440,7 +440,7 @@ export default function BookingWidget() {
               step === 0 ? "text-dark/20 cursor-not-allowed" : "text-dark hover:bg-dark/5"
             }`}
           >
-            Zurueck
+            Zurück
           </button>
           <button
             onClick={handleNext}

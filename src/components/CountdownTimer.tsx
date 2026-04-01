@@ -72,7 +72,7 @@ export default function CountdownTimer() {
       {countdown ? (
         <>
           <p className="text-xs text-dark/50 mb-1">
-            Naechste Abfahrt um {countdown.label}
+            Nächste Abfahrt um {countdown.label}
           </p>
           <p className="text-2xl md:text-3xl font-bold text-dark tabular-nums">
             <span className="animate-countdown-pulse inline-block">

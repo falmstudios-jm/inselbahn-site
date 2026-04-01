@@ -50,7 +50,7 @@ export default function Contact() {
             >
               <polyline points="20 6 9 17 4 12" />
             </svg>
-            Vielen Dank! Wir melden uns schnellstmoeglich bei Ihnen.
+            Vielen Dank! Wir melden uns schnellstmöglich bei Ihnen.
           </div>
         </div>
       )}
@@ -60,7 +60,7 @@ export default function Contact() {
           Kontakt
         </h2>
         <p className="text-dark/60 text-center mb-12">
-          Fuer Gruppenbuchungen und Sonderwuensche
+          Für Gruppenbuchungen und Sonderwünsche
         </p>
 
         <div className="grid md:grid-cols-2 gap-10 max-w-4xl mx-auto">
@@ -125,9 +125,9 @@ export default function Contact() {
                   className="mt-1 w-4 h-4 rounded accent-dark"
                 />
                 <span className="text-sm text-dark/60">
-                  Ich stimme der Verarbeitung meiner Daten gemaess der{" "}
+                  Ich stimme der Verarbeitung meiner Daten gemäß der{" "}
                   <a href="#" className="underline text-dark">
-                    Datenschutzerklaerung
+                    Datenschutzerklärung
                   </a>{" "}
                   zu.
                 </span>

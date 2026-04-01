@@ -1,0 +1,160 @@
+import type { Metadata } from "next";
+import Link from "next/link";
+
+export const metadata: Metadata = {
+  title: "Die Lange Anna — Helgolands berühmtes Wahrzeichen",
+  description:
+    "Die Lange Anna ist Helgolands bekannteste Sehenswürdigkeit. Erfahren Sie alles über den 47 Meter hohen Felsen und erleben Sie ihn hautnah mit der Inselbahn Premium-Tour.",
+  keywords: [
+    "Lange Anna",
+    "Lange Anna Helgoland",
+    "Helgoland Wahrzeichen",
+    "Helgoland Felsen",
+    "Helgoland Sehenswürdigkeiten",
+    "Inselbahn Premium-Tour",
+    "Helgoland Klippen",
+  ],
+  alternates: {
+    canonical: "https://helgolandbahn.de/lange-anna",
+  },
+  openGraph: {
+    title: "Die Lange Anna — Helgolands berühmtes Wahrzeichen",
+    description:
+      "Die Lange Anna ist ein 47 Meter hoher Brandungspfeiler an der Nordwestspitze Helgolands. Erleben Sie das Wahrzeichen hautnah mit der Inselbahn Premium-Tour.",
+    url: "https://helgolandbahn.de/lange-anna",
+    siteName: "Inselbahn Helgoland",
+    locale: "de_DE",
+    type: "article",
+  },
+};
+
+export default function LangeAnnaPage() {
+  return (
+    <main className="min-h-screen bg-white">
+      {/* Back link */}
+      <div className="px-5 md:px-10 lg:px-20 pt-16 md:pt-24">
+        <div className="max-w-4xl mx-auto">
+          <Link
+            href="/"
+            className="inline-flex items-center gap-2 text-primary hover:text-primary/80 text-sm font-medium mb-10 transition-colors"
+          >
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+              <polyline points="15 18 9 12 15 6" />
+            </svg>
+            Zur Startseite
+          </Link>
+
+          <span className="inline-block border border-primary text-primary rounded-full px-5 py-1.5 text-sm font-medium mb-4">
+            Helgolands Wahrzeichen
+          </span>
+
+          <h1 className="text-3xl md:text-5xl font-bold text-dark mb-6 leading-tight">
+            Die Lange Anna
+          </h1>
+          <p className="text-lg md:text-xl text-dark/60 leading-relaxed mb-16 max-w-3xl">
+            Der 47 Meter hohe freistehende Brandungspfeiler an der Nordwestspitze
+            Helgolands ist das Wahrzeichen der Insel und eines der bekanntesten
+            Naturdenkmäler Deutschlands.
+          </p>
+        </div>
+      </div>
+
+      {/* Content sections */}
+      <div className="px-5 md:px-10 lg:px-20 pb-20 md:pb-28">
+        <div className="max-w-4xl mx-auto space-y-12">
+          <section>
+            <h2 className="text-2xl md:text-3xl font-bold text-dark mb-4">
+              Ein Naturdenkmal mit Geschichte
+            </h2>
+            <p className="text-dark/60 text-base md:text-lg leading-relaxed mb-4">
+              Die Lange Anna besteht aus rotem Buntsandstein und ist das Überbleibsel
+              einer ehemaligen Felsbrücke, die vor Jahrhunderten durch die Kraft
+              der Nordsee abgetrennt wurde. Mit ihren 47 Metern Höhe und einer
+              Grundfläche von etwa 180 Quadratmetern ist sie ein beeindruckendes
+              Zeugnis der Naturgewalten.
+            </p>
+            <p className="text-dark/60 text-base md:text-lg leading-relaxed">
+              Der Felsen steht unter Naturschutz und darf nicht betreten werden.
+              Dennoch bieten die umliegenden Aussichtspunkte spektakuläre Blicke
+              auf das Wahrzeichen, besonders bei Sonnenuntergang, wenn der rote
+              Sandstein golden leuchtet.
+            </p>
+          </section>
+
+          <section>
+            <h2 className="text-2xl md:text-3xl font-bold text-dark mb-4">
+              Heimat tausender Seevögel
+            </h2>
+            <p className="text-dark/60 text-base md:text-lg leading-relaxed">
+              Die Lange Anna und die angrenzenden Klippen bilden den berühmten
+              Lummenfelsen, Deutschlands kleinste Seevogelkolonie. In den
+              Sommermonaten nisten hier Basstölpel, Trottellummen, Dreizehenmöwen
+              und Tordalken. Das Naturschauspiel der brütenden Vögel macht den
+              Besuch besonders zwischen Mai und August zu einem unvergesslichen
+              Erlebnis.
+            </p>
+          </section>
+
+          <section>
+            <h2 className="text-2xl md:text-3xl font-bold text-dark mb-4">
+              Die Lange Anna mit der Inselbahn erleben
+            </h2>
+            <p className="text-dark/60 text-base md:text-lg leading-relaxed mb-6">
+              Unsere Premium-Tour ist die beste Möglichkeit, die Lange Anna zu
+              erleben. Die Tour führt Sie durch das Ober- und Unterland direkt
+              zum Wahrzeichen, wo Sie 30 Minuten freie Erkundungszeit haben.
+              Genießen Sie den Blick auf die Lange Anna, die Seevogelkolonien
+              und die weite Nordsee, ohne den anstrengenden Fußweg bewältigen
+              zu müssen.
+            </p>
+            <div className="bg-surface rounded-2xl p-6 md:p-8">
+              <h3 className="text-lg font-bold text-dark mb-3">
+                Premium-Tour mit Ausstieg an der Langen Anna
+              </h3>
+              <ul className="space-y-2 text-dark/60 text-sm mb-4">
+                <li className="flex items-start gap-2.5">
+                  <span className="text-green mt-0.5 font-bold">&#10003;</span>
+                  Ca. 90 Minuten geführte Tour
+                </li>
+                <li className="flex items-start gap-2.5">
+                  <span className="text-green mt-0.5 font-bold">&#10003;</span>
+                  30 Minuten freie Erkundung an der Langen Anna
+                </li>
+                <li className="flex items-start gap-2.5">
+                  <span className="text-green mt-0.5 font-bold">&#10003;</span>
+                  Exklusive Kleingruppe (max. 18 Personen)
+                </li>
+                <li className="flex items-start gap-2.5">
+                  <span className="text-green mt-0.5 font-bold">&#10003;</span>
+                  Ober- und Unterland komplett
+                </li>
+              </ul>
+              <p className="text-dark font-semibold">
+                Ab 22&euro; (Erwachsene) / 15&euro; (Kinder unter 15)
+              </p>
+            </div>
+          </section>
+        </div>
+      </div>
+
+      {/* CTA */}
+      <div className="bg-surface px-5 md:px-10 lg:px-20 py-16 md:py-20">
+        <div className="max-w-4xl mx-auto text-center">
+          <h2 className="text-2xl md:text-3xl font-bold text-dark mb-4">
+            Die Lange Anna hautnah erleben
+          </h2>
+          <p className="text-dark/60 text-base md:text-lg mb-8 max-w-2xl mx-auto">
+            Buchen Sie jetzt die Premium-Tour mit exklusivem Ausstieg an der
+            Langen Anna. Täglich mehrere Abfahrten ab DEN Lung Wai.
+          </p>
+          <Link
+            href="/#buchung"
+            className="inline-flex items-center gap-2 bg-dark text-white px-8 py-3.5 rounded-full font-semibold hover:bg-dark/85 transition-colors"
+          >
+            Premium-Tour buchen
+          </Link>
+        </div>
+      </div>
+    </main>
+  );
+}

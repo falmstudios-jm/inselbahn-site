@@ -9,10 +9,10 @@ const galleryRow1 = [
 ];
 
 const galleryRow2 = [
-  { src: "/images/helgolandbahn-photo-2.jpg", alt: "Fahrgaeste in der Inselbahn" },
+  { src: "/images/helgolandbahn-photo-2.jpg", alt: "Fahrgäste in der Inselbahn" },
   { src: "/images/tour-photo-2.jpg", alt: "Premium-Tour Aussicht" },
   { src: "/images/tour-photo-1.jpg", alt: "Helgoland Natur" },
-  { src: "/images/helgolandbahn-photo-1.jpg", alt: "Inselbahn vor Haeusern" },
+  { src: "/images/helgolandbahn-photo-1.jpg", alt: "Inselbahn vor Häusern" },
 ];
 
 function SectionPill({ label }: { label: string }) {
@@ -43,13 +43,13 @@ export default function TourCards() {
             <div>
               <SectionPill label="Warum gibt es die Inselbahn" />
               <h2 className="text-[28px] md:text-[40px] font-bold text-dark mb-6 leading-tight">
-                Zu wenig Zeit fur zu viele Eindrucke?
+                Zu wenig Zeit für zu viele Eindrücke?
               </h2>
               <p className="text-dark/60 text-base md:text-lg leading-relaxed">
                 Helgoland hat so viel zu bieten, aber als Tagesgast bleibt oft wenig
-                Zeit. Mit unseren gefuhrten Inselbahn-Touren sehen Sie alle
+                Zeit. Mit unseren geführten Inselbahn-Touren sehen Sie alle
                 Highlights bequem und entspannt &mdash; ohne anstrengende Wege,
-                ohne etwas zu verpassen. Lehnen Sie sich zurueck und geniessen Sie
+                ohne etwas zu verpassen. Lehnen Sie sich zurück und genießen Sie
                 die Insel aus einer ganz neuen Perspektive.
               </p>
             </div>
@@ -126,7 +126,7 @@ export default function TourCards() {
           <div className="text-center mb-12">
             <SectionPill label="Jetzt buchen!" />
             <p className="text-dark/60 text-base md:text-lg max-w-2xl mx-auto">
-              Waehlen Sie zwischen unserer klassischen Unterland-Tour und der
+              Wählen Sie zwischen unserer klassischen Unterland-Tour und der
               exklusiven Premium-Tour mit Ausstieg an der Langen Anna.
             </p>
           </div>
@@ -172,14 +172,14 @@ export default function TourCards() {
               </p>
               <p className="text-dark/60 text-sm leading-relaxed mb-4">
                 Die klassische Inselrundfahrt durch das Unterland. Sie fahren entlang
-                der Landungsbruecke, durch das malerische Unterland und erhalten einen
-                Fotostopp im Nordostland mit Blick auf die Dune.
+                der Landungsbrücke, durch das malerische Unterland und erhalten einen
+                Fotostopp im Nordostland mit Blick auf die Düne.
               </p>
 
               <ul className="space-y-2 mb-5">
-                <CheckItem text="Hafen & Landungsbrucke" />
+                <CheckItem text="Hafen & Landungsbrücke" />
                 <CheckItem text="Nordostland erkunden" />
-                <CheckItem text="Historische Gebaude" />
+                <CheckItem text="Historische Gebäude" />
                 <CheckItem text="Fotostopp an den Hummerbuden" />
               </ul>
 
@@ -230,8 +230,8 @@ export default function TourCards() {
               </p>
               <p className="text-dark/60 text-sm leading-relaxed mb-4">
                 Das komplette Helgoland-Erlebnis. Ober- und Unterland, mit 30 Minuten
-                freier Erkundung an der beruhmten Langen Anna. Exklusive Kleingruppe
-                fuer ein besonderes Erlebnis.
+                freier Erkundung an der berühmten Langen Anna. Exklusive Kleingruppe
+                für ein besonderes Erlebnis.
               </p>
 
               <ul className="space-y-2 mb-5">

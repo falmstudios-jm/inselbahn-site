@@ -23,14 +23,14 @@ function getWeatherEmoji(code: number): string {
 
 function getWeatherLabel(code: number): string {
   if (code === 0) return "Klar";
-  if (code <= 3) return "Teilweise bewoelkt";
-  if (code <= 48) return "Bewoelkt";
+  if (code <= 3) return "Teilweise bewölkt";
+  if (code <= 48) return "Bewölkt";
   if (code <= 67) return "Regen";
   if (code <= 77) return "Schnee";
   if (code <= 82) return "Schauer";
   if (code <= 86) return "Schnee";
   if (code <= 99) return "Gewitter";
-  return "Bewoelkt";
+  return "Bewölkt";
 }
 
 export default function WeatherWidget() {
@@ -99,7 +99,7 @@ export default function WeatherWidget() {
       </p>
       {isWarning && (
         <p className="text-xs text-red-600 font-medium mt-1">
-          Sturmwarnung &mdash; Fahrten ggf. eingeschraenkt
+          Sturmwarnung &mdash; Fahrten ggf. eingeschränkt
         </p>
       )}
     </div>

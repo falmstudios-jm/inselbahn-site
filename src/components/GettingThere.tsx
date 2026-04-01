@@ -31,8 +31,8 @@ export default function GettingThere() {
           {/* Left: text + walking times */}
           <div>
             <p className="text-dark/60 text-base leading-relaxed mb-6">
-              Unsere Inselbahn startet am <strong className="text-dark">Franz-Schensky-Platz</strong>,
-              dem Vorplatz der Lung Wai. Von allen Faehranlegern zu Fuss erreichbar.
+              Unsere Inselbahn startet am <strong className="text-dark">DEN Lung Wai</strong>,
+              dem zentralen Platz im Unterland. Von allen Fähranlegern zu Fuß erreichbar.
             </p>
 
             {/* Walking times table */}
@@ -40,9 +40,9 @@ export default function GettingThere() {
               <table className="w-full text-sm">
                 <thead>
                   <tr className="border-b border-dark/10">
-                    <th className="text-left py-3 px-4 font-semibold text-dark">Faehre</th>
+                    <th className="text-left py-3 px-4 font-semibold text-dark">Fähre</th>
                     <th className="text-right py-3 px-4 font-semibold text-dark">Entfernung</th>
-                    <th className="text-right py-3 px-4 font-semibold text-dark">Fussweg</th>
+                    <th className="text-right py-3 px-4 font-semibold text-dark">Fußweg</th>
                   </tr>
                 </thead>
                 <tbody>
@@ -77,7 +77,7 @@ export default function GettingThere() {
         <div className="flex justify-center mb-8">
           <Image
             src="/images/schiff-ferry.png"
-            alt="Faehre Illustration"
+            alt="Fähre Illustration"
             width={300}
             height={120}
             className="opacity-60"

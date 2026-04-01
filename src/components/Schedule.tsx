@@ -118,7 +118,7 @@ export default function Schedule() {
         </div>
 
         <p className="text-sm text-dark/50 text-center">
-          *Bei den letzten Fahrten ist ein Ausstieg am Hafen / Schiff moeglich.
+          *Bei den letzten Fahrten ist ein Ausstieg am Hafen / Schiff möglich.
         </p>
       </div>
     </section>
