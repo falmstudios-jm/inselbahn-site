@@ -7,6 +7,17 @@ interface Message {
   content: string;
 }
 
+function formatMessage(text: string) {
+  // Parse **bold** → <strong>
+  const parts = text.split(/(\*\*[^*]+\*\*)/g);
+  return parts.map((part, i) => {
+    if (part.startsWith("**") && part.endsWith("**")) {
+      return <strong key={i} className="font-semibold">{part.slice(2, -2)}</strong>;
+    }
+    return part;
+  });
+}
+
 const QUICK_REPLIES = [
   "Welche Touren gibt es?",
   "Preise & Tickets",
@@ -154,7 +165,7 @@ export default function InlineChat() {
                       : "bg-gray-50 text-dark rounded-tl-md"
                   }`}
                 >
-                  <p className="text-[15px] leading-relaxed whitespace-pre-wrap">{msg.content}</p>
+                  <p className="text-[15px] leading-relaxed whitespace-pre-wrap">{formatMessage(msg.content)}</p>
                 </div>
               </div>
             ))}
