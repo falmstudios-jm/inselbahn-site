@@ -363,7 +363,7 @@ export async function POST(req: NextRequest) {
             content: m.content.slice(0, 500), // Limit input length
           })),
         ],
-        max_tokens: 300,
+        max_completion_tokens: 300,
         temperature: 0.7,
       }),
     });
