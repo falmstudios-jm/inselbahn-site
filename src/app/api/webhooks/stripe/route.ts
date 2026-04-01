@@ -105,25 +105,41 @@ export async function POST(req: Request) {
 }
 
 async function confirmBookingAndSendEmail(bookingId: string, paymentIntentId: string | null) {
-  const { data: booking, error: updateError } = await getSupabaseAdmin()
+  const supabase = getSupabaseAdmin();
+
+  // Update booking status
+  const { error: updateError } = await supabase
     .from('bookings')
     .update({
       status: 'confirmed',
       stripe_payment_intent_id: paymentIntentId,
     })
-    .eq('id', bookingId)
-    .select(
-      '*, departures:departure_id(*, tours:tour_id(*))'
-    )
-    .single();
+    .eq('id', bookingId);
 
-  if (updateError || !booking) {
+  if (updateError) {
     console.error('Error updating booking:', updateError);
     return;
   }
 
-  // Send confirmation email
-  const dep = booking.departures;
+  // Fetch booking with related data separately
+  const { data: booking, error: fetchError } = await supabase
+    .from('bookings')
+    .select('*')
+    .eq('id', bookingId)
+    .single();
+
+  if (fetchError || !booking) {
+    console.error('Error fetching booking:', fetchError);
+    return;
+  }
+
+  // Fetch departure + tour
+  const { data: dep } = await supabase
+    .from('departures')
+    .select('*, tours(*)')
+    .eq('id', booking.departure_id)
+    .single();
+
   const tour = dep?.tours;
 
   await getResend().emails.send({
