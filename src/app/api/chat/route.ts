@@ -358,7 +358,10 @@ function buildDynamicPrompt(
   announcements: Announcement[] | null,
   today: string,
 ): string {
-  let dynamic = `\n\nHEUTIGES DATUM: ${today}\n`;
+  // Current time in Germany (CET/CEST)
+  const nowDE = new Date().toLocaleString('de-DE', { timeZone: 'Europe/Berlin' });
+  const nowTime = new Date().toLocaleTimeString('de-DE', { timeZone: 'Europe/Berlin', hour: '2-digit', minute: '2-digit', hour12: false });
+  let dynamic = `\n\nHEUTIGES DATUM: ${today}\nAKTUELLE UHRZEIT (Helgoland): ${nowTime} Uhr\nWICHTIG: Nenne NUR Abfahrtszeiten die NACH der aktuellen Uhrzeit liegen! Vergangene Touren NICHT mehr anbieten.\n`;
 
   // Announcements
   if (announcements && announcements.length > 0) {
@@ -404,7 +407,12 @@ function buildDynamicPrompt(
         const remaining = tour.max_capacity - totalBooked;
         const timeStr = dep.departure_time.slice(0, 5); // HH:MM
         const noteStr = dep.notes ? ` (${dep.notes})` : '';
-        dynamic += `    ${timeStr}${noteStr}: noch ${remaining} Plätze frei\n`;
+        const isPast = timeStr < nowTime;
+        if (isPast) {
+          dynamic += `    ${timeStr}${noteStr}: BEREITS VORBEI — nicht mehr anbieten!\n`;
+        } else {
+          dynamic += `    ${timeStr}${noteStr}: noch ${remaining} Plätze frei\n`;
+        }
       }
     }
   }
