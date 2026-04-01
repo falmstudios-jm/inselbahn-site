@@ -48,10 +48,10 @@ export async function POST(req: Request) {
 
         if (!bookingId) break;
 
-        // Mark pending booking as cancelled to release capacity
+        // Mark pending booking as nopayment (payment failed) to release capacity
         await getSupabaseAdmin()
           .from('bookings')
-          .update({ status: 'cancelled', cancelled_at: new Date().toISOString() })
+          .update({ status: 'nopayment', cancelled_at: new Date().toISOString() })
           .eq('id', bookingId)
           .eq('status', 'pending');
 
@@ -83,10 +83,10 @@ export async function POST(req: Request) {
 
         if (!bookingId) break;
 
-        // Mark pending booking as cancelled to release capacity
+        // Mark pending booking as nopayment (checkout expired) to release capacity
         await getSupabaseAdmin()
           .from('bookings')
-          .update({ status: 'cancelled', cancelled_at: new Date().toISOString() })
+          .update({ status: 'nopayment', cancelled_at: new Date().toISOString() })
           .eq('id', bookingId)
           .eq('status', 'pending');
 

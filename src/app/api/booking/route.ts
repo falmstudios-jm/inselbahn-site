@@ -134,6 +134,7 @@ export async function POST(req: Request) {
         booking_reference: bookingReference,
         cancel_token: cancelToken,
         status: 'pending',
+        invoice_data: input.invoice || null,
       })
       .select()
       .single();

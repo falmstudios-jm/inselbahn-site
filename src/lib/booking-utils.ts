@@ -12,6 +12,13 @@ export const bookingSchema = z.object({
   customer_phone: z.string().optional(),
   discount_code: z.string().optional(),
   gift_card_code: z.string().optional(),
+  invoice: z.object({
+    company_name: z.string().min(2),
+    street: z.string().min(2),
+    postal_code: z.string().min(4),
+    city: z.string().min(2),
+    vat_id: z.string().optional(),
+  }).optional(),
 });
 
 export type BookingInput = z.infer<typeof bookingSchema>;

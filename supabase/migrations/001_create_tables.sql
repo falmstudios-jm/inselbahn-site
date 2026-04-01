@@ -37,7 +37,7 @@ CREATE TABLE IF NOT EXISTS bookings (
   customer_email TEXT NOT NULL,
   customer_phone TEXT,
   total_amount DECIMAL(10,2) NOT NULL,
-  status TEXT DEFAULT 'confirmed' CHECK (status IN ('pending', 'confirmed', 'cancelled', 'refunded')),
+  status TEXT DEFAULT 'confirmed' CHECK (status IN ('pending', 'confirmed', 'nopayment', 'cancelled', 'refunded', 'partial_refund', 'our_cancellation')),
   notes TEXT,
   created_at TIMESTAMPTZ DEFAULT now(),
   cancelled_at TIMESTAMPTZ
