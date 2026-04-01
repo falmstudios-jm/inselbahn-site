@@ -21,6 +21,7 @@ export async function GET(req: NextRequest) {
         tours (id, slug, name, max_capacity, price_adult, price_child, child_age_limit)
       `)
       .eq('is_active', true)
+      .eq('bookable_online', true)
       .order('departure_time');
 
     if (depError) {
@@ -34,7 +35,7 @@ export async function GET(req: NextRequest) {
     // Fetch bookings for the given date
     const { data: bookings, error: bookError } = await supabase
       .from('bookings')
-      .select('departure_id, adults, children')
+      .select('departure_id, adults, children, ghost_seats, children_free')
       .eq('booking_date', date)
       .in('status', ['confirmed', 'pending']);
 
@@ -51,7 +52,7 @@ export async function GET(req: NextRequest) {
     if (bookings) {
       for (const b of bookings) {
         const current = bookingCounts.get(b.departure_id) || 0;
-        bookingCounts.set(b.departure_id, current + b.adults + b.children);
+        bookingCounts.set(b.departure_id, current + b.adults + b.children + (b.ghost_seats || 0) + (b.children_free || 0));
       }
     }
 

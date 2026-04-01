@@ -80,6 +80,7 @@ TOUREN:
   - Audioguide: Ansage vom Band über Lautsprecher (keine Kopfhörer). Fahrer ergänzen gelegentlich live, müssen sich aber auf die Straße konzentrieren. Aktuell einsprachig pro Tour. Englische Tour nur bei komplett englischsprachiger Gruppe auf Anfrage.
   - Abfahrt: Immer am Franz-Schensky-Platz, sofern in den Live-Daten nicht anders angegeben!
   - Es kann auch weitere Touren oder Abfahrtsorte geben — orientiere dich immer an den Live-Daten!
+  - HINWEIS: Es gibt auch Abfahrten die nicht online buchbar sind (z.B. 12:15 ab Schiff). Diese erscheinen in den Live-Daten mit dem Vermerk 'nicht online buchbar'. Für diese Touren kann man Tickets nur vor Ort bei Tomek oder beim Fahrer kaufen.
 
 SAISON:
 - In der Regel von Anfang April bis Ende Oktober. Genaue Termine siehe Online-Buchung.
@@ -106,9 +107,10 @@ ABFAHRT & ANFAHRT:
 
 STORNIERUNG:
 - Stornierung ist als Self-Service möglich (Link in der Buchungsbestätigung)
-- Gruppen unter 6 Personen: kostenlose Stornierung bis 24 Stunden vor Tour-Beginn
-- Gruppen ab 6 Personen: kostenlose Stornierung bis 3 Tage vor Tour-Beginn
+- Kostenlose Stornierung bis Mitternacht am Vortag der Tour (für alle, egal welche Gruppengröße)
+- Nach der Frist: keine Erstattung
 - Bei Ausfall von unserer Seite (z.B. Wetter): automatische Rückerstattung, wir informieren so schnell wie möglich
+- Grund für die Frist: Schiffsausfälle sind in der Regel abends bekannt, sodass man rechtzeitig stornieren kann
 
 WETTER:
 - Bei Regen fahren wir trotzdem (überdachte Wagen)
@@ -231,7 +233,7 @@ FAQ:
 - Anschnallen: Nein, es gibt keine Anschnallgurte.
 - Regenschirme: Wir haben ein paar eigene Schirme, die wir bei starkem Regen verleihen können. Die Wagen sind aber überdacht, also meist nicht nötig.
 - Wetter: Wir fahren bei Regen (überdachte Wagen). Bei Sturm/Gewitter können Fahrten ausfallen → automatische Rückerstattung. Bei Nebel: Tour findet statt, Nebel auf Helgoland ist auch spektakulär!
-- Stornierung: Self-Service über den Link in der Buchungsbestätigung. Gruppen unter 6: bis 24h vorher kostenlos. Gruppen ab 6: bis 3 Tage vorher kostenlos. NACH der Frist: keine Erstattung. Bei Ausfall von unserer Seite (z.B. Wetter): automatische Rückerstattung.
+- Stornierung: Self-Service über den Link in der Buchungsbestätigung. Bis Mitternacht am Vortag kostenlos, für alle gleich. Nach der Frist keine Erstattung. Bei Ausfall von unserer Seite (z.B. Wetter): automatische Rückerstattung.
 - Gutscheine: Geschenkgutscheine sind geplant und bald als Self-Service online verfügbar. Einfach bald nochmal vorbeischauen!
 - Online ausgebucht? Trotzdem vorbeikommen! Es werden oft Plätze frei (Stornierungen). Tomek oder der Fahrer können vor Ort helfen.
 - Gruppenrabatte: Für größere Gruppen per E-Mail anfragen. Individuelles Angebot möglich.
