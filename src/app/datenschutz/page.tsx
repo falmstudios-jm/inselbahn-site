@@ -247,61 +247,193 @@ export default function DatenschutzPage() {
             </p>
           </section>
 
-          {/* 9. KI-Chatbot */}
+          {/* 9. Cookies */}
           <section>
             <h2 className="text-xl font-semibold text-dark mb-3">
-              9. KI-Chatbot
+              9. Cookies
             </h2>
             <p>
-              Auf unserer Website bieten wir einen KI-gest&uuml;tzten Chatbot an, der von OpenAI
-              (OpenAI, L.L.C., 3180 18th Street, San Francisco, CA 94110, USA) betrieben wird.
-              Der Chatbot dient ausschlie&szlig;lich der Beantwortung h&auml;ufiger Fragen zu
-              unseren Touren, Preisen und Abfahrtszeiten.
+              Diese Website verwendet <strong className="text-dark">keine Cookies</strong>.
+              Wir setzen weder eigene noch Drittanbieter-Cookies ein. Es findet kein Tracking
+              mittels Cookies, Fingerprinting oder vergleichbarer Technologien statt.
+              Eine Einwilligung gem&auml;&szlig; Art. 7 DSGVO i.&nbsp;V.&nbsp;m.
+              &sect;&nbsp;25 TDDDG (ehemals TTDSG) ist daher nicht erforderlich.
+            </p>
+          </section>
+
+          {/* 10. Datenbank */}
+          <section>
+            <h2 className="text-xl font-semibold text-dark mb-3">
+              10. Datenbank &amp; Datenspeicherung (Supabase)
+            </h2>
+            <p>
+              F&uuml;r die Speicherung von Buchungsdaten, Tourverf&uuml;gbarkeiten und
+              anonymisierten Chat-Zusammenfassungen nutzen wir Supabase Inc., 970 Toa Payoh
+              North #07-04, Singapore 318992. Supabase betreibt die Datenbank auf Basis von
+              PostgreSQL in EU-Rechenzentren (Frankfurt/Main).
             </p>
             <p className="mt-2">
-              <strong className="text-dark">Keine Speicherung von Gespr&auml;chsdaten:</strong>{" "}
-              Die Chatverl&auml;ufe werden nicht gespeichert. Sobald Sie den Chat schlie&szlig;en
-              oder die Seite verlassen, werden alle Nachrichten gel&ouml;scht.
+              <strong className="text-dark">Gespeicherte Daten:</strong>
             </p>
+            <ul className="mt-1 space-y-1 list-disc pl-5">
+              <li>Buchungsdaten: Name, E-Mail, Telefon (optional), Buchungsdetails, Zahlungsstatus</li>
+              <li>Tour- und Fahrplandaten (keine personenbezogenen Daten)</li>
+              <li>Anonymisierte Chat-Zusammenfassungen (siehe Abschnitt 11)</li>
+            </ul>
             <p className="mt-2">
-              <strong className="text-dark">Datenverarbeitung durch OpenAI:</strong>{" "}
-              Ihre Nachrichten werden zur Verarbeitung an die Server von OpenAI in den USA
-              &uuml;bermittelt. OpenAI hat einen Auftragsverarbeitungsvertrag (Data Processing
-              Agreement) mit EU-Standardvertragsklauseln abgeschlossen, der den Schutz Ihrer
-              Daten gem&auml;&szlig; DSGVO gew&auml;hrleistet.
-            </p>
-            <p className="mt-2">
-              <strong className="text-dark">Keine Erhebung personenbezogener Daten:</strong>{" "}
-              Der Chatbot erfragt und speichert keine personenbezogenen Daten. Bitte geben Sie
-              im Chat keine pers&ouml;nlichen Informationen wie Namen, Adressen oder
-              Zahlungsdaten ein.
-            </p>
-            <p className="mt-2">
-              <strong className="text-dark">Missbrauchsschutz:</strong>{" "}
-              Zum Schutz vor Missbrauch ist die Anzahl der Nachrichten pro Minute begrenzt
-              (Rate-Limiting). Dabei wird Ihre IP-Adresse tempor&auml;r verarbeitet, jedoch
-              nicht dauerhaft gespeichert.
-            </p>
-            <p className="mt-2">
-              Die Nutzung des Chatbots erfolgt auf Grundlage von Art. 6 Abs. 1 lit. f DSGVO
-              (berechtigtes Interesse an einer schnellen und effizienten Beantwortung von
-              Kundenanfragen). Weitere Informationen finden Sie in der Datenschutzerkl&auml;rung
-              von OpenAI unter{" "}
-              <a
-                href="https://openai.com/policies/privacy-policy"
-                target="_blank"
-                rel="noopener noreferrer"
-                className="text-primary hover:underline"
-              >
-                openai.com/policies/privacy-policy
+              Die Verarbeitung erfolgt auf Grundlage von Art. 6 Abs. 1 lit. b DSGVO
+              (Vertragserf&uuml;llung) f&uuml;r Buchungsdaten und Art. 6 Abs. 1 lit. f DSGVO
+              (berechtigtes Interesse) f&uuml;r anonymisierte Analysen. Buchungsdaten werden
+              nach Ablauf der gesetzlichen Aufbewahrungsfristen (6 bzw. 10 Jahre gem&auml;&szlig;
+              HGB/AO) gel&ouml;scht. Weitere Informationen:{" "}
+              <a href="https://supabase.com/privacy" target="_blank" rel="noopener noreferrer" className="text-primary hover:underline">
+                supabase.com/privacy
               </a>.
             </p>
           </section>
 
-          {/* 10. Änderung */}
+          {/* 11. KI-Chatbot */}
           <section>
             <h2 className="text-xl font-semibold text-dark mb-3">
-              10. &Auml;nderung der Datenschutzerkl&auml;rung
+              11. KI-Chatbot
+            </h2>
+            <p>
+              Auf unserer Website bieten wir einen KI-gest&uuml;tzten Chatbot an. Der Chatbot
+              dient der Beantwortung h&auml;ufiger Fragen zu unseren Touren, Preisen,
+              Abfahrtszeiten und allgemeinen Informationen &uuml;ber Helgoland.
+            </p>
+
+            <h3 className="text-lg font-semibold text-dark mt-4 mb-2">
+              a) Datenverarbeitung durch OpenAI
+            </h3>
+            <p>
+              Ihre Chat-Nachrichten werden zur Verarbeitung an OpenAI, L.L.C., 3180 18th Street,
+              San Francisco, CA 94110, USA &uuml;bermittelt. Es wird das Modell
+              &bdquo;GPT-5.4-mini&ldquo; verwendet. OpenAI verarbeitet die Daten
+              ausschlie&szlig;lich zur Beantwortung Ihrer Anfrage und nutzt sie
+              <strong className="text-dark"> nicht zum Training</strong> eigener Modelle
+              (Zero Data Retention im API-Modus). Die Daten&uuml;bermittlung erfolgt auf
+              Grundlage der EU-Standardvertragsklauseln (Art. 46 Abs. 2 lit. c DSGVO).
+            </p>
+            <p className="mt-2">
+              Weitere Informationen:{" "}
+              <a href="https://openai.com/policies/privacy-policy" target="_blank" rel="noopener noreferrer" className="text-primary hover:underline">
+                openai.com/policies/privacy-policy
+              </a>
+            </p>
+
+            <h3 className="text-lg font-semibold text-dark mt-4 mb-2">
+              b) Vollst&auml;ndige Chatverl&auml;ufe
+            </h3>
+            <p>
+              Die vollst&auml;ndigen Chatverl&auml;ufe werden <strong className="text-dark">nicht
+              gespeichert</strong>. Sobald Sie den Chat schlie&szlig;en oder die Seite verlassen,
+              werden alle Nachrichten im Browser unwiderruflich gel&ouml;scht. Auf unseren
+              Servern werden keine vollst&auml;ndigen Konversationen vorgehalten.
+            </p>
+
+            <h3 className="text-lg font-semibold text-dark mt-4 mb-2">
+              c) Anonymisierte Zusammenfassungen
+            </h3>
+            <p>
+              Zur Verbesserung unseres Serviceangebots erstellen wir nach jeder Chat-Interaktion
+              eine <strong className="text-dark">anonymisierte, maschinell generierte
+              Zusammenfassung</strong> des Gespr&auml;chsthemas (z.&nbsp;B. &bdquo;Gast fragte
+              nach Abfahrtszeiten und Hundemitnahme bei der Premium-Tour&ldquo;). Diese
+              Zusammenfassungen enthalten:
+            </p>
+            <ul className="mt-1 space-y-1 list-disc pl-5">
+              <li>Das Thema der Anfrage (max. 2&ndash;3 S&auml;tze)</li>
+              <li>Thematische Kategorien (z.&nbsp;B. &bdquo;preise&ldquo;, &bdquo;hunde&ldquo;, &bdquo;stornierung&ldquo;)</li>
+              <li>Einen Erfolgsstatus (ob die Anfrage beantwortet werden konnte)</li>
+              <li>Die Anzahl der Nachrichten</li>
+              <li>Einen kryptographischen Hash der IP-Adresse (SHA-256, gesalzen &mdash; nicht r&uuml;ckverfolgbar)</li>
+            </ul>
+            <p className="mt-2">
+              <strong className="text-dark">Keine personenbezogenen Daten:</strong> Die
+              Zusammenfassungen enthalten keine Namen, E-Mail-Adressen, Telefonnummern oder
+              sonstige personenbezogene Daten. Sie dienen ausschlie&szlig;lich der statistischen
+              Auswertung h&auml;ufiger Fragestellungen und der Verbesserung unseres
+              Informationsangebots.
+            </p>
+            <p className="mt-2">
+              Die Verarbeitung erfolgt auf Grundlage von Art. 6 Abs. 1 lit. f DSGVO
+              (berechtigtes Interesse an der Analyse und Verbesserung unseres Kundenservices).
+            </p>
+
+            <h3 className="text-lg font-semibold text-dark mt-4 mb-2">
+              d) Keine Erhebung personenbezogener Daten
+            </h3>
+            <p>
+              Der Chatbot erfragt und speichert keine personenbezogenen Daten. Bitte geben Sie
+              im Chat keine pers&ouml;nlichen Informationen wie Namen, Adressen, Telefonnummern
+              oder Zahlungsdaten ein. Sollten Sie versehentlich personenbezogene Daten im Chat
+              eingeben, werden diese mit dem Schlie&szlig;en des Chats gel&ouml;scht und
+              erscheinen nicht in der anonymisierten Zusammenfassung.
+            </p>
+
+            <h3 className="text-lg font-semibold text-dark mt-4 mb-2">
+              e) Missbrauchsschutz
+            </h3>
+            <p>
+              Zum Schutz vor Missbrauch werden folgende Ma&szlig;nahmen eingesetzt:
+            </p>
+            <ul className="mt-1 space-y-1 list-disc pl-5">
+              <li>Rate-Limiting: Begrenzung auf 20 Nachrichten pro Minute pro IP-Adresse</li>
+              <li>Eingabebegrenzung: Nachrichten sind auf 1.000 Zeichen limitiert</li>
+              <li>Konversationsverlauf: Nur die letzten 10 Nachrichten werden zur Verarbeitung gesendet</li>
+              <li>Prompt-Injection-Erkennung: Automatische Erkennung und Abwehr von Manipulationsversuchen</li>
+            </ul>
+            <p className="mt-2">
+              Dabei wird die IP-Adresse tempor&auml;r im Arbeitsspeicher verarbeitet (max. 1 Minute)
+              und nicht dauerhaft gespeichert. Die Verarbeitung erfolgt auf Grundlage von
+              Art. 6 Abs. 1 lit. f DSGVO (berechtigtes Interesse am Schutz vor Missbrauch).
+            </p>
+
+            <h3 className="text-lg font-semibold text-dark mt-4 mb-2">
+              f) Einwilligung &amp; Widerruf
+            </h3>
+            <p>
+              Die Nutzung des Chatbots ist freiwillig. Durch das Klicken auf &bdquo;Chat
+              starten&ldquo; erkl&auml;ren Sie sich mit der Verarbeitung Ihrer eingegebenen
+              Nachrichten gem&auml;&szlig; dieser Datenschutzerkl&auml;rung einverstanden.
+              Sie k&ouml;nnen den Chat jederzeit schlie&szlig;en; mit dem Schlie&szlig;en
+              werden alle Nachrichten im Browser gel&ouml;scht.
+            </p>
+          </section>
+
+          {/* 12. Aufbewahrungsfristen */}
+          <section>
+            <h2 className="text-xl font-semibold text-dark mb-3">
+              12. Aufbewahrungsfristen
+            </h2>
+            <p>
+              Wir speichern personenbezogene Daten nur so lange, wie es f&uuml;r den jeweiligen
+              Zweck erforderlich ist oder gesetzliche Aufbewahrungspflichten bestehen:
+            </p>
+            <ul className="mt-2 space-y-2 list-none">
+              <li>
+                <strong className="text-dark">Buchungsdaten:</strong> 10 Jahre (gesetzliche
+                Aufbewahrungspflicht gem. &sect;&nbsp;147 AO, &sect;&nbsp;257 HGB)
+              </li>
+              <li>
+                <strong className="text-dark">Kontaktanfragen:</strong> Bis zur abschlie&szlig;enden
+                Bearbeitung, danach L&ouml;schung
+              </li>
+              <li>
+                <strong className="text-dark">Chat-Zusammenfassungen:</strong> 12 Monate
+                (anonymisiert, keine personenbezogenen Daten)
+              </li>
+              <li>
+                <strong className="text-dark">Server-Logfiles:</strong> 30 Tage (Vercel)
+              </li>
+            </ul>
+          </section>
+
+          {/* 13. Änderung */}
+          <section>
+            <h2 className="text-xl font-semibold text-dark mb-3">
+              13. &Auml;nderung der Datenschutzerkl&auml;rung
             </h2>
             <p>
               Wir behalten uns vor, diese Datenschutzerkl&auml;rung bei Bedarf anzupassen,
