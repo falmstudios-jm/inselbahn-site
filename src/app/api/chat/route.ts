@@ -74,9 +74,11 @@ TOUREN:
 - Die Unterland-Tour fährt NICHT ins Oberland (Fahrzeug zu groß für die Wege dort oben)
 
 TICKETVERKAUF:
-- Online buchbar auf unserer Website (empfohlen!)
-- Ticketverkauf täglich 11:00-14:30 Uhr vor Ort
-- Auch direkt beim Fahrer buchbar (Bar & Karte)
+- Online buchbar auf unserer Website (empfohlen!) — bis 2 Stunden vor Tour-Beginn möglich
+- Vor Ort: Unser Ticketverkäufer Tomek steht täglich von 11:30 bis 14:30 Uhr am Franz-Schensky-Platz
+- Bei anderen Touren (außerhalb Tomeks Zeiten) kann man direkt beim Fahrer kaufen
+- Bezahlung vor Ort: Bar und Karte
+- Wenn online ausgebucht: Es lohnt sich trotzdem vorbeizukommen! Manchmal werden Plätze frei (Stornierungen). Tomek oder der Fahrer können helfen.
 
 KONTAKT:
 - WhatsApp: +49 160 4170905
@@ -91,11 +93,18 @@ ABFAHRT & ANFAHRT:
 - Von MS Helgoland: ca. 15 Min zu Fuß
 - Von MS Funny Girl: ca. 15 Min zu Fuß
 
-STORNIERUNG & WETTER:
-- Stornierung ist möglich — bitte per E-Mail an info@helgolandbahn.de oder WhatsApp
-- Bei extremem Wetter (Sturm) können Fahrten ausfallen → volle Rückerstattung
+STORNIERUNG:
+- Stornierung ist als Self-Service möglich (Link in der Buchungsbestätigung)
+- Gruppen unter 6 Personen: kostenlose Stornierung bis 24 Stunden vor Tour-Beginn
+- Gruppen ab 6 Personen: kostenlose Stornierung bis 3 Tage vor Tour-Beginn
+- Bei Ausfall von unserer Seite (z.B. Wetter): automatische Rückerstattung, wir informieren so schnell wie möglich
+
+WETTER:
 - Bei Regen fahren wir trotzdem (überdachte Wagen)
-- Gutscheine: Ja, es gibt Geschenkgutscheine! Anfrage per E-Mail an info@helgolandbahn.de
+- Bei extremem Wetter (Sturm) können Fahrten ausfallen → automatische Rückerstattung
+
+GUTSCHEINE:
+- Geschenkgutscheine sind geplant und bald verfügbar! Für Anfragen bitte E-Mail an info@helgolandbahn.de
 
 HELGOLAND ALLGEMEIN:
 - Helgoland heißt auf Helgoländisch "deät Lun" ("das Land"). "Welkoam iip Lun" = "Willkommen auf Helgoland". Das Oberland heißt "deät Bopperlun".
@@ -180,12 +189,18 @@ PRAKTISCHE TIPPS:
 FAQ:
 - Darf ich während der Fahrt aussteigen? Nur bei der Premium-Tour an der Langen Anna (30 Min Aufenthalt). Man kann auch dort bleiben und zu Fuß zurücklaufen — dem Fahrer bitte Bescheid geben.
 - Kann ich meinen Koffer/Gepäck mitnehmen? Kleine Taschen ja (max. 2). Großes Gepäck/Koffer nein.
-- Sind Hunde erlaubt? Unterland-Tour: Ja, angeleint. Premium-Tour: Nein (steile Wege, enge Pfade im Oberland).
+- Sind Hunde erlaubt? Unterland-Tour: Ja, bis mittlere Größe, angeleint. Große Hunde leider nicht. Premium-Tour: Keine Hunde (steile Wege, enge Pfade im Oberland).
 - Darf ich Snacks und Getränke mitnehmen? Ja, auch Bier ist ok. Aber nichts was kleckert (kein Eis, Ketchup). Fischbrötchen lieber vorher essen — Möwen!
 - Alkohol: Ein Bier ist kein Problem. Stark alkoholisierte Personen dürfen aus Sicherheitsgründen nicht mitfahren.
 - Was passiert bei schlechtem Wetter? Wir fahren bei Regen (überdachte Wagen). Bei Sturm können Fahrten ausfallen → volle Rückerstattung.
-- Stornierung: Ja, Stornierung ist möglich. Bitte per E-Mail (info@helgolandbahn.de) oder WhatsApp (+49 160 4170905).
-- Gutscheine: Ja, wir bieten Geschenkgutscheine an! Anfrage per E-Mail an info@helgolandbahn.de.
+- Stornierung: Self-Service über den Link in der Buchungsbestätigung. Gruppen unter 6: bis 24h vorher kostenlos. Gruppen ab 6: bis 3 Tage vorher kostenlos. Danach keine Erstattung.
+- Gutscheine: Geschenkgutscheine sind geplant und bald verfügbar. Anfrage per E-Mail an info@helgolandbahn.de.
+- Online ausgebucht? Trotzdem vorbeikommen! Es werden oft Plätze frei (Stornierungen). Tomek oder der Fahrer können vor Ort helfen.
+- Gruppenrabatte: Für größere Gruppen bitte per E-Mail (info@helgolandbahn.de) oder WhatsApp anfragen. Wir erstellen gerne ein individuelles Angebot.
+- Große Gruppe (z.B. 60 Personen): Ja, möglich! Wir können mehrere Touren koordinieren oder Sonderfahrten organisieren. Bitte frühzeitig per E-Mail anfragen.
+- Sonderfahrten: Ja, auf Anfrage! Für Gruppen, besondere Anlässe oder individuelle Routen. Anfrage per E-Mail an info@helgolandbahn.de.
+- Tour auf anderen Sprachen: Die Tour-Ansage läuft auf Deutsch. Eine englische Version ist in Planung. Für andere Sprachen bitte vorab anfragen.
+- Online-Buchung: Bis 2 Stunden vor Tour-Beginn möglich.
 - Rollstuhl/Barrierefreiheit: Die Unterland-Tour hat 1 Rollstuhlplatz. Die Premium-Tour ist leider nicht barrierefrei (steile Wege im Oberland). Zum Oberland gibt es aber einen Fahrstuhl (182-260 Stufen alternativ).
 - Unterschied zur Börtebootrundfahrt: Die Inselbahn zeigt Helgoland AN LAND (Unterland + optional Oberland). Die Börtebootrundfahrt ist AUF DEM WASSER und fährt UM die Insel herum. Beides ergänzt sich wunderbar!
 - Kinder kostenlos: Bei der Unterland-Tour um 14:30 fahren Kinder GRATIS!
