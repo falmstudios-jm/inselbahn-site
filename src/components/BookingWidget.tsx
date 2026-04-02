@@ -575,25 +575,29 @@ export default function BookingWidget() {
   if (paymentSuccess) {
     return (
       <section id="buchung" className="px-5 md:px-10 lg:px-20 py-20 md:py-28">
-        <div className="max-w-lg mx-auto text-center animate-fade-in-up">
-          {/* Green checkmark */}
-          <div className="flex justify-center mb-6">
-            <div className="w-20 h-20 rounded-full bg-green-100 flex items-center justify-center">
-              <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="#16a34a" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
-                <polyline points="20 6 9 17 4 12" />
-              </svg>
+        <div className="max-w-xl mx-auto animate-fade-in-up">
+          {/* Success header */}
+          <div className="text-center mb-8">
+            <div className="flex justify-center mb-5">
+              <div className="w-20 h-20 rounded-full bg-green-100 flex items-center justify-center">
+                <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="#16a34a" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+                  <polyline points="20 6 9 17 4 12" />
+                </svg>
+              </div>
             </div>
+            <h2 className="text-[28px] md:text-[36px] font-bold text-dark mb-2">
+              Buchung bestätigt!
+            </h2>
+            <p className="text-dark/50 text-lg">
+              Wir freuen uns auf Sie auf deät Lun! 🎉
+            </p>
           </div>
-          <h2 className="text-[28px] md:text-[40px] font-bold text-dark mb-4">
-            Buchung best&auml;tigt!
-          </h2>
-          <p className="text-dark/60 text-lg mb-2">
-            Vielen Dank f&uuml;r Ihre Buchung.
-          </p>
-          <div className="bg-white rounded-2xl p-6 border border-gray-100 shadow-sm mt-8 text-left space-y-3">
+
+          {/* Booking details card */}
+          <div className="bg-white rounded-2xl p-6 border border-gray-100 shadow-sm space-y-3">
             <div className="flex justify-between text-sm">
               <span className="text-dark/50">Buchungsnummer</span>
-              <span className="text-dark font-bold text-base">{bookingReference}</span>
+              <span className="text-dark font-bold text-lg">{bookingReference}</span>
             </div>
             {selectedSlot && (
               <div className="flex justify-between text-sm">
@@ -605,7 +609,7 @@ export default function BookingWidget() {
               <div className="flex justify-between text-sm">
                 <span className="text-dark/50">Datum</span>
                 <span className="text-dark font-medium">
-                  {new Date(selectedDate + "T00:00:00").toLocaleDateString("de-DE", { day: "2-digit", month: "long", year: "numeric" })}
+                  {new Date(selectedDate + "T00:00:00").toLocaleDateString("de-DE", { weekday: "long", day: "2-digit", month: "long", year: "numeric" })}
                 </span>
               </div>
             )}
@@ -617,21 +621,63 @@ export default function BookingWidget() {
             )}
             <div className="border-t border-gray-100 pt-3 flex justify-between">
               <span className="text-dark font-medium">Gesamt</span>
-              <span className="text-xl font-bold text-dark">{totalPrice.toFixed(2).replace(".", ",")}&nbsp;&euro;</span>
+              <span className="text-xl font-bold text-dark">{totalPrice.toFixed(2).replace(".", ",")}&nbsp;€</span>
             </div>
           </div>
-          <p className="text-dark/40 text-xs mt-4">
-            Alle Preise sind Endpreise. Gem&auml;&szlig; &sect;1 Abs. 2 UStG wird keine Umsatzsteuer erhoben (Helgoland).
+
+          {/* Email confirmation */}
+          <div className="bg-green-50 border border-green-200 rounded-xl px-5 py-4 mt-5">
+            <p className="text-green-800 text-sm">
+              ✉️ Eine Bestätigung mit Ihrer Fahrkarte wurde an <strong>{contactEmail}</strong> gesendet.
+              {wantsInvoice && " Die gewünschte Rechnung erhalten Sie ebenfalls per E-Mail."}
+            </p>
+          </div>
+
+          {/* Meeting point reminder */}
+          <div className="bg-gray-50 border border-gray-200 rounded-xl px-5 py-4 mt-4 text-sm text-dark/60 space-y-1.5">
+            <p className="font-medium text-dark/70">📍 Treffpunkt: Franz-Schensky-Platz</p>
+            <p>Bitte seien Sie <strong>15 Minuten vor Abfahrt</strong> am Treffpunkt.</p>
+            <p>🚻 Toilette im Gebäude der Landungsbrücke (kostenlos)</p>
+          </div>
+
+          {/* Self-service info */}
+          <div className="mt-6 bg-white rounded-xl border border-gray-100 p-5 space-y-3 text-sm">
+            <p className="font-medium text-dark/70 text-base">Self-Service</p>
+            <p className="text-dark/50">
+              Bitte bewahren Sie Ihre Buchungsnummer <strong>{bookingReference}</strong> auf. Damit können Sie jederzeit:
+            </p>
+            <ul className="space-y-2 text-dark/50">
+              <li className="flex items-start gap-2">
+                <span>🎫</span>
+                <span>Ihre <a href="/booking/invoice" className="text-primary underline underline-offset-2">Fahrkarte erneut herunterladen</a></span>
+              </li>
+              {!wantsInvoice && (
+                <li className="flex items-start gap-2">
+                  <span>🧾</span>
+                  <span>Nachträglich eine <a href="/booking/invoice" className="text-primary underline underline-offset-2">Rechnung anfordern</a></span>
+                </li>
+              )}
+              <li className="flex items-start gap-2">
+                <span>❌</span>
+                <span>Ihre Buchung <a href="/booking/cancel" className="text-primary underline underline-offset-2">kostenlos stornieren</a> (bis Mitternacht am Vortag)</span>
+              </li>
+            </ul>
+          </div>
+
+          {/* Tax note */}
+          <p className="text-dark/30 text-xs mt-4 text-center">
+            Alle Preise sind Endpreise. Gemäß §1 Abs. 2 UStG wird keine Umsatzsteuer erhoben (Helgoland).
           </p>
-          <p className="text-dark/50 text-sm mt-4">
-            Eine Best&auml;tigung wurde an <strong>{contactEmail}</strong> gesendet.
-          </p>
-          <button
-            onClick={handleStartOver}
-            className="mt-8 px-8 py-3 rounded-full font-semibold bg-dark text-white hover:bg-dark/85 transition-colors"
-          >
-            Neue Buchung
-          </button>
+
+          {/* New booking button */}
+          <div className="text-center mt-8">
+            <button
+              onClick={handleStartOver}
+              className="px-8 py-3 rounded-full font-semibold bg-dark text-white hover:bg-dark/85 transition-colors"
+            >
+              Neue Buchung
+            </button>
+          </div>
         </div>
       </section>
     );
