@@ -226,6 +226,24 @@ function CheckoutForm({
 /* ─── Main Component ─── */
 export default function BookingWidget() {
   const [step, setStep] = useState(0);
+  const containerRef = useRef<HTMLDivElement>(null);
+  const [containerHeight, setContainerHeight] = useState<string>('auto');
+
+  // Dynamically set container height to match the active step panel
+  useEffect(() => {
+    if (!containerRef.current) return;
+    const panels = containerRef.current.querySelectorAll(':scope > div > div.flex-shrink-0');
+    const activePanel = panels[step] as HTMLElement | undefined;
+    if (activePanel) {
+      setContainerHeight(`${activePanel.scrollHeight}px`);
+    }
+    // Also re-measure on window resize
+    const handleResize = () => {
+      if (activePanel) setContainerHeight(`${activePanel.scrollHeight}px`);
+    };
+    window.addEventListener('resize', handleResize);
+    return () => window.removeEventListener('resize', handleResize);
+  }, [step]);
   const [selectedDate, setSelectedDate] = useState<string>("");
   const [selectedTour, setSelectedTour] = useState<string>("");
   const [selectedTime, setSelectedTime] = useState<string>("");
@@ -915,7 +933,7 @@ export default function BookingWidget() {
 
         <div className="flex flex-col lg:flex-row gap-8">
           {/* Main form area */}
-          <div className="flex-1 overflow-hidden">
+          <div className="flex-1 overflow-hidden" ref={containerRef} style={{ height: containerHeight, transition: 'height 0.4s ease' }}>
             <div
               className="flex transition-transform duration-500 ease-in-out"
               style={{ transform: `translateX(-${step * 100}%)` }}
