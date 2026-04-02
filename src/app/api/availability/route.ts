@@ -13,15 +13,14 @@ export async function GET(req: NextRequest) {
       );
     }
 
-    // Fetch all active departures with their tour info
+    // Fetch all active departures with their tour info (including non-online-bookable ones)
     const { data: departures, error: depError } = await supabase
       .from('departures')
       .select(`
-        id, departure_time, is_active, notes,
+        id, departure_time, is_active, notes, bookable_online,
         tours (id, slug, name, max_capacity, price_adult, price_child, child_age_limit)
       `)
       .eq('is_active', true)
-      .eq('bookable_online', true)
       .order('departure_time');
 
     if (depError) {
@@ -113,6 +112,7 @@ export async function GET(req: NextRequest) {
           booked: totalBooked,
           remaining: Math.max(0, remaining),
           available: remaining > 0,
+          bookable_online: dep.bookable_online !== false,
           price_adult: tour.price_adult,
           price_child: tour.price_child,
           child_age_limit: tour.child_age_limit,

@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useMemo, useEffect, useCallback, useRef } from "react";
+import Image from "next/image";
 import { loadStripe } from "@stripe/stripe-js";
 import { Elements, PaymentElement, useStripe, useElements } from "@stripe/react-stripe-js";
 import DiscountGiftSection, { type AppliedGiftCard, type AppliedDiscount } from "./DiscountGiftSection";
@@ -21,6 +22,7 @@ interface AvailabilitySlot {
   booked: number;
   remaining: number;
   available: boolean;
+  bookable_online: boolean;
   price_adult: number;
   price_child: number;
 }
@@ -34,32 +36,46 @@ interface AvailabilityResponse {
 const tourOptions = [
   {
     id: "unterland",
+    slug: "unterland-tour",
     name: "Unterland-Tour",
-    subtitle: "~45 Min",
+    subtitle: "Geführte Rundfahrt durch das Unterland",
     adultPrice: 11,
     childPrice: 6,
     capacity: 42,
     duration: "ca. 40 Minuten",
-    description: "Geführte Rundfahrt durch das Unterland",
-    highlights: ["Hummerbuden", "Binnenhafen", "Hermann Marwede"],
+    description: "An Bord unserer Inselbahn gleiten Sie mit maximal 6 km/h durch das Unterland — vorbei an den legendären Hummerbuden, dem historischen Binnenhafen und dem Seenotrettungskreuzer Hermann Marwede.",
+    highlights: [
+      "Hafen, Landungsbrücke & Südstrandpromenade",
+      "Hummerbuden & historischer Binnenhafen",
+      "Hermann Marwede & AWI Meeresforschung",
+      "Fotostopp im Nordostland mit Dünenblick",
+    ],
     wheelchair: true,
     dogs: true,
     accent: "amber" as const,
+    illustration: "/images/inselbahn-illustration-unterland.svg",
   },
   {
     id: "premium",
+    slug: "premium-tour",
     name: "Premium-Tour",
-    subtitle: "~90 Min",
+    subtitle: "Exklusive Kleingruppe mit Langer Anna",
     adultPrice: 22,
     childPrice: 15,
     capacity: 18,
     duration: "ca. 90 Minuten",
-    description: "Exklusive Kleingruppe mit Langer Anna",
-    highlights: ["Oberland & Pinneberg", "Lange Anna", "Leuchtturm"],
+    description: "Das komplette Helgoland-Erlebnis. Zunächst das Unterland, dann hinauf ins Oberland bis zum Pinneberg — mit 30 Minuten freier Erkundungszeit an der Langen Anna.",
+    highlights: [
+      "Unterland & Oberland mit Pinneberg (61,3 m)",
+      "30 Min freie Erkundung an der Langen Anna",
+      "Leuchtturm, Kleingärten & Lummenfelsen",
+      "Exklusive Kleingruppe (max. 18 Personen)",
+    ],
     wheelchair: false,
     dogs: false,
     accent: "navy" as const,
     badge: "EXKLUSIV",
+    illustration: "/images/inselbahn-illustration-premium.svg",
   },
 ];
 
@@ -256,11 +272,17 @@ export default function BookingWidget() {
   // Countdown
   const { display: countdownDisplay, expired: countdownExpired, urgent: countdownUrgent } = useCountdown(reservationStart);
 
-  // Filtered slots for selected tour
+  // Filtered slots for selected tour (only online-bookable for interaction)
   const filteredSlots = useMemo(
     () => slots.filter((s) => s.tour_slug === selectedTour),
     [slots, selectedTour],
   );
+
+  // Check if ALL bookable departures for selected tour are sold out
+  const allSoldOut = useMemo(() => {
+    const bookableSlots = filteredSlots.filter((s) => s.bookable_online);
+    return bookableSlots.length > 0 && bookableSlots.every((s) => s.remaining <= 0);
+  }, [filteredSlots]);
 
   // Prices from the selected slot (API-driven)
   const adultPrice = selectedSlot?.price_adult ?? tourOptions.find((t) => t.id === selectedTour)?.adultPrice ?? 0;
@@ -288,6 +310,26 @@ export default function BookingWidget() {
 
   const totalPrice = Math.max(0, priceAfterDiscount - giftCardDeduction);
   const giftCardCoversAll = totalPrice === 0 && subtotalPrice > 0;
+
+  /* ─── Listen for tour pre-selection from TourCards ─── */
+  useEffect(() => {
+    function handleSelectTour(e: Event) {
+      const detail = (e as CustomEvent).detail;
+      if (detail?.tourId) {
+        setSelectedTour(detail.tourId);
+        setSelectedTime("");
+        setSelectedSlot(null);
+        // If date already selected, skip to step 2 (tour is already set, go to time)
+        if (selectedDate) {
+          setStep(2);
+        } else {
+          setStep(0);
+        }
+      }
+    }
+    window.addEventListener("booking:select-tour", handleSelectTour);
+    return () => window.removeEventListener("booking:select-tour", handleSelectTour);
+  }, [selectedDate]);
 
   /* ─── Fetch availability when date changes ─── */
   const fetchAvailability = useCallback(async (date: string) => {
@@ -639,12 +681,14 @@ export default function BookingWidget() {
                 <div key={s} className="flex items-center">
                   <div
                     className={`w-8 h-8 rounded-full flex items-center justify-center text-sm font-medium transition-colors ${
-                      i <= step
-                        ? "bg-dark text-white"
-                        : "bg-dark/10 text-dark/40"
+                      i < step
+                        ? "bg-primary text-white"
+                        : i === step
+                          ? "bg-dark text-white"
+                          : "bg-dark/10 text-dark/40"
                     }`}
                   >
-                    {i < 6 ? (
+                    {i < step ? (
                       <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round"><polyline points="20 6 9 17 4 12" /></svg>
                     ) : (
                       i + 1
@@ -653,7 +697,7 @@ export default function BookingWidget() {
                   {i < STEPS.length - 1 && (
                     <div
                       className={`hidden sm:block w-8 md:w-14 h-0.5 mx-1 transition-colors ${
-                        i < step ? "bg-dark" : "bg-dark/10"
+                        i < step ? "bg-primary" : "bg-dark/10"
                       }`}
                     />
                   )}
@@ -728,7 +772,7 @@ export default function BookingWidget() {
 
             {/* Summary sidebar */}
             <div className="lg:w-[320px] flex-shrink-0">
-              <div className="bg-white rounded-2xl p-6 border border-gray-100 shadow-sm sticky top-32">
+              <div className="bg-white rounded-2xl p-6 border border-gray-100 shadow-sm lg:sticky lg:top-32">
                 <h3 className="text-lg font-bold text-dark mb-4">Ihre Buchung</h3>
                 <div className="space-y-3 text-sm">
                   {selectedDate && (
@@ -797,35 +841,47 @@ export default function BookingWidget() {
     );
   }
 
-  /* ─── Steps 0–4: Normal booking flow ─── */
+  /* ─── Steps 0–5: Normal booking flow ─── */
   return (
     <section
       id="buchung"
       className="px-5 md:px-10 lg:px-20 py-20 md:py-28"
     >
       <div className="max-w-7xl mx-auto">
-        <h2 className="text-[28px] md:text-[40px] font-bold text-dark mb-12 text-center">
-          Online buchen
-        </h2>
+        {/* Header with subtle background */}
+        <div className="text-center mb-12">
+          <h2 className="text-[28px] md:text-[40px] font-bold text-dark mb-3">
+            Online buchen
+          </h2>
+          <p className="text-dark/50 text-sm md:text-base max-w-lg mx-auto">
+            In wenigen Schritten zu Ihrem Inselbahn-Erlebnis auf Helgoland
+          </p>
+        </div>
 
-        {/* Progress bar */}
+        {/* Progress bar — completed steps use primary color */}
         <div className="max-w-2xl mx-auto mb-10">
           <div className="flex items-center justify-between mb-2">
             {STEPS.map((s, i) => (
               <div key={s} className="flex items-center">
                 <div
                   className={`w-8 h-8 rounded-full flex items-center justify-center text-sm font-medium transition-colors ${
-                    i <= step
-                      ? "bg-dark text-white"
-                      : "bg-dark/10 text-dark/40"
+                    i < step
+                      ? "bg-primary text-white"
+                      : i === step
+                        ? "bg-dark text-white"
+                        : "bg-dark/10 text-dark/40"
                   }`}
                 >
-                  {i + 1}
+                  {i < step ? (
+                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round"><polyline points="20 6 9 17 4 12" /></svg>
+                  ) : (
+                    i + 1
+                  )}
                 </div>
                 {i < STEPS.length - 1 && (
                   <div
                     className={`hidden sm:block w-8 md:w-14 h-0.5 mx-1 transition-colors ${
-                      i < step ? "bg-dark" : "bg-dark/10"
+                      i < step ? "bg-primary" : "bg-dark/10"
                     }`}
                   />
                 )}
@@ -862,38 +918,38 @@ export default function BookingWidget() {
               className="flex transition-transform duration-500 ease-in-out"
               style={{ transform: `translateX(-${step * 100}%)` }}
             >
-              {/* Step 1: Date */}
+              {/* Step 1: Date — compact calendar with dots, no tooltips */}
               <div className="w-full flex-shrink-0 px-1">
-                <div className="bg-white rounded-2xl p-6 md:p-8 border border-gray-100 shadow-sm max-w-md mx-auto">
+                <div className="bg-white rounded-2xl p-5 md:p-6 border border-gray-100 shadow-sm max-w-sm mx-auto">
                   {/* Month navigation */}
-                  <div className="flex items-center justify-between mb-5">
+                  <div className="flex items-center justify-between mb-4">
                     <button
                       onClick={prevMonth}
-                      className="w-9 h-9 flex items-center justify-center hover:bg-dark/5 rounded-full transition-colors"
+                      className="w-8 h-8 flex items-center justify-center hover:bg-dark/5 rounded-full transition-colors"
                       aria-label="Vorheriger Monat"
                     >
-                      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><polyline points="15 18 9 12 15 6" /></svg>
+                      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><polyline points="15 18 9 12 15 6" /></svg>
                     </button>
-                    <h3 className="text-lg font-bold text-dark select-none">
+                    <h3 className="text-base font-bold text-dark select-none">
                       {monthNames[calMonth]} {calYear}
                     </h3>
                     <button
                       onClick={nextMonth}
-                      className="w-9 h-9 flex items-center justify-center hover:bg-dark/5 rounded-full transition-colors"
+                      className="w-8 h-8 flex items-center justify-center hover:bg-dark/5 rounded-full transition-colors"
                       aria-label="Nächster Monat"
                     >
-                      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><polyline points="9 18 15 12 9 6" /></svg>
+                      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><polyline points="9 18 15 12 9 6" /></svg>
                     </button>
                   </div>
 
                   {/* Day-of-week headers */}
-                  <div className="grid grid-cols-7 gap-0 text-center mb-1">
+                  <div className="grid grid-cols-7 gap-0 text-center mb-0.5">
                     {["Mo", "Di", "Mi", "Do", "Fr", "Sa", "So"].map((d) => (
-                      <div key={d} className="text-[11px] font-semibold text-dark/40 uppercase tracking-wider py-2">{d}</div>
+                      <div key={d} className="text-[10px] font-semibold text-dark/40 uppercase tracking-wider py-1.5">{d}</div>
                     ))}
                   </div>
 
-                  {/* Calendar grid */}
+                  {/* Calendar grid — compact */}
                   <div className="grid grid-cols-7 gap-0">
                     {calDays.map((day, i) => {
                       if (day === null) return <div key={`empty-${i}`} className="aspect-square" />;
@@ -908,7 +964,7 @@ export default function BookingWidget() {
                       const isFuture = !isPast && !isTooFar;
 
                       return (
-                        <div key={dateStr} className="flex items-center justify-center aspect-square p-0.5 relative group">
+                        <div key={dateStr} className="flex items-center justify-center aspect-square p-0.5 relative">
                           <button
                             disabled={isDisabled}
                             onClick={() => setSelectedDate(dateStr)}
@@ -916,7 +972,7 @@ export default function BookingWidget() {
                               isDisabled
                                 ? "text-dark/15 cursor-not-allowed"
                                 : isSelected
-                                  ? "bg-dark text-white shadow-md"
+                                  ? "bg-primary text-white shadow-md"
                                   : isToday
                                     ? "text-dark ring-2 ring-primary ring-inset hover:bg-primary/5"
                                     : "text-dark hover:bg-dark/5"
@@ -925,24 +981,18 @@ export default function BookingWidget() {
                             <span>{day}</span>
                             {/* Green availability dot */}
                             {isFuture && !isSelected && (
-                              <span className="absolute bottom-1.5 w-1 h-1 rounded-full bg-green" />
+                              <span className="absolute bottom-1 w-1 h-1 rounded-full bg-green" />
                             )}
                           </button>
-                          {/* Tooltip on hover */}
-                          {isFuture && (
-                            <span className="pointer-events-none absolute -top-8 left-1/2 -translate-x-1/2 bg-dark text-white text-[10px] rounded-md px-2 py-1 whitespace-nowrap opacity-0 group-hover:opacity-100 transition-opacity z-10 shadow-lg">
-                              Touren verfügbar
-                            </span>
-                          )}
                         </div>
                       );
                     })}
                   </div>
 
-                  {/* Legend */}
-                  <div className="flex items-center justify-center gap-4 mt-4 pt-3 border-t border-gray-100">
+                  {/* Compact legend */}
+                  <div className="flex items-center justify-center gap-4 mt-3 pt-2 border-t border-gray-100">
                     <span className="flex items-center gap-1.5 text-[10px] text-dark/40">
-                      <span className="w-1.5 h-1.5 rounded-full bg-green" /> Verfügbar
+                      <span className="w-1.5 h-1.5 rounded-full bg-green" /> Verf&uuml;gbar
                     </span>
                     <span className="flex items-center gap-1.5 text-[10px] text-dark/40">
                       <span className="w-3 h-3 rounded-full ring-1.5 ring-primary" /> Heute
@@ -951,22 +1001,11 @@ export default function BookingWidget() {
                 </div>
               </div>
 
-              {/* Step 2: Tour */}
+              {/* Step 2: Tour — larger cards with SVG illustrations */}
               <div className="w-full flex-shrink-0 px-1">
-                <div className="max-w-md mx-auto space-y-4">
+                <div className="max-w-lg mx-auto space-y-6">
                   {tourOptions.map((t) => {
                     const isSelected = selectedTour === t.id;
-                    const isAmber = t.accent === "amber";
-                    const accentBorder = isSelected
-                      ? "border-dark"
-                      : isAmber
-                        ? "border-amber-300"
-                        : "border-[#1a3a5c]";
-                    const accentBg = isSelected
-                      ? "bg-dark"
-                      : isAmber
-                        ? "bg-amber-50"
-                        : "bg-[#f0f4f8]";
                     return (
                       <button
                         key={t.id}
@@ -975,70 +1014,93 @@ export default function BookingWidget() {
                           setSelectedTime("");
                           setSelectedSlot(null);
                         }}
-                        className={`w-full text-left rounded-2xl p-6 transition-all border-2 relative overflow-hidden ${accentBorder} ${
+                        className={`w-full text-left rounded-2xl transition-all border-2 relative overflow-hidden ${
                           isSelected
-                            ? `${accentBg} text-white shadow-lg`
-                            : `${accentBg} text-dark shadow-sm hover:shadow-md`
+                            ? "border-primary shadow-lg scale-[1.01]"
+                            : "border-gray-100 shadow-sm hover:shadow-md hover:border-gray-200"
                         }`}
                       >
-                        {/* Badge for premium */}
-                        {"badge" in t && t.badge && !isSelected && (
-                          <span className="absolute top-3 right-3 bg-[#1a3a5c] text-white text-[10px] font-bold uppercase tracking-wider px-2.5 py-0.5 rounded-full">
-                            {t.badge}
-                          </span>
-                        )}
-                        {"badge" in t && t.badge && isSelected && (
-                          <span className="absolute top-3 right-3 bg-white/20 text-white text-[10px] font-bold uppercase tracking-wider px-2.5 py-0.5 rounded-full">
-                            {t.badge}
-                          </span>
-                        )}
-
-                        <p className="text-xl font-bold mb-1">{t.name}</p>
-                        <p className={`text-sm mb-3 ${isSelected ? "text-white/70" : "text-dark/50"}`}>
-                          {t.description}
-                        </p>
-
-                        {/* Meta info row */}
-                        <div className={`flex flex-wrap items-center gap-3 text-xs mb-3 ${isSelected ? "text-white/60" : "text-dark/45"}`}>
-                          {/* Duration */}
-                          <span className="flex items-center gap-1">
-                            <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
-                            {t.duration}
-                          </span>
-                          {/* Capacity */}
-                          <span className="flex items-center gap-1">
-                            <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/></svg>
-                            max. {t.capacity} Pers.
-                          </span>
-                          {/* Wheelchair */}
-                          {t.wheelchair && (
-                            <span className="flex items-center gap-1" title="Rollstuhlgerecht">
-                              <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><circle cx="12" cy="12" r="10"/><path d="M8 14s1.5 2 4 2 4-2 4-2"/><line x1="9" y1="9" x2="9.01" y2="9"/><line x1="15" y1="9" x2="15.01" y2="9"/></svg>
-                              Barrierefrei
-                            </span>
-                          )}
-                          {/* Dogs */}
-                          {t.dogs && (
-                            <span className="flex items-center gap-1" title="Hunde erlaubt">
-                              Hunde OK
-                            </span>
-                          )}
+                        {/* SVG illustration header */}
+                        <div className={`flex items-center justify-center h-[120px] ${
+                          t.accent === "amber" ? "bg-amber-50" : "bg-[#f0f4f8]"
+                        }`}>
+                          <Image
+                            src={t.illustration}
+                            alt={`${t.name} Illustration`}
+                            width={240}
+                            height={100}
+                            className="w-auto h-auto max-h-[100px]"
+                          />
                         </div>
 
-                        {/* Price */}
-                        <div className={`flex items-baseline gap-2 pt-2 border-t ${isSelected ? "border-white/15" : "border-dark/5"}`}>
-                          <span className="text-lg font-bold">ab {t.adultPrice.toFixed(2).replace(".", ",")}&nbsp;&euro;</span>
-                          <span className={`text-xs ${isSelected ? "text-white/50" : "text-dark/40"}`}>
-                            Erwachsene &middot; Kinder ab {t.childPrice.toFixed(2).replace(".", ",")}&nbsp;&euro;
-                          </span>
+                        <div className="p-5 md:p-6">
+                          {/* Badge for premium */}
+                          {"badge" in t && t.badge && (
+                            <span className="inline-block bg-[#1a3a5c] text-white text-[10px] font-bold uppercase tracking-wider px-2.5 py-0.5 rounded-full mb-2">
+                              {t.badge}
+                            </span>
+                          )}
+
+                          <p className="text-xl font-bold text-dark mb-0.5">{t.name}</p>
+                          <p className="text-sm text-dark/50 mb-3">
+                            {t.subtitle}
+                          </p>
+
+                          {/* Meta info row: duration, capacity, accessibility */}
+                          <div className="flex flex-wrap items-center gap-3 text-xs text-dark/45 mb-3">
+                            <span className="flex items-center gap-1">
+                              <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+                              {t.duration}
+                            </span>
+                            <span className="flex items-center gap-1">
+                              <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/></svg>
+                              max. {t.capacity} Pers.
+                            </span>
+                            {t.wheelchair && (
+                              <span className="flex items-center gap-1" title="Rollstuhlgerecht">
+                                <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><circle cx="12" cy="12" r="10"/><path d="M8 14s1.5 2 4 2 4-2 4-2"/><line x1="9" y1="9" x2="9.01" y2="9"/><line x1="15" y1="9" x2="15.01" y2="9"/></svg>
+                                Barrierefrei
+                              </span>
+                            )}
+                            {t.dogs && (
+                              <span className="flex items-center gap-1" title="Hunde erlaubt">
+                                Hunde OK
+                              </span>
+                            )}
+                          </div>
+
+                          {/* Highlights */}
+                          <ul className="space-y-1.5 mb-4">
+                            {t.highlights.map((h, idx) => (
+                              <li key={idx} className="flex items-start gap-2 text-xs text-dark/60">
+                                <span className="text-green mt-0.5 font-bold text-[10px]">&#10003;</span>
+                                {h}
+                              </li>
+                            ))}
+                          </ul>
+
+                          {/* Price */}
+                          <div className="flex items-baseline gap-2 pt-3 border-t border-gray-100">
+                            <span className="text-xl font-bold text-dark">ab {t.adultPrice.toFixed(2).replace(".", ",")}&nbsp;&euro;</span>
+                            <span className="text-xs text-dark/40">
+                              Erwachsene &middot; Kinder ab {t.childPrice.toFixed(2).replace(".", ",")}&nbsp;&euro;
+                            </span>
+                          </div>
                         </div>
+
+                        {/* Selected indicator */}
+                        {isSelected && (
+                          <div className="absolute top-3 right-3 w-7 h-7 rounded-full bg-primary text-white flex items-center justify-center">
+                            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round"><polyline points="20 6 9 17 4 12" /></svg>
+                          </div>
+                        )}
                       </button>
                     );
                   })}
                 </div>
               </div>
 
-              {/* Step 3: Time (API-driven) */}
+              {/* Step 3: Time (API-driven) with sold-out handling */}
               <div className="w-full flex-shrink-0 px-1">
                 <div className="max-w-md mx-auto">
                   {slotsLoading ? (
@@ -1058,48 +1120,131 @@ export default function BookingWidget() {
                     </div>
                   ) : filteredSlots.length === 0 ? (
                     <div className="text-center py-12">
-                      <p className="text-dark/50 text-sm">Keine Abfahrten für diesen Tag verfügbar.</p>
+                      <p className="text-dark/50 text-sm">Keine Abfahrten f&uuml;r diesen Tag verf&uuml;gbar.</p>
+                    </div>
+                  ) : allSoldOut ? (
+                    /* All departures sold out for this tour+date */
+                    <div className="bg-white rounded-2xl p-8 border border-gray-100 shadow-sm text-center">
+                      <div className="flex justify-center mb-4">
+                        <div className="w-14 h-14 rounded-full bg-red-100 flex items-center justify-center">
+                          <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="#dc2626" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                            <circle cx="12" cy="12" r="10" />
+                            <line x1="15" y1="9" x2="9" y2="15" />
+                            <line x1="9" y1="9" x2="15" y2="15" />
+                          </svg>
+                        </div>
+                      </div>
+                      <h3 className="text-lg font-bold text-dark mb-2">Leider ausgebucht f&uuml;r dieses Datum</h3>
+                      <p className="text-sm text-dark/50 mb-6">
+                        Alle Online-Abfahrten f&uuml;r die {tourOptions.find(t => t.id === selectedTour)?.name || "Tour"} sind an diesem Tag leider vergeben.
+                      </p>
+                      <button
+                        onClick={() => setStep(0)}
+                        className="px-6 py-3 rounded-full bg-primary text-white font-semibold text-sm hover:bg-primary/90 transition-colors mb-4"
+                      >
+                        Anderes Datum w&auml;hlen
+                      </button>
+                      <p className="text-xs text-dark/40 mt-4">
+                        Tipp: Versuchen Sie auch vor Ort bei unserem Ticketverk&auml;ufer Tomek (11:30–14:30 Uhr)
+                      </p>
                     </div>
                   ) : (
                     <div className="flex flex-col gap-3">
                       {filteredSlots.map((slot) => {
                         const time = formatTime(slot.departure_time);
-                        const isSelected = selectedSlot?.departure_id === slot.departure_id;
+                        const isSlotSelected = selectedSlot?.departure_id === slot.departure_id;
                         const soldOut = slot.remaining <= 0;
+                        const notBookableOnline = !slot.bookable_online;
+                        const isDisabledSlot = soldOut || notBookableOnline;
+                        const tourOpt = tourOptions.find(t => t.id === selectedTour);
+                        const isAmber = tourOpt?.accent === "amber";
+
+                        // Capacity percentage
+                        const capacityPercent = slot.max_capacity > 0 ? (slot.booked / slot.max_capacity) * 100 : 0;
+                        const remainingPercent = 100 - capacityPercent;
+                        // Color for remaining text
+                        const remainColor = !slot.bookable_online
+                          ? "text-dark/30"
+                          : soldOut
+                            ? "text-red-400"
+                            : remainingPercent > 50
+                              ? "text-green"
+                              : remainingPercent > 25
+                                ? "text-amber-600"
+                                : "text-red-500";
+
                         return (
                           <button
                             key={slot.departure_id}
-                            disabled={soldOut}
+                            disabled={isDisabledSlot}
                             onClick={() => {
                               setSelectedTime(time);
                               setSelectedSlot(slot);
                             }}
-                            className={`w-full text-left px-6 py-4 rounded-2xl text-base font-medium transition-all border ${
-                              soldOut
+                            className={`w-full text-left px-5 py-4 rounded-2xl text-base font-medium transition-all border-2 ${
+                              notBookableOnline
                                 ? "bg-gray-50 text-dark/30 border-gray-100 cursor-not-allowed"
-                                : isSelected
-                                  ? "bg-dark text-white border-dark shadow-md"
-                                  : "bg-white text-dark border-gray-100 shadow-sm hover:shadow-md"
+                                : soldOut
+                                  ? "bg-gray-50 text-dark/30 border-gray-100 cursor-not-allowed"
+                                  : isSlotSelected
+                                    ? "bg-white text-dark border-primary shadow-md"
+                                    : `bg-white text-dark shadow-sm hover:shadow-md ${
+                                        isAmber ? "border-amber-200 hover:border-amber-300" : "border-[#c5d4e3] hover:border-[#1a3a5c]"
+                                      }`
                             }`}
                           >
-                            <div className="flex items-center justify-between">
-                              <span>{time} Uhr</span>
-                              <span className={`text-sm ${
-                                soldOut
-                                  ? "text-red-400"
-                                  : isSelected
-                                    ? "text-white/70"
-                                    : "text-dark/50"
-                              }`}>
-                                {soldOut
-                                  ? "ausgebucht"
-                                  : `noch ${slot.remaining} ${slot.remaining === 1 ? "Platz" : "Plätze"}`}
+                            <div className="flex items-center justify-between mb-1.5">
+                              <div className="flex items-center gap-2">
+                                <span className={notBookableOnline ? "text-dark/30" : ""}>{time} Uhr</span>
+                                {soldOut && slot.bookable_online && (
+                                  <span className="text-[10px] font-bold uppercase bg-red-100 text-red-600 px-2 py-0.5 rounded-full">ausgebucht</span>
+                                )}
+                              </div>
+                              <span className={`text-sm ${remainColor}`}>
+                                {notBookableOnline
+                                  ? ""
+                                  : soldOut
+                                    ? ""
+                                    : `noch ${slot.remaining} ${slot.remaining === 1 ? "Platz" : "Pl\u00E4tze"}`}
                               </span>
                             </div>
-                            {slot.departure_notes && (
-                              <p className={`text-xs mt-1 ${isSelected ? "text-white/60" : "text-dark/40"}`}>
+
+                            {/* Capacity progress bar */}
+                            {slot.bookable_online && (
+                              <div className="w-full h-1.5 bg-dark/5 rounded-full overflow-hidden mb-1.5">
+                                <div
+                                  className={`h-full rounded-full transition-all ${
+                                    soldOut
+                                      ? "bg-red-300"
+                                      : remainingPercent > 50
+                                        ? "bg-green"
+                                        : remainingPercent > 25
+                                          ? "bg-amber-400"
+                                          : "bg-red-400"
+                                  }`}
+                                  style={{ width: `${capacityPercent}%` }}
+                                />
+                              </div>
+                            )}
+
+                            {/* Non-bookable notice */}
+                            {notBookableOnline && (
+                              <p className="text-xs text-dark/35 mt-1">
+                                Nur vor Ort buchbar — Tickets bei Tomek (11:30–14:30) oder beim Fahrer
+                              </p>
+                            )}
+
+                            {slot.departure_notes && slot.bookable_online && (
+                              <p className={`text-xs mt-0.5 ${isSlotSelected ? "text-dark/50" : "text-dark/40"}`}>
                                 {slot.departure_notes}
                               </p>
+                            )}
+
+                            {/* Selected indicator */}
+                            {isSlotSelected && (
+                              <div className="absolute top-3 right-3 w-5 h-5 rounded-full bg-primary text-white flex items-center justify-center">
+                                <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round"><polyline points="20 6 9 17 4 12" /></svg>
+                              </div>
                             )}
                           </button>
                         );
@@ -1153,7 +1298,7 @@ export default function BookingWidget() {
 
                   {/* Capacity note */}
                   <p className="text-xs text-dark/40 text-center">
-                    {totalPassengers} von {remaining} Plätzen belegt
+                    {totalPassengers} von {remaining} Pl&auml;tzen belegt
                   </p>
 
                   {/* Price breakdown */}
@@ -1276,7 +1421,7 @@ export default function BookingWidget() {
                       </div>
                       <div>
                         <label className="block text-sm font-medium text-dark mb-1.5">Stra&szlig;e &amp; Hausnr.</label>
-                        <input type="text" value={invoiceStreet} onChange={(e) => setInvoiceStreet(e.target.value)} placeholder="Musterstra&szlig;e 1" className="w-full px-4 py-3 rounded-xl border border-gray-200 focus:border-dark focus:outline-none transition-colors bg-transparent" />
+                        <input type="text" value={invoiceStreet} onChange={(e) => setInvoiceStreet(e.target.value)} placeholder="Musterstraße 1" className="w-full px-4 py-3 rounded-xl border border-gray-200 focus:border-dark focus:outline-none transition-colors bg-transparent" />
                       </div>
                       <div className="flex gap-3">
                         <div className="w-1/3">
@@ -1312,9 +1457,9 @@ export default function BookingWidget() {
             </div>
           </div>
 
-          {/* Summary sidebar */}
+          {/* Summary sidebar — sticky on desktop */}
           <div className="lg:w-[320px] flex-shrink-0">
-            <div className="bg-white rounded-2xl p-6 border border-gray-100 shadow-sm sticky top-32">
+            <div className="bg-white rounded-2xl p-6 border border-gray-100 shadow-sm lg:sticky lg:top-32">
               <h3 className="text-lg font-bold text-dark mb-4">Ihre Buchung</h3>
               <div className="space-y-3 text-sm">
                 {selectedDate && (
@@ -1397,7 +1542,7 @@ export default function BookingWidget() {
               step === 0 ? "text-dark/20 cursor-not-allowed" : "text-dark hover:bg-dark/5"
             }`}
           >
-            Zurück
+            Zur&uuml;ck
           </button>
           <button
             onClick={handleNext}

@@ -3,6 +3,7 @@ import Hero from "@/components/Hero";
 import TourCards from "@/components/TourCards";
 import Schedule from "@/components/Schedule";
 import Reviews from "@/components/Reviews";
+import GutscheinSection from "@/components/GutscheinSection";
 import GettingThere from "@/components/GettingThere";
 import FAQ from "@/components/FAQ";
 import BookingWidget from "@/components/BookingWidget";
@@ -26,6 +27,7 @@ export default async function Home() {
         <TourCards tours={tours} />
         <Schedule tours={tours} departures={departures} />
         <Reviews />
+        <GutscheinSection />
         <GettingThere />
         <FAQ />
         <InlineChat />

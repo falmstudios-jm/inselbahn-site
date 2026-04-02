@@ -1,7 +1,14 @@
 "use client";
 
+import { useCallback } from "react";
 import Image from "next/image";
 import type { Tour } from "@/lib/tours";
+
+/** Map tour slugs to the BookingWidget tour IDs */
+const SLUG_TO_BOOKING_ID: Record<string, string> = {
+  "unterland-tour": "unterland",
+  "premium-tour": "premium",
+};
 
 const galleryRow1 = [
   { src: "/images/tour-photo-1.jpg", alt: "Helgoland Klippen" },
@@ -56,7 +63,7 @@ function CheckItem({ text }: { text: string }) {
   );
 }
 
-function TourCard({ tour }: { tour: Tour }) {
+function TourCard({ tour, onBook }: { tour: Tour; onBook: (tourSlug: string) => void }) {
   const assets = TOUR_ASSETS[tour.slug] || DEFAULT_ASSETS;
 
   const capacityLabel = tour.wheelchair_accessible
@@ -117,9 +124,18 @@ function TourCard({ tour }: { tour: Tour }) {
         <span className="text-2xl font-bold text-dark">ab {tour.price_adult}&euro;</span>
         <span className="text-dark/50 text-sm">Erwachsene</span>
       </div>
-      <p className="text-dark/50 text-sm">
+      <p className="text-dark/50 text-sm mb-5">
         {tour.price_child}&euro; Kinder (unter {tour.child_age_limit})
       </p>
+
+      {/* Buchen button */}
+      <button
+        onClick={() => onBook(tour.slug)}
+        data-tour={tour.slug}
+        className="w-full py-3.5 rounded-xl bg-primary text-white font-semibold text-base hover:bg-primary/90 transition-colors"
+      >
+        {tour.name} buchen
+      </button>
     </div>
   );
 }
@@ -129,6 +145,19 @@ interface TourCardsProps {
 }
 
 export default function TourCards({ tours }: TourCardsProps) {
+  const handleBook = useCallback((tourSlug: string) => {
+    const bookingId = SLUG_TO_BOOKING_ID[tourSlug] || tourSlug;
+    // Dispatch custom event so BookingWidget can pre-select the tour
+    window.dispatchEvent(
+      new CustomEvent("booking:select-tour", { detail: { tourId: bookingId } })
+    );
+    // Scroll to the booking widget
+    const el = document.getElementById("buchung");
+    if (el) {
+      el.scrollIntoView({ behavior: "smooth", block: "start" });
+    }
+  }, []);
+
   return (
     <section id="touren">
       {/* ===== ZU WENIG ZEIT SECTION ===== */}
@@ -229,7 +258,7 @@ export default function TourCards({ tours }: TourCardsProps) {
 
           <div className="grid md:grid-cols-2 gap-10 lg:gap-14">
             {tours.map((tour) => (
-              <TourCard key={tour.id} tour={tour} />
+              <TourCard key={tour.id} tour={tour} onBook={handleBook} />
             ))}
           </div>
 
