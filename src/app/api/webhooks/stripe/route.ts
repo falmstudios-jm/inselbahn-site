@@ -149,6 +149,11 @@ async function confirmBookingAndSendEmail(bookingId: string, paymentIntentId: st
 
   const tour = dep?.tours;
 
+  const hasInvoiceData = !!booking.invoice_data;
+  const invoiceUrl = hasInvoiceData
+    ? `${BASE_URL}/api/booking/${booking.id}/invoice?token=${booking.cancel_token}`
+    : null;
+
   await getResend().emails.send({
     from: 'Inselbahn Helgoland <buchung@helgolandbahn.de>',
     to: booking.customer_email,
@@ -165,6 +170,8 @@ async function confirmBookingAndSendEmail(bookingId: string, paymentIntentId: st
       totalAmount: booking.total_amount,
       cancelUrl: `${BASE_URL}/booking/cancel?id=${booking.id}&token=${booking.cancel_token}`,
       ticketUrl: `${BASE_URL}/api/booking/${booking.id}/ticket?token=${booking.cancel_token}`,
+      invoiceUrl,
+      invoicePageUrl: `${BASE_URL}/booking/invoice`,
     }),
   });
 }
@@ -181,6 +188,8 @@ interface EmailParams {
   totalAmount: number;
   cancelUrl: string;
   ticketUrl: string;
+  invoiceUrl: string | null;
+  invoicePageUrl: string;
 }
 
 function buildConfirmationEmail(params: EmailParams): string {
@@ -196,6 +205,8 @@ function buildConfirmationEmail(params: EmailParams): string {
     totalAmount,
     cancelUrl,
     ticketUrl,
+    invoiceUrl,
+    invoicePageUrl,
   } = params;
 
   const formattedDate = new Date(bookingDate + 'T00:00:00').toLocaleDateString(
@@ -282,6 +293,25 @@ function buildConfirmationEmail(params: EmailParams): string {
                 Fahrkarte herunterladen (PDF)
               </a>
               <br><br>
+
+              <!-- Invoice -->
+              ${invoiceUrl ? `
+              <p style="font-size:14px;color:#555;line-height:1.6;margin:0 0 8px;">
+                Ihre Rechnung:
+              </p>
+              <a href="${invoiceUrl}" style="display:inline-block;background-color:#e8a838;color:#ffffff;font-size:14px;font-weight:700;text-decoration:none;padding:10px 20px;border-radius:6px;margin-bottom:24px;">
+                Rechnung herunterladen (PDF)
+              </a>
+              <br><br>
+              ` : `
+              <p style="font-size:14px;color:#555;line-height:1.6;margin:0 0 8px;">
+                Benötigen Sie eine Rechnung? Sie können Ihre Rechnungsdaten jederzeit ergänzen:
+              </p>
+              <a href="${invoicePageUrl}" style="display:inline-block;color:#1a3a5c;font-size:14px;text-decoration:underline;margin-bottom:24px;">
+                Rechnung anfordern
+              </a>
+              <br><br>
+              `}
 
               <!-- Cancellation -->
               <p style="font-size:14px;color:#555;line-height:1.6;margin:0 0 16px;">
