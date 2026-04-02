@@ -213,14 +213,20 @@ export default function AGBPage() {
             </h2>
             <p>
               Geschenkgutscheine der Inselbahn Helgoland sind ab Kaufdatum{" "}
-              <strong>2 Jahre g&uuml;ltig</strong>. Das Ablaufdatum ist auf dem
-              Gutschein vermerkt bzw. wird in der Kaufbest&auml;tigung
-              mitgeteilt.
+              <strong>3 Jahre g&uuml;ltig</strong> (gem&auml;&szlig; &sect;195 BGB).
+              Die Verj&auml;hrungsfrist beginnt zum Ende des Kaufjahres (&sect;199 BGB).
+              Das Ablaufdatum ist auf dem Gutschein vermerkt bzw. wird in der
+              Kaufbest&auml;tigung mitgeteilt.
             </p>
             <p className="mt-2">
-              Gutscheine sind nicht bar auszahlbar und k&ouml;nnen nicht gegen
-              Bargeld eingetauscht werden. Eine Erstattung des Gutscheinwertes
-              ist ausgeschlossen.
+              Teileinl&ouml;sung ist m&ouml;glich &mdash; der Restwert bleibt erhalten
+              und kann bei sp&auml;teren Buchungen eingesetzt werden. Bei einem
+              Restwert unter 1,00 &euro; kann auf Wunsch eine Barauszahlung erfolgen.
+            </p>
+            <p className="mt-2">
+              Gutscheine sind grunds&auml;tzlich nicht bar auszahlbar und k&ouml;nnen
+              nicht gegen Bargeld eingetauscht werden (au&szlig;er bei Restwert unter
+              1,00 &euro;). Eine Erstattung des Gutscheinwertes ist ausgeschlossen.
             </p>
             <p className="mt-2">
               Eine Teileinl&ouml;sung ist m&ouml;glich. Der verbleibende
