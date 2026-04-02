@@ -17,6 +17,13 @@ export default function InvoicePage() {
   const [postalCode, setPostalCode] = useState("");
   const [city, setCity] = useState("");
   const [vatId, setVatId] = useState("");
+  const [country, setCountry] = useState("Deutschland");
+
+  const countryOptions = [
+    "Deutschland", "Österreich", "Schweiz", "Niederlande", "Belgien",
+    "Dänemark", "Polen", "Frankreich", "Luxemburg", "Tschechien",
+    "Vereinigtes Königreich", "Schweden", "Norwegen", "Italien", "Spanien",
+  ];
 
   async function handleLookup(e: React.FormEvent) {
     e.preventDefault();
@@ -76,6 +83,7 @@ export default function InvoicePage() {
             street: street.trim(),
             postal_code: postalCode.trim(),
             city: city.trim(),
+            country: country,
             vat_id: vatId.trim() || undefined,
           },
         }),
@@ -239,6 +247,22 @@ export default function InvoicePage() {
                       required
                     />
                   </div>
+                </div>
+
+                <div>
+                  <label htmlFor="country" className="block text-sm font-medium text-gray-700 mb-1">
+                    Land
+                  </label>
+                  <select
+                    id="country"
+                    className={inputClass}
+                    value={country}
+                    onChange={(e) => setCountry(e.target.value)}
+                  >
+                    {countryOptions.map((c) => (
+                      <option key={c} value={c}>{c}</option>
+                    ))}
+                  </select>
                 </div>
 
                 <div>

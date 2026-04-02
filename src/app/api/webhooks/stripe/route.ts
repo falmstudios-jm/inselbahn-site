@@ -313,6 +313,11 @@ function buildConfirmationEmail(params: EmailParams): string {
               <br><br>
               `}
 
+              <!-- Tax-free notice -->
+              <p style="font-size:12px;color:#888;line-height:1.6;margin:0 0 24px;padding:12px;background-color:#f8f9fa;border-radius:6px;">
+                Alle Preise sind Endpreise. Gemäß §1 Abs. 2 UStG wird keine Umsatzsteuer erhoben (Helgoland).
+              </p>
+
               <!-- Cancellation -->
               <p style="font-size:14px;color:#555;line-height:1.6;margin:0 0 16px;">
                 Kostenlose Stornierung bis Mitternacht am Vortag:
@@ -320,6 +325,11 @@ function buildConfirmationEmail(params: EmailParams): string {
               <a href="${cancelUrl}" style="display:inline-block;color:#c0392b;font-size:14px;text-decoration:underline;">
                 Buchung stornieren
               </a>
+
+              <!-- AGB -->
+              <p style="font-size:12px;color:#888;margin:20px 0 0;">
+                Es gelten unsere <a href="${BASE_URL}/agb" style="color:#1a3a5c;text-decoration:underline;">AGB</a> und <a href="${BASE_URL}/agb#stornierung" style="color:#1a3a5c;text-decoration:underline;">Stornierungsbedingungen</a>.
+              </p>
             </td>
           </tr>
 
@@ -462,7 +472,7 @@ function buildGiftCardEmail(params: GiftCardEmailParams): string {
                     ${recipientSection}
 
                     <p style="margin:0 0 4px;font-size:12px;color:#888;text-transform:uppercase;letter-spacing:1px;">Gültig bis</p>
-                    <p style="margin:0;font-size:15px;color:#333;">2 Jahre ab Kaufdatum</p>
+                    <p style="margin:0;font-size:15px;color:#333;">${(() => { const d = new Date(); d.setFullYear(d.getFullYear() + 3); return d.toLocaleDateString('de-DE', { year: 'numeric', month: 'long', day: 'numeric' }); })()} (3 Jahre ab Kaufdatum)</p>
                   </td>
                 </tr>
               </table>
@@ -476,6 +486,9 @@ function buildGiftCardEmail(params: GiftCardEmailParams): string {
                       Geben Sie den Gutscheincode bei der Online-Buchung auf
                       <a href="${BASE_URL}" style="color:#1a3a5c;">helgolandbahn.de</a>
                       im Feld &bdquo;Gutscheincode&ldquo; ein. Der Betrag wird automatisch verrechnet.
+                    </p>
+                    <p style="margin:8px 0 0;font-size:14px;color:#555;line-height:1.5;">
+                      Teileinlösung möglich — der Restwert bleibt erhalten.
                     </p>
                   </td>
                 </tr>

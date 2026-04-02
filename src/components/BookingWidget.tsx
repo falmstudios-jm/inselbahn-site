@@ -3,6 +3,7 @@
 import { useState, useMemo, useEffect, useCallback, useRef } from "react";
 import { loadStripe } from "@stripe/stripe-js";
 import { Elements, PaymentElement, useStripe, useElements } from "@stripe/react-stripe-js";
+import DiscountGiftSection, { type AppliedGiftCard, type AppliedDiscount } from "./DiscountGiftSection";
 
 /* ─── Stripe singleton ─── */
 const stripePromise = loadStripe(
@@ -64,7 +65,25 @@ const tourOptions = [
 
 const MAX_FUTURE_DAYS = 90;
 
-const STEPS = ["Datum", "Tour", "Uhrzeit", "Personen", "Kontakt", "Zahlung"];
+const STEPS = ["Datum", "Tour", "Uhrzeit", "Personen", "Rabatt", "Kontakt", "Zahlung"];
+
+const COUNTRY_OPTIONS = [
+  "Deutschland",
+  "Österreich",
+  "Schweiz",
+  "Niederlande",
+  "Belgien",
+  "Dänemark",
+  "Polen",
+  "Frankreich",
+  "Luxemburg",
+  "Tschechien",
+  "Vereinigtes Königreich",
+  "Schweden",
+  "Norwegen",
+  "Italien",
+  "Spanien",
+];
 const RESERVATION_SECONDS = 15 * 60; // 15 minutes
 
 function generateCalendarDays(year: number, month: number) {
@@ -206,6 +225,11 @@ export default function BookingWidget() {
   const [invoicePostalCode, setInvoicePostalCode] = useState("");
   const [invoiceCity, setInvoiceCity] = useState("");
   const [invoiceVatId, setInvoiceVatId] = useState("");
+  const [invoiceCountry, setInvoiceCountry] = useState("Deutschland");
+
+  // Discount & Gift Card state
+  const [appliedGiftCard, setAppliedGiftCard] = useState<AppliedGiftCard | null>(null);
+  const [appliedDiscount, setAppliedDiscount] = useState<AppliedDiscount | null>(null);
 
   // Availability state
   const [slots, setSlots] = useState<AvailabilitySlot[]>([]);
@@ -243,7 +267,27 @@ export default function BookingWidget() {
   const childPrice = selectedSlot?.price_child ?? tourOptions.find((t) => t.id === selectedTour)?.childPrice ?? 0;
   const remaining = selectedSlot?.remaining ?? 20;
 
-  const totalPrice = adultPrice * adults + childPrice * children;
+  const subtotalPrice = adultPrice * adults + childPrice * children;
+
+  // Apply discount
+  const discountAmount = useMemo(() => {
+    if (!appliedDiscount) return 0;
+    if (appliedDiscount.type === 'percentage') {
+      return Math.round(subtotalPrice * appliedDiscount.value) / 100;
+    }
+    return Math.min(appliedDiscount.value, subtotalPrice);
+  }, [appliedDiscount, subtotalPrice]);
+
+  const priceAfterDiscount = Math.max(0, subtotalPrice - discountAmount);
+
+  // Apply gift card
+  const giftCardDeduction = useMemo(() => {
+    if (!appliedGiftCard) return 0;
+    return Math.min(appliedGiftCard.remaining_value, priceAfterDiscount);
+  }, [appliedGiftCard, priceAfterDiscount]);
+
+  const totalPrice = Math.max(0, priceAfterDiscount - giftCardDeduction);
+  const giftCardCoversAll = totalPrice === 0 && subtotalPrice > 0;
 
   /* ─── Fetch availability when date changes ─── */
   const fetchAvailability = useCallback(async (date: string) => {
@@ -291,7 +335,7 @@ export default function BookingWidget() {
 
   /* ─── Handle countdown expiry ─── */
   useEffect(() => {
-    if (countdownExpired && step === 5 && !paymentSuccess) {
+    if (countdownExpired && step === 6 && !paymentSuccess) {
       // Timer ran out — reservation expired
       setClientSecret(null);
       setReservationStart(null);
@@ -308,7 +352,9 @@ export default function BookingWidget() {
         return selectedTime !== "" && selectedSlot !== null;
       case 3:
         return adults > 0;
-      case 4: {
+      case 4:
+        return true; // Rabatt step is always optional
+      case 5: {
         const baseValid =
           contactName.trim() !== "" &&
           contactEmail.trim() !== "" &&
@@ -349,6 +395,9 @@ export default function BookingWidget() {
           customer_name: contactName.trim(),
           customer_email: contactEmail.trim(),
           customer_phone: contactPhone.trim(),
+          ...(appliedGiftCard ? { gift_card_code: appliedGiftCard.code } : {}),
+          ...(appliedDiscount ? { discount_code: appliedDiscount.code } : {}),
+          ...(giftCardCoversAll ? { skip_payment: true } : {}),
           ...(wantsInvoice
             ? {
                 invoice: {
@@ -356,6 +405,7 @@ export default function BookingWidget() {
                   street: invoiceStreet.trim(),
                   postal_code: invoicePostalCode.trim(),
                   city: invoiceCity.trim(),
+                  country: invoiceCountry,
                   ...(invoiceVatId.trim() ? { vat_id: invoiceVatId.trim() } : {}),
                 },
               }
@@ -383,12 +433,20 @@ export default function BookingWidget() {
       }
 
       const data = await res.json();
+
+      if (giftCardCoversAll || data.skip_payment) {
+        // Gift card covers the full amount — no Stripe payment needed
+        setBookingReference(data.booking_reference);
+        setPaymentSuccess(true);
+        return;
+      }
+
       setClientSecret(data.client_secret);
       setBookingReference(data.booking_reference);
       setReservationStart(Date.now());
       setPaymentError("");
       setPaymentSuccess(false);
-      setStep(5); // Go to payment step
+      setStep(6); // Go to payment step
     } catch {
       setSubmitError("Verbindung fehlgeschlagen. Bitte versuchen Sie es erneut.");
     } finally {
@@ -398,16 +456,16 @@ export default function BookingWidget() {
 
   function handleNext() {
     setSubmitError("");
-    if (step < 4) {
+    if (step < 5) {
       setStep(step + 1);
-    } else if (step === 4) {
+    } else if (step === 5) {
       handleSubmit();
     }
   }
 
   function handleBack() {
     setSubmitError("");
-    if (step > 0 && step <= 4) setStep(step - 1);
+    if (step > 0 && step <= 5) setStep(step - 1);
   }
 
   function handleStartOver() {
@@ -429,6 +487,9 @@ export default function BookingWidget() {
     setInvoicePostalCode("");
     setInvoiceCity("");
     setInvoiceVatId("");
+    setInvoiceCountry("Deutschland");
+    setAppliedGiftCard(null);
+    setAppliedDiscount(null);
     setClientSecret(null);
     setBookingReference("");
     setPaymentError("");
@@ -512,10 +573,13 @@ export default function BookingWidget() {
             )}
             <div className="border-t border-gray-100 pt-3 flex justify-between">
               <span className="text-dark font-medium">Gesamt</span>
-              <span className="text-xl font-bold text-dark">{totalPrice.toFixed(2).replace(".", ",")}&euro;</span>
+              <span className="text-xl font-bold text-dark">{totalPrice.toFixed(2).replace(".", ",")}&nbsp;&euro;</span>
             </div>
           </div>
-          <p className="text-dark/50 text-sm mt-6">
+          <p className="text-dark/40 text-xs mt-4">
+            Alle Preise sind Endpreise. Gem&auml;&szlig; &sect;1 Abs. 2 UStG wird keine Umsatzsteuer erhoben (Helgoland).
+          </p>
+          <p className="text-dark/50 text-sm mt-4">
             Eine Best&auml;tigung wurde an <strong>{contactEmail}</strong> gesendet.
           </p>
           <button
@@ -530,7 +594,7 @@ export default function BookingWidget() {
   }
 
   /* ─── Timer expired on payment step ─── */
-  if (step === 5 && countdownExpired && !paymentSuccess) {
+  if (step === 6 && countdownExpired && !paymentSuccess) {
     return (
       <section id="buchung" className="px-5 md:px-10 lg:px-20 py-20 md:py-28">
         <div className="max-w-lg mx-auto text-center animate-fade-in-up">
@@ -559,8 +623,8 @@ export default function BookingWidget() {
     );
   }
 
-  /* ─── Payment step (step 5) ─── */
-  if (step === 5 && clientSecret) {
+  /* ─── Payment step (step 6) ─── */
+  if (step === 6 && clientSecret) {
     return (
       <section id="buchung" className="px-5 md:px-10 lg:px-20 py-20 md:py-28">
         <div className="max-w-7xl mx-auto">
@@ -580,7 +644,7 @@ export default function BookingWidget() {
                         : "bg-dark/10 text-dark/40"
                     }`}
                   >
-                    {i < 5 ? (
+                    {i < 6 ? (
                       <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round"><polyline points="20 6 9 17 4 12" /></svg>
                     ) : (
                       i + 1
@@ -689,12 +753,12 @@ export default function BookingWidget() {
                   )}
                   <div className="flex justify-between">
                     <span className="text-dark/50">Erwachsene</span>
-                    <span className="text-dark font-medium">{adults} &times; {adultPrice}&euro;</span>
+                    <span className="text-dark font-medium">{adults} &times; {adultPrice.toFixed(2).replace(".", ",")}&nbsp;&euro;</span>
                   </div>
                   {children > 0 && (
                     <div className="flex justify-between">
                       <span className="text-dark/50">Kinder (6–14)</span>
-                      <span className="text-dark font-medium">{children} &times; {childPrice}&euro;</span>
+                      <span className="text-dark font-medium">{children} &times; {childPrice.toFixed(2).replace(".", ",")}&nbsp;&euro;</span>
                     </div>
                   )}
                   {childrenFree > 0 && (
@@ -703,12 +767,27 @@ export default function BookingWidget() {
                       <span className="text-dark font-medium">kostenlos</span>
                     </div>
                   )}
+                  {discountAmount > 0 && (
+                    <div className="flex justify-between text-green-700">
+                      <span>Rabatt</span>
+                      <span className="font-medium">&minus;{discountAmount.toFixed(2).replace(".", ",")}&nbsp;&euro;</span>
+                    </div>
+                  )}
+                  {giftCardDeduction > 0 && (
+                    <div className="flex justify-between text-green-700">
+                      <span>Gutschein</span>
+                      <span className="font-medium">&minus;{giftCardDeduction.toFixed(2).replace(".", ",")}&nbsp;&euro;</span>
+                    </div>
+                  )}
                 </div>
                 <div className="border-t border-gray-100 mt-4 pt-4">
                   <div className="flex justify-between items-center">
                     <span className="text-dark font-medium">Gesamt</span>
-                    <span className="text-2xl font-bold text-dark">{totalPrice}&euro;</span>
+                    <span className="text-2xl font-bold text-dark">{totalPrice.toFixed(2).replace(".", ",")}&nbsp;&euro;</span>
                   </div>
+                  <p className="text-dark/40 text-[10px] mt-2">
+                    Alle Preise sind Endpreise. Gem&auml;&szlig; &sect;1 Abs. 2 UStG wird keine Umsatzsteuer erhoben (Helgoland).
+                  </p>
                 </div>
               </div>
             </div>
@@ -948,9 +1027,9 @@ export default function BookingWidget() {
 
                         {/* Price */}
                         <div className={`flex items-baseline gap-2 pt-2 border-t ${isSelected ? "border-white/15" : "border-dark/5"}`}>
-                          <span className="text-lg font-bold">ab {t.adultPrice}&euro;</span>
+                          <span className="text-lg font-bold">ab {t.adultPrice.toFixed(2).replace(".", ",")}&nbsp;&euro;</span>
                           <span className={`text-xs ${isSelected ? "text-white/50" : "text-dark/40"}`}>
-                            Erwachsene &middot; Kinder ab {t.childPrice}&euro;
+                            Erwachsene &middot; Kinder ab {t.childPrice.toFixed(2).replace(".", ",")}&nbsp;&euro;
                           </span>
                         </div>
                       </button>
@@ -1037,7 +1116,7 @@ export default function BookingWidget() {
                   <div className="flex items-center justify-between">
                     <div>
                       <p className="font-medium text-dark">Erwachsene</p>
-                      <p className="text-sm text-dark/50">{adultPrice}&euro; pro Person</p>
+                      <p className="text-sm text-dark/50">{adultPrice.toFixed(2).replace(".", ",")}&nbsp;&euro; pro Person</p>
                     </div>
                     <div className="flex items-center gap-4">
                       <button onClick={() => setAdults(Math.max(1, adults - 1))} className="w-10 h-10 rounded-full bg-dark/5 flex items-center justify-center text-dark hover:bg-dark/10 transition-colors text-lg">&minus;</button>
@@ -1050,7 +1129,7 @@ export default function BookingWidget() {
                   <div className="flex items-center justify-between">
                     <div>
                       <p className="font-medium text-dark">Kinder 6–14</p>
-                      <p className="text-sm text-dark/50">{childPrice}&euro; pro Kind</p>
+                      <p className="text-sm text-dark/50">{childPrice.toFixed(2).replace(".", ",")}&nbsp;&euro; pro Kind</p>
                     </div>
                     <div className="flex items-center gap-4">
                       <button onClick={() => setChildren(Math.max(0, children - 1))} className="w-10 h-10 rounded-full bg-dark/5 flex items-center justify-center text-dark hover:bg-dark/10 transition-colors text-lg">&minus;</button>
@@ -1081,12 +1160,12 @@ export default function BookingWidget() {
                   <div className="border-t border-gray-100 pt-4 space-y-2">
                     <div className="flex items-center justify-between text-sm">
                       <span className="text-dark/60">{adults} &times; Erwachsene</span>
-                      <span className="text-dark">{adults * adultPrice}&euro;</span>
+                      <span className="text-dark">{(adults * adultPrice).toFixed(2).replace(".", ",")}&nbsp;&euro;</span>
                     </div>
                     {children > 0 && (
                       <div className="flex items-center justify-between text-sm">
                         <span className="text-dark/60">{children} &times; Kinder (6–14)</span>
-                        <span className="text-dark">{children * childPrice}&euro;</span>
+                        <span className="text-dark">{(children * childPrice).toFixed(2).replace(".", ",")}&nbsp;&euro;</span>
                       </div>
                     )}
                     {childrenFree > 0 && (
@@ -1097,13 +1176,56 @@ export default function BookingWidget() {
                     )}
                     <div className="flex items-center justify-between pt-2">
                       <p className="text-dark font-medium">Gesamt</p>
-                      <p className="text-2xl font-bold text-dark">{totalPrice}&euro;</p>
+                      <p className="text-2xl font-bold text-dark">{subtotalPrice.toFixed(2).replace(".", ",")}&nbsp;&euro;</p>
                     </div>
                   </div>
                 </div>
               </div>
 
-              {/* Step 5: Contact */}
+              {/* Step 5: Rabatt / Gutschein */}
+              <div className="w-full flex-shrink-0 px-1">
+                <div className="max-w-md mx-auto bg-white rounded-2xl p-6 md:p-8 border border-gray-100 shadow-sm">
+                  <h3 className="text-lg font-bold text-dark mb-1">Gutschein &amp; Rabatt</h3>
+                  <p className="text-sm text-dark/50 mb-5">
+                    Haben Sie einen Gutschein- oder Rabattcode? Geben Sie ihn hier ein. Dieser Schritt ist optional.
+                  </p>
+                  <DiscountGiftSection
+                    onGiftCardApplied={(gc) => setAppliedGiftCard(gc)}
+                    onDiscountApplied={(d) => setAppliedDiscount(d)}
+                  />
+                  {(discountAmount > 0 || giftCardDeduction > 0) && (
+                    <div className="mt-6 border-t border-gray-100 pt-4 space-y-2 text-sm">
+                      <div className="flex justify-between text-dark/60">
+                        <span>Zwischensumme</span>
+                        <span>{subtotalPrice.toFixed(2).replace(".", ",")}&nbsp;&euro;</span>
+                      </div>
+                      {discountAmount > 0 && (
+                        <div className="flex justify-between text-green-700">
+                          <span>Rabatt ({appliedDiscount?.type === "percentage" ? `${appliedDiscount.value}%` : "Festbetrag"})</span>
+                          <span>&minus;{discountAmount.toFixed(2).replace(".", ",")}&nbsp;&euro;</span>
+                        </div>
+                      )}
+                      {giftCardDeduction > 0 && (
+                        <div className="flex justify-between text-green-700">
+                          <span>Gutschein</span>
+                          <span>&minus;{giftCardDeduction.toFixed(2).replace(".", ",")}&nbsp;&euro;</span>
+                        </div>
+                      )}
+                      <div className="flex justify-between font-bold text-dark pt-1 border-t border-gray-100">
+                        <span>Zu zahlen</span>
+                        <span>{totalPrice.toFixed(2).replace(".", ",")}&nbsp;&euro;</span>
+                      </div>
+                      {giftCardCoversAll && (
+                        <p className="text-green-700 text-xs mt-1">
+                          Der Gutschein deckt den gesamten Betrag. Es ist keine Zahlung erforderlich.
+                        </p>
+                      )}
+                    </div>
+                  )}
+                </div>
+              </div>
+
+              {/* Step 6: Contact */}
               <div className="w-full flex-shrink-0 px-1">
                 <div className="max-w-md mx-auto bg-white rounded-2xl p-6 md:p-8 border border-gray-100 shadow-sm space-y-4">
                   <div>
@@ -1122,12 +1244,19 @@ export default function BookingWidget() {
                     <label className="flex items-start gap-3 cursor-pointer">
                       <input type="checkbox" checked={gdprConsent} onChange={(e) => setGdprConsent(e.target.checked)} className="mt-1 w-4 h-4 rounded accent-dark" />
                       <span className="text-sm text-dark/60">
-                        Ich stimme der Verarbeitung meiner Daten gem&auml;&szlig; der{" "}
-                        <a href="#" className="underline text-dark">Datenschutzerkl&auml;rung</a>{" "}
+                        Ich akzeptiere die{" "}
+                        <a href="/agb" target="_blank" className="underline text-dark">AGB</a>{" "}
+                        und{" "}
+                        <a href="/agb#stornierung" target="_blank" className="underline text-dark">Stornierungsbedingungen</a>{" "}
+                        und stimme der Verarbeitung meiner Daten gem&auml;&szlig; der{" "}
+                        <a href="/datenschutz" target="_blank" className="underline text-dark">Datenschutzerkl&auml;rung</a>{" "}
                         zu.
                       </span>
                     </label>
                   </div>
+                  <p className="text-xs text-dark/40 pl-7">
+                    Hinweis: Bei Freizeitveranstaltungen mit festem Termin besteht kein Widerrufsrecht (&sect;312g Abs. 2 Nr. 9 BGB).
+                  </p>
 
                   {/* Invoice option */}
                   <div className="pt-2">
@@ -1160,11 +1289,24 @@ export default function BookingWidget() {
                         </div>
                       </div>
                       <div>
+                        <label className="block text-sm font-medium text-dark mb-1.5">Land</label>
+                        <select value={invoiceCountry} onChange={(e) => setInvoiceCountry(e.target.value)} className="w-full px-4 py-3 rounded-xl border border-gray-200 focus:border-dark focus:outline-none transition-colors bg-transparent">
+                          {COUNTRY_OPTIONS.map((c) => (
+                            <option key={c} value={c}>{c}</option>
+                          ))}
+                        </select>
+                      </div>
+                      <div>
                         <label className="block text-sm font-medium text-dark mb-1.5">USt-IdNr. <span className="text-dark/40 font-normal">(optional)</span></label>
                         <input type="text" value={invoiceVatId} onChange={(e) => setInvoiceVatId(e.target.value)} placeholder="DE123456789" className="w-full px-4 py-3 rounded-xl border border-gray-200 focus:border-dark focus:outline-none transition-colors bg-transparent" />
                       </div>
                     </div>
                   )}
+
+                  {/* Tax-free notice */}
+                  <p className="text-xs text-dark/40 pt-2">
+                    Alle Preise sind Endpreise. Gem&auml;&szlig; &sect;1 Abs. 2 UStG wird keine Umsatzsteuer erhoben (Helgoland).
+                  </p>
                 </div>
               </div>
             </div>
@@ -1205,18 +1347,30 @@ export default function BookingWidget() {
                   <>
                     <div className="flex justify-between">
                       <span className="text-dark/50">Erwachsene</span>
-                      <span className="text-dark font-medium">{adults} &times; {adultPrice}&euro;</span>
+                      <span className="text-dark font-medium">{adults} &times; {adultPrice.toFixed(2).replace(".", ",")}&nbsp;&euro;</span>
                     </div>
                     {children > 0 && (
                       <div className="flex justify-between">
                         <span className="text-dark/50">Kinder (6–14)</span>
-                        <span className="text-dark font-medium">{children} &times; {childPrice}&euro;</span>
+                        <span className="text-dark font-medium">{children} &times; {childPrice.toFixed(2).replace(".", ",")}&nbsp;&euro;</span>
                       </div>
                     )}
                     {childrenFree > 0 && (
                       <div className="flex justify-between">
                         <span className="text-dark/50">Kinder (0–5)</span>
                         <span className="text-dark font-medium">kostenlos</span>
+                      </div>
+                    )}
+                    {discountAmount > 0 && (
+                      <div className="flex justify-between text-green-700">
+                        <span>Rabatt</span>
+                        <span className="font-medium">&minus;{discountAmount.toFixed(2).replace(".", ",")}&nbsp;&euro;</span>
+                      </div>
+                    )}
+                    {giftCardDeduction > 0 && (
+                      <div className="flex justify-between text-green-700">
+                        <span>Gutschein</span>
+                        <span className="font-medium">&minus;{giftCardDeduction.toFixed(2).replace(".", ",")}&nbsp;&euro;</span>
                       </div>
                     )}
                   </>
@@ -1226,7 +1380,7 @@ export default function BookingWidget() {
                 <div className="border-t border-gray-100 mt-4 pt-4">
                   <div className="flex justify-between items-center">
                     <span className="text-dark font-medium">Gesamt</span>
-                    <span className="text-2xl font-bold text-dark">{totalPrice}&euro;</span>
+                    <span className="text-2xl font-bold text-dark">{totalPrice.toFixed(2).replace(".", ",")}&nbsp;&euro;</span>
                   </div>
                 </div>
               )}
@@ -1255,7 +1409,7 @@ export default function BookingWidget() {
             }`}
           >
             {submitting && <Spinner className="w-5 h-5" />}
-            {step === 4 ? "Zur Kasse" : "Weiter"}
+            {step === 5 ? (giftCardCoversAll ? "Jetzt buchen" : "Zur Kasse") : "Weiter"}
           </button>
         </div>
       </div>

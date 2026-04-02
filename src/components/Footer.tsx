@@ -20,6 +20,10 @@ export default function Footer() {
             Rechnung
           </a>
           <span className="text-dark/20">&middot;</span>
+          <a href="/agb" className="text-dark/40 hover:text-dark text-sm transition-colors">
+            AGB
+          </a>
+          <span className="text-dark/20">&middot;</span>
           <a href="/impressum" className="text-dark/40 hover:text-dark text-sm transition-colors">
             Impressum
           </a>

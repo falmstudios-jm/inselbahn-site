@@ -16,6 +16,12 @@ const stripePromise = loadStripe(
 
 const PRESET_AMOUNTS = [11, 22, 33, 50];
 
+const COUNTRY_OPTIONS = [
+  'Deutschland', 'Österreich', 'Schweiz', 'Niederlande', 'Belgien',
+  'Dänemark', 'Polen', 'Frankreich', 'Luxemburg', 'Tschechien',
+  'Vereinigtes Königreich', 'Schweden', 'Norwegen', 'Italien', 'Spanien',
+];
+
 export default function GutscheinPage() {
   const [selectedAmount, setSelectedAmount] = useState<number>(22);
   const [customAmount, setCustomAmount] = useState<string>('');
@@ -26,6 +32,15 @@ export default function GutscheinPage() {
   const [purchaserName, setPurchaserName] = useState('');
   const [purchaserEmail, setPurchaserEmail] = useState('');
   const [gdprAccepted, setGdprAccepted] = useState(false);
+
+  // Invoice fields
+  const [wantsInvoice, setWantsInvoice] = useState(false);
+  const [invoiceCompany, setInvoiceCompany] = useState('');
+  const [invoiceStreet, setInvoiceStreet] = useState('');
+  const [invoicePostalCode, setInvoicePostalCode] = useState('');
+  const [invoiceCity, setInvoiceCity] = useState('');
+  const [invoiceCountry, setInvoiceCountry] = useState('Deutschland');
+  const [invoiceVatId, setInvoiceVatId] = useState('');
 
   const [clientSecret, setClientSecret] = useState<string | null>(null);
   const [loading, setLoading] = useState(false);
@@ -51,7 +66,7 @@ export default function GutscheinPage() {
 
   const handleSubmit = useCallback(async () => {
     if (!gdprAccepted) {
-      setError('Bitte akzeptieren Sie die Datenschutzbestimmungen.');
+      setError('Bitte akzeptieren Sie die AGB und Datenschutzbestimmungen.');
       return;
     }
     if (amount < 5 || amount > 500) {
@@ -60,6 +75,10 @@ export default function GutscheinPage() {
     }
     if (!purchaserName.trim() || !purchaserEmail.trim()) {
       setError('Bitte geben Sie Ihren Namen und Ihre E-Mail-Adresse ein.');
+      return;
+    }
+    if (wantsInvoice && (!invoiceCompany.trim() || !invoiceStreet.trim() || !invoicePostalCode.trim() || !invoiceCity.trim())) {
+      setError('Bitte füllen Sie alle Rechnungsfelder aus.');
       return;
     }
 
@@ -76,6 +95,18 @@ export default function GutscheinPage() {
           purchaser_email: purchaserEmail.trim(),
           recipient_name: recipientName.trim() || undefined,
           recipient_message: recipientMessage.trim() || undefined,
+          ...(wantsInvoice
+            ? {
+                invoice: {
+                  company_name: invoiceCompany.trim(),
+                  street: invoiceStreet.trim(),
+                  postal_code: invoicePostalCode.trim(),
+                  city: invoiceCity.trim(),
+                  country: invoiceCountry,
+                  ...(invoiceVatId.trim() ? { vat_id: invoiceVatId.trim() } : {}),
+                },
+              }
+            : {}),
         }),
       });
 
@@ -91,7 +122,10 @@ export default function GutscheinPage() {
     } finally {
       setLoading(false);
     }
-  }, [amount, purchaserName, purchaserEmail, recipientName, recipientMessage, gdprAccepted]);
+  }, [amount, purchaserName, purchaserEmail, recipientName, recipientMessage, gdprAccepted, wantsInvoice, invoiceCompany, invoiceStreet, invoicePostalCode, invoiceCity, invoiceCountry, invoiceVatId]);
+
+  const inputClass =
+    'w-full py-3 px-4 rounded-lg border-2 border-gray-200 text-dark placeholder-dark/40 outline-none focus:border-primary transition-all';
 
   return (
     <main className="min-h-screen bg-white px-5 md:px-10 lg:px-20 py-16 md:py-24">
@@ -109,8 +143,11 @@ export default function GutscheinPage() {
         <h1 className="text-3xl md:text-4xl font-bold text-dark mb-3">
           Geschenkgutschein
         </h1>
-        <p className="text-dark/60 text-lg mb-10">
+        <p className="text-dark/60 text-lg mb-4">
           Das perfekte Geschenk f&uuml;r Helgoland-Fans
+        </p>
+        <p className="text-dark/50 text-sm mb-10">
+          G&uuml;ltig f&uuml;r 3 Jahre ab Kaufdatum. Teileinl&ouml;sung m&ouml;glich, Restwert bleibt erhalten.
         </p>
 
         {clientSecret ? (
@@ -149,7 +186,7 @@ export default function GutscheinPage() {
                         : 'border-gray-200 text-dark/70 hover:border-gray-300'
                     }`}
                   >
-                    {preset}&nbsp;&euro;
+                    {preset},00&nbsp;&euro;
                   </button>
                 ))}
               </div>
@@ -184,14 +221,14 @@ export default function GutscheinPage() {
                   placeholder="Name des Empf&auml;ngers"
                   value={recipientName}
                   onChange={(e) => setRecipientName(e.target.value)}
-                  className="w-full py-3 px-4 rounded-lg border-2 border-gray-200 text-dark placeholder-dark/40 outline-none focus:border-primary transition-all"
+                  className={inputClass}
                 />
                 <textarea
                   placeholder="Pers&ouml;nliche Nachricht"
                   rows={3}
                   value={recipientMessage}
                   onChange={(e) => setRecipientMessage(e.target.value)}
-                  className="w-full py-3 px-4 rounded-lg border-2 border-gray-200 text-dark placeholder-dark/40 outline-none focus:border-primary transition-all resize-none"
+                  className={`${inputClass} resize-none`}
                 />
               </div>
             </section>
@@ -208,7 +245,7 @@ export default function GutscheinPage() {
                   value={purchaserName}
                   onChange={(e) => setPurchaserName(e.target.value)}
                   required
-                  className="w-full py-3 px-4 rounded-lg border-2 border-gray-200 text-dark placeholder-dark/40 outline-none focus:border-primary transition-all"
+                  className={inputClass}
                 />
                 <input
                   type="email"
@@ -216,12 +253,62 @@ export default function GutscheinPage() {
                   value={purchaserEmail}
                   onChange={(e) => setPurchaserEmail(e.target.value)}
                   required
-                  className="w-full py-3 px-4 rounded-lg border-2 border-gray-200 text-dark placeholder-dark/40 outline-none focus:border-primary transition-all"
+                  className={inputClass}
                 />
               </div>
             </section>
 
-            {/* GDPR Checkbox */}
+            {/* Invoice option */}
+            <section>
+              <label className="flex items-start gap-3 cursor-pointer">
+                <input
+                  type="checkbox"
+                  checked={wantsInvoice}
+                  onChange={(e) => setWantsInvoice(e.target.checked)}
+                  className="mt-1 w-4 h-4 accent-primary"
+                />
+                <span className="text-sm text-dark/60 leading-relaxed">
+                  Ich ben&ouml;tige eine Rechnung
+                </span>
+              </label>
+
+              {wantsInvoice && (
+                <div className="space-y-3 mt-4 pl-7 border-l-2 border-dark/10 ml-2">
+                  <div>
+                    <label className="block text-sm font-medium text-dark mb-1.5">Firma / Name</label>
+                    <input type="text" value={invoiceCompany} onChange={(e) => setInvoiceCompany(e.target.value)} placeholder="Musterfirma GmbH" className={inputClass} />
+                  </div>
+                  <div>
+                    <label className="block text-sm font-medium text-dark mb-1.5">Stra&szlig;e &amp; Hausnr.</label>
+                    <input type="text" value={invoiceStreet} onChange={(e) => setInvoiceStreet(e.target.value)} placeholder="Musterstra&szlig;e 1" className={inputClass} />
+                  </div>
+                  <div className="flex gap-3">
+                    <div className="w-1/3">
+                      <label className="block text-sm font-medium text-dark mb-1.5">PLZ</label>
+                      <input type="text" value={invoicePostalCode} onChange={(e) => setInvoicePostalCode(e.target.value)} placeholder="12345" className={inputClass} />
+                    </div>
+                    <div className="w-2/3">
+                      <label className="block text-sm font-medium text-dark mb-1.5">Ort</label>
+                      <input type="text" value={invoiceCity} onChange={(e) => setInvoiceCity(e.target.value)} placeholder="Berlin" className={inputClass} />
+                    </div>
+                  </div>
+                  <div>
+                    <label className="block text-sm font-medium text-dark mb-1.5">Land</label>
+                    <select value={invoiceCountry} onChange={(e) => setInvoiceCountry(e.target.value)} className={inputClass}>
+                      {COUNTRY_OPTIONS.map((c) => (
+                        <option key={c} value={c}>{c}</option>
+                      ))}
+                    </select>
+                  </div>
+                  <div>
+                    <label className="block text-sm font-medium text-dark mb-1.5">USt-IdNr. <span className="text-dark/40 font-normal">(optional)</span></label>
+                    <input type="text" value={invoiceVatId} onChange={(e) => setInvoiceVatId(e.target.value)} placeholder="DE123456789" className={inputClass} />
+                  </div>
+                </div>
+              )}
+            </section>
+
+            {/* AGB + GDPR Checkbox */}
             <label className="flex items-start gap-3 cursor-pointer">
               <input
                 type="checkbox"
@@ -230,13 +317,26 @@ export default function GutscheinPage() {
                 className="mt-1 w-4 h-4 accent-primary"
               />
               <span className="text-sm text-dark/60 leading-relaxed">
-                Ich habe die{' '}
+                Ich akzeptiere die{' '}
+                <Link href="/agb" className="text-primary hover:underline" target="_blank">
+                  AGB
+                </Link>{' '}
+                und stimme der Verarbeitung meiner Daten gem&auml;&szlig; der{' '}
                 <Link href="/datenschutz" className="text-primary hover:underline" target="_blank">
                   Datenschutzerkl&auml;rung
                 </Link>{' '}
-                gelesen und akzeptiere diese.
+                zu.
               </span>
             </label>
+
+            <p className="text-xs text-dark/40 -mt-4 pl-7">
+              Hinweis: Bei Freizeitveranstaltungen mit festem Termin besteht kein Widerrufsrecht (&sect;312g Abs. 2 Nr. 9 BGB).
+            </p>
+
+            {/* Tax-free notice */}
+            <p className="text-xs text-dark/40 -mt-4">
+              Alle Preise sind Endpreise. Gem&auml;&szlig; &sect;1 Abs. 2 UStG wird keine Umsatzsteuer erhoben (Helgoland).
+            </p>
 
             {/* Error */}
             {error && (
@@ -310,6 +410,9 @@ function PaymentForm({ amount }: { amount: number }) {
           <br />
           Sie erhalten den Gutscheincode per E-Mail.
         </p>
+        <p className="text-dark/40 text-xs mt-4">
+          Alle Preise sind Endpreise. Gem&auml;&szlig; &sect;1 Abs. 2 UStG wird keine Umsatzsteuer erhoben (Helgoland).
+        </p>
         <Link
           href="/"
           className="inline-block mt-8 text-primary hover:text-primary/80 font-medium transition-colors"
@@ -344,6 +447,10 @@ function PaymentForm({ amount }: { amount: number }) {
       >
         {paying ? 'Zahlung wird verarbeitet\u2026' : `Jetzt ${amount.toFixed(2).replace('.', ',')}\u00A0\u20AC bezahlen`}
       </button>
+
+      <p className="text-xs text-dark/40 text-center">
+        Alle Preise sind Endpreise. Gem&auml;&szlig; &sect;1 Abs. 2 UStG wird keine Umsatzsteuer erhoben (Helgoland).
+      </p>
     </form>
   );
 }

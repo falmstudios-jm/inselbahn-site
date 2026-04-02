@@ -260,6 +260,7 @@ export interface InvoiceData {
   buyerStreet: string;
   buyerPostalCode: string;
   buyerCity: string;
+  buyerCountry?: string;
   buyerVatId?: string;
   // Tour info
   tourName: string;
@@ -378,6 +379,9 @@ export function InvoiceDocument({ data }: { data: InvoiceData }) {
             <Text style={styles.addressText}>
               {data.buyerPostalCode} {data.buyerCity}
             </Text>
+            {data.buyerCountry && data.buyerCountry !== 'Deutschland' ? (
+              <Text style={styles.addressText}>{data.buyerCountry}</Text>
+            ) : null}
             {data.buyerVatId ? (
               <Text style={styles.addressText}>
                 USt-IdNr.: {data.buyerVatId}

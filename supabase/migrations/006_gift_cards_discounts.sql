@@ -8,7 +8,7 @@ CREATE TABLE IF NOT EXISTS gift_cards (
   recipient_name TEXT,
   recipient_message TEXT,
   is_active BOOLEAN DEFAULT true,
-  expires_at DATE DEFAULT (CURRENT_DATE + INTERVAL '2 years'),
+  expires_at DATE DEFAULT (CURRENT_DATE + INTERVAL '3 years'),
   stripe_payment_intent_id TEXT,
   created_at TIMESTAMPTZ DEFAULT now()
 );
