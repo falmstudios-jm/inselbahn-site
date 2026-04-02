@@ -35,27 +35,6 @@ interface AvailabilityResponse {
 /* ─── Constants ─── */
 const tourOptions = [
   {
-    id: "unterland",
-    slug: "unterland-tour",
-    name: "Unterland-Tour",
-    subtitle: "Geführte Rundfahrt durch das Unterland",
-    adultPrice: 11,
-    childPrice: 6,
-    capacity: 42,
-    duration: "ca. 40 Minuten",
-    description: "An Bord unserer Inselbahn gleiten Sie mit maximal 6 km/h durch das Unterland — vorbei an den legendären Hummerbuden, dem historischen Binnenhafen und dem Seenotrettungskreuzer Hermann Marwede.",
-    highlights: [
-      "Hafen, Landungsbrücke & Südstrandpromenade",
-      "Hummerbuden & historischer Binnenhafen",
-      "Hermann Marwede & AWI Meeresforschung",
-      "Fotostopp im Nordostland mit Dünenblick",
-    ],
-    wheelchair: true,
-    dogs: true,
-    accent: "amber" as const,
-    illustration: "/images/inselbahn-illustration-unterland.svg",
-  },
-  {
     id: "premium",
     slug: "premium-tour",
     name: "Premium-Tour",
@@ -76,6 +55,29 @@ const tourOptions = [
     accent: "navy" as const,
     badge: "EXKLUSIV",
     illustration: "/images/inselbahn-illustration-premium.svg",
+    photo: "/images/helgolandbahn-photo-1.jpg",
+  },
+  {
+    id: "unterland",
+    slug: "unterland-tour",
+    name: "Unterland-Tour",
+    subtitle: "Geführte Rundfahrt durch das Unterland",
+    adultPrice: 11,
+    childPrice: 6,
+    capacity: 42,
+    duration: "ca. 40 Minuten",
+    description: "An Bord unserer Inselbahn gleiten Sie mit maximal 6 km/h durch das Unterland — vorbei an den legendären Hummerbuden, dem historischen Binnenhafen und dem Seenotrettungskreuzer Hermann Marwede.",
+    highlights: [
+      "Hafen, Landungsbrücke & Südstrandpromenade",
+      "Hummerbuden & historischer Binnenhafen",
+      "Hermann Marwede & AWI Meeresforschung",
+      "Fotostopp im Nordostland mit Dünenblick",
+    ],
+    wheelchair: true,
+    dogs: true,
+    accent: "amber" as const,
+    illustration: "/images/inselbahn-illustration-unterland.svg",
+    photo: "/images/helgolandbahn-photo-2.jpg",
   },
 ];
 
@@ -1020,16 +1022,13 @@ export default function BookingWidget() {
                             : "border-gray-100 shadow-sm hover:shadow-md hover:border-gray-200"
                         }`}
                       >
-                        {/* SVG illustration header */}
-                        <div className={`flex items-center justify-center h-[120px] ${
-                          t.accent === "amber" ? "bg-amber-50" : "bg-[#f0f4f8]"
-                        }`}>
+                        {/* Photo header */}
+                        <div className="relative w-full aspect-[16/9] overflow-hidden rounded-t-2xl">
                           <Image
-                            src={t.illustration}
-                            alt={`${t.name} Illustration`}
-                            width={240}
-                            height={100}
-                            className="w-auto h-auto max-h-[100px]"
+                            src={t.photo}
+                            alt={`${t.name} Foto`}
+                            fill
+                            className="object-cover"
                           />
                         </div>
 
@@ -1041,7 +1040,17 @@ export default function BookingWidget() {
                             </span>
                           )}
 
-                          <p className="text-xl font-bold text-dark mb-0.5">{t.name}</p>
+                          {/* Tour name with inline SVG */}
+                          <div className="flex items-center justify-between gap-3 mb-0.5">
+                            <p className="text-xl font-bold text-dark">{t.name}</p>
+                            <Image
+                              src={t.illustration}
+                              alt={`${t.name} Illustration`}
+                              width={80}
+                              height={40}
+                              className="h-[40px] w-auto flex-shrink-0"
+                            />
+                          </div>
                           <p className="text-sm text-dark/50 mb-3">
                             {t.subtitle}
                           </p>

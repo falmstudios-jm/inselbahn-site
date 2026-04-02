@@ -19,7 +19,7 @@ const giftCards = [
   {
     title: "Familien-Gutschein",
     price: "ab 34,00",
-    illustration: "/images/inselbahn-illustration-unterland.svg",
+    illustration: "/images/inselbahn-illustration-premium.svg",
     alt: "Familien-Gutschein Illustration",
     bg: "bg-red-50",
   },
@@ -54,7 +54,7 @@ export default function GutscheinSection() {
                   alt={card.alt}
                   width={200}
                   height={90}
-                  className="w-auto h-auto max-h-[90px]"
+                  className="h-[80px] w-auto"
                 />
               </div>
 

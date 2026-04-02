@@ -72,16 +72,7 @@ function TourCard({ tour, onBook }: { tour: Tour; onBook: (tourSlug: string) => 
 
   return (
     <div>
-      <div className="flex items-center justify-center h-[180px] bg-surface/50 rounded-xl mb-4">
-        <Image
-          src={assets.illustration}
-          alt={assets.illustrationAlt}
-          width={300}
-          height={160}
-          className="w-auto h-auto max-h-[150px]"
-        />
-      </div>
-      <div className="relative w-full aspect-[16/10] rounded-2xl overflow-hidden mb-5">
+      <div className="relative w-full aspect-[16/9] rounded-xl overflow-hidden mb-5">
         <Image
           src={assets.photo}
           alt={assets.photoAlt}
@@ -89,6 +80,25 @@ function TourCard({ tour, onBook }: { tour: Tour; onBook: (tourSlug: string) => 
           className="object-cover"
         />
       </div>
+
+      {/* Title with inline SVG */}
+      <div className="flex items-center justify-between gap-3 mb-1">
+        <h3 className="text-2xl md:text-[28px] font-bold text-dark">
+          {tour.name}
+        </h3>
+        <Image
+          src={assets.illustration}
+          alt={assets.illustrationAlt}
+          width={80}
+          height={40}
+          className="h-[40px] w-auto flex-shrink-0"
+        />
+      </div>
+      {tour.notes && (
+        <p className="text-dark font-semibold text-sm mb-3">
+          {tour.notes}
+        </p>
+      )}
 
       {/* Meta */}
       <div className="flex items-center gap-4 mb-3 text-xs text-dark/50 uppercase tracking-wide font-medium">
@@ -102,14 +112,6 @@ function TourCard({ tour, onBook }: { tour: Tour; onBook: (tourSlug: string) => 
         </span>
       </div>
 
-      <h3 className="text-2xl md:text-[28px] font-bold text-dark mb-1">
-        {tour.name}
-      </h3>
-      {tour.notes && (
-        <p className="text-dark font-semibold text-sm mb-3">
-          {tour.notes}
-        </p>
-      )}
       <p className="text-dark/60 text-sm leading-relaxed mb-4">
         {tour.description}
       </p>
@@ -257,7 +259,7 @@ export default function TourCards({ tours }: TourCardsProps) {
           </div>
 
           <div className="grid md:grid-cols-2 gap-10 lg:gap-14">
-            {tours.map((tour) => (
+            {[...tours].sort((a, b) => b.price_adult - a.price_adult).map((tour) => (
               <TourCard key={tour.id} tour={tour} onBook={handleBook} />
             ))}
           </div>
