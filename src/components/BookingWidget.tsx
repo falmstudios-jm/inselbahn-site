@@ -226,24 +226,6 @@ function CheckoutForm({
 /* ─── Main Component ─── */
 export default function BookingWidget() {
   const [step, setStep] = useState(0);
-  const containerRef = useRef<HTMLDivElement>(null);
-  const [containerHeight, setContainerHeight] = useState<string>('auto');
-
-  // Dynamically set container height to match the active step panel
-  useEffect(() => {
-    if (!containerRef.current) return;
-    const panels = containerRef.current.querySelectorAll(':scope > div > div.flex-shrink-0');
-    const activePanel = panels[step] as HTMLElement | undefined;
-    if (activePanel) {
-      setContainerHeight(`${activePanel.scrollHeight}px`);
-    }
-    // Also re-measure on window resize
-    const handleResize = () => {
-      if (activePanel) setContainerHeight(`${activePanel.scrollHeight}px`);
-    };
-    window.addEventListener('resize', handleResize);
-    return () => window.removeEventListener('resize', handleResize);
-  }, [step]);
   const [selectedDate, setSelectedDate] = useState<string>("");
   const [selectedTour, setSelectedTour] = useState<string>("");
   const [selectedTime, setSelectedTime] = useState<string>("");
@@ -933,13 +915,10 @@ export default function BookingWidget() {
 
         <div className="flex flex-col lg:flex-row gap-8">
           {/* Main form area */}
-          <div className="flex-1 overflow-hidden" ref={containerRef} style={{ height: containerHeight, transition: 'height 0.4s ease' }}>
-            <div
-              className="flex transition-transform duration-500 ease-in-out"
-              style={{ transform: `translateX(-${step * 100}%)` }}
-            >
+          <div className="flex-1">
+            <div>
               {/* Step 1: Date — compact calendar with dots, no tooltips */}
-              <div className="w-full flex-shrink-0 px-1">
+              <div className={`w-full px-1 ${step === 0 ? '' : 'hidden'}`}>
                 <div className="bg-white rounded-2xl p-5 md:p-6 border border-gray-100 shadow-sm max-w-sm mx-auto">
                   {/* Month navigation */}
                   <div className="flex items-center justify-between mb-4">
@@ -1022,7 +1001,7 @@ export default function BookingWidget() {
               </div>
 
               {/* Step 2: Tour — larger cards with SVG illustrations */}
-              <div className="w-full flex-shrink-0 px-1">
+              <div className={`w-full px-1 ${step === 1 ? '' : 'hidden'}`}>
                 <div className="max-w-lg mx-auto space-y-6">
                   {tourOptions.map((t) => {
                     const isSelected = selectedTour === t.id;
@@ -1128,7 +1107,7 @@ export default function BookingWidget() {
               </div>
 
               {/* Step 3: Time (API-driven) with sold-out handling */}
-              <div className="w-full flex-shrink-0 px-1">
+              <div className={`w-full px-1 ${step === 2 ? '' : 'hidden'}`}>
                 <div className="max-w-md mx-auto">
                   {slotsLoading ? (
                     <div className="flex flex-col items-center justify-center py-12 gap-3">
@@ -1282,7 +1261,7 @@ export default function BookingWidget() {
               </div>
 
               {/* Step 4: Passengers */}
-              <div className="w-full flex-shrink-0 px-1">
+              <div className={`w-full px-1 ${step === 3 ? '' : 'hidden'}`}>
                 <div className="max-w-md mx-auto bg-white rounded-2xl p-6 md:p-8 border border-gray-100 shadow-sm space-y-6">
                   {/* Adults */}
                   <div className="flex items-center justify-between">
@@ -1355,7 +1334,7 @@ export default function BookingWidget() {
               </div>
 
               {/* Step 5: Rabatt / Gutschein */}
-              <div className="w-full flex-shrink-0 px-1">
+              <div className={`w-full px-1 ${step === 4 ? '' : 'hidden'}`}>
                 <div className="max-w-md mx-auto bg-white rounded-2xl p-6 md:p-8 border border-gray-100 shadow-sm">
                   <h3 className="text-lg font-bold text-dark mb-1">Gutschein &amp; Rabatt</h3>
                   <p className="text-sm text-dark/50 mb-5">
@@ -1398,7 +1377,7 @@ export default function BookingWidget() {
               </div>
 
               {/* Step 6: Contact */}
-              <div className="w-full flex-shrink-0 px-1">
+              <div className={`w-full px-1 ${step === 5 ? '' : 'hidden'}`}>
                 <div className="max-w-md mx-auto bg-white rounded-2xl p-6 md:p-8 border border-gray-100 shadow-sm space-y-4">
                   <div>
                     <label className="block text-sm font-medium text-dark mb-1.5">Name</label>
