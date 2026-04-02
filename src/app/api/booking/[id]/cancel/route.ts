@@ -181,69 +181,101 @@ function buildCancellationEmail(params: CancelEmailParams): string {
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
 </head>
-<body style="margin:0;padding:0;background-color:#f4f4f4;font-family:Arial,Helvetica,sans-serif;">
-  <table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="background-color:#f4f4f4;padding:24px 0;">
+<body style="margin:0;padding:0;background-color:#F7F7F7;font-family:'Montserrat',Arial,Helvetica,sans-serif;">
+  <table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="background-color:#F7F7F7;padding:24px 0;">
     <tr>
       <td align="center">
         <table role="presentation" width="600" cellpadding="0" cellspacing="0" style="background-color:#ffffff;border-radius:8px;overflow:hidden;max-width:600px;width:100%;">
+          <!-- Red top border -->
+          <tr>
+            <td style="background-color:#F24444;height:4px;font-size:0;line-height:0;">&nbsp;</td>
+          </tr>
+
           <!-- Header -->
           <tr>
-            <td style="background-color:#1a3a5c;padding:32px 24px;text-align:center;">
-              <h1 style="color:#ffffff;margin:0;font-size:24px;font-weight:700;">Inselbahn Helgoland</h1>
-              <p style="color:#a3c4e0;margin:8px 0 0;font-size:14px;">Geführte Inselrundfahrten</p>
+            <td style="padding:28px 24px 20px;text-align:center;">
+              <h1 style="color:#333333;margin:0;font-size:22px;font-weight:700;letter-spacing:2px;">INSELBAHN HELGOLAND</h1>
+            </td>
+          </tr>
+
+          <!-- Cancellation Banner -->
+          <tr>
+            <td style="padding:0 24px 24px;">
+              <table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="background-color:#F24444;border-radius:8px;">
+                <tr>
+                  <td style="padding:16px 20px;text-align:center;">
+                    <p style="margin:0;font-size:18px;font-weight:700;color:#ffffff;">Buchung storniert</p>
+                  </td>
+                </tr>
+              </table>
             </td>
           </tr>
 
           <!-- Body -->
           <tr>
-            <td style="padding:32px 24px;">
-              <h2 style="color:#c0392b;margin:0 0 8px;font-size:20px;">Ihre Buchung wurde storniert</h2>
+            <td style="padding:0 24px 32px;">
               <p style="color:#555;font-size:15px;line-height:1.6;margin:0 0 24px;">
                 Hallo ${customerName}, Ihre Buchung wurde erfolgreich storniert.
               </p>
 
               <!-- Booking Details -->
-              <table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="background-color:#f8f9fa;border-radius:8px;margin-bottom:24px;">
+              <table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="background-color:#F7F7F7;border-radius:8px;margin-bottom:24px;">
                 <tr>
                   <td style="padding:20px;">
-                    <p style="margin:0 0 4px;font-size:12px;color:#888;text-transform:uppercase;letter-spacing:1px;">Buchungsnummer</p>
-                    <p style="margin:0 0 16px;font-size:18px;font-weight:700;color:#1a3a5c;">${bookingReference}</p>
+                    <p style="margin:0 0 4px;font-size:11px;color:#888;text-transform:uppercase;letter-spacing:1px;">Buchungsnummer</p>
+                    <p style="margin:0 0 14px;font-size:18px;font-weight:700;color:#333333;">${bookingReference}</p>
 
-                    <p style="margin:0 0 4px;font-size:12px;color:#888;text-transform:uppercase;letter-spacing:1px;">Tour</p>
-                    <p style="margin:0 0 16px;font-size:15px;color:#333;">${tourName}</p>
+                    <p style="margin:0 0 4px;font-size:11px;color:#888;text-transform:uppercase;letter-spacing:1px;">Tour</p>
+                    <p style="margin:0 0 14px;font-size:15px;color:#333;">${tourName}</p>
 
-                    <p style="margin:0 0 4px;font-size:12px;color:#888;text-transform:uppercase;letter-spacing:1px;">Datum</p>
-                    <p style="margin:0 0 16px;font-size:15px;color:#333;">${bookingDate}</p>
+                    <p style="margin:0 0 4px;font-size:11px;color:#888;text-transform:uppercase;letter-spacing:1px;">Datum</p>
+                    <p style="margin:0 0 14px;font-size:15px;color:#333;">${bookingDate}</p>
 
-                    <p style="margin:0 0 4px;font-size:12px;color:#888;text-transform:uppercase;letter-spacing:1px;">Erstattungsbetrag</p>
-                    <p style="margin:0;font-size:18px;font-weight:700;color:#c0392b;">${totalAmount.toFixed(2).replace('.', ',')} \u20AC</p>
+                    <p style="margin:0 0 4px;font-size:11px;color:#888;text-transform:uppercase;letter-spacing:1px;">Erstattungsbetrag</p>
+                    <p style="margin:0;font-size:20px;font-weight:700;color:#F24444;">${totalAmount.toFixed(2).replace('.', ',')} \u20AC</p>
                   </td>
                 </tr>
               </table>
 
-              <table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="border-left:4px solid #c0392b;padding-left:16px;margin-bottom:24px;">
+              <!-- Refund Info -->
+              <table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="border-left:4px solid #F24444;padding-left:16px;margin-bottom:24px;">
                 <tr>
                   <td>
-                    <p style="margin:0 0 4px;font-size:14px;font-weight:700;color:#333;">Erstattung</p>
-                    <p style="margin:0;font-size:14px;color:#555;line-height:1.5;">
-                      Der Betrag von ${totalAmount.toFixed(2).replace('.', ',')} \u20AC wird in den n\u00E4chsten 5\u201310 Werktagen auf Ihr urspr\u00FCngliches Zahlungsmittel erstattet.
+                    <p style="margin:0 0 4px;font-size:14px;font-weight:700;color:#333;">R\u00FCckerstattung</p>
+                    <p style="margin:0;font-size:14px;color:#555;line-height:1.6;">
+                      Die R\u00FCckerstattung von ${totalAmount.toFixed(2).replace('.', ',')} \u20AC erfolgt innerhalb von 5\u201310 Werktagen auf Ihr urspr\u00FCngliches Zahlungsmittel.
                     </p>
                   </td>
                 </tr>
               </table>
+
+              <!-- Rebook Button -->
+              <table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="margin-bottom:16px;">
+                <tr>
+                  <td>
+                    <a href="${BASE_URL}" style="display:block;background-color:#F24444;color:#ffffff;font-size:14px;font-weight:700;text-decoration:none;padding:14px 24px;border-radius:6px;text-align:center;">
+                      Neue Tour buchen
+                    </a>
+                  </td>
+                </tr>
+              </table>
+
+              <p style="font-size:13px;color:#888;text-align:center;margin:0;">
+                Wir w\u00FCrden uns freuen, Sie bald wieder auf Helgoland zu begr\u00FC\u00DFen!
+              </p>
             </td>
           </tr>
 
           <!-- Footer -->
           <tr>
-            <td style="background-color:#f8f9fa;padding:24px;text-align:center;border-top:1px solid #e0e0e0;">
-              <p style="margin:0 0 4px;font-size:13px;color:#888;">
-                Fragen? Kontaktieren Sie uns:
+            <td style="background-color:#F7F7F7;padding:24px;text-align:center;border-top:1px solid #E0E0E0;">
+              <p style="margin:0 0 6px;font-size:12px;color:#888;">
+                Helgol\u00E4nder Dienstleistungs GmbH \u00B7 Am Falm 302 A \u00B7 27498 Helgoland
               </p>
-              <a href="mailto:info@helgolandbahn.de" style="font-size:13px;color:#1a3a5c;text-decoration:none;">
+              <a href="mailto:info@helgolandbahn.de" style="font-size:12px;color:#F24444;text-decoration:none;">
                 info@helgolandbahn.de
               </a>
-              <p style="margin:16px 0 0;font-size:11px;color:#aaa;">
+              <p style="margin:12px 0 0;font-size:11px;color:#aaa;">
                 Inselbahn Helgoland \u2014 Gef\u00FChrte Inselrundfahrten
               </p>
             </td>

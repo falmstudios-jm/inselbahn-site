@@ -42,8 +42,11 @@ export async function GET(
     );
   }
 
+  const BASE_URL = process.env.NEXT_PUBLIC_BASE_URL || 'https://helgolandbahn.de';
+
   const ticketData: TicketData = {
     bookingReference: booking.booking_reference,
+    customerName: booking.customer_name || '',
     tourName: booking.departures?.tours?.name || 'Inselbahn Tour',
     bookingDate: booking.booking_date,
     departureTime: booking.departures?.departure_time || '',
@@ -51,6 +54,7 @@ export async function GET(
     children: booking.children,
     childrenFree: booking.children_free,
     totalAmount: booking.total_amount,
+    cancelUrl: `${BASE_URL}/booking/cancel?id=${booking.id}&token=${booking.cancel_token}`,
   };
 
   // eslint-disable-next-line @typescript-eslint/no-explicit-any

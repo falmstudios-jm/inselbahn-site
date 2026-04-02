@@ -14,7 +14,14 @@ const stripePromise = loadStripe(
   process.env.NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY!
 );
 
-const PRESET_AMOUNTS = [11, 22, 33, 50];
+const TOUR_PRESETS = [
+  { label: '1× Unterland-Tour', amount: 11 },
+  { label: '1× Premium-Tour', amount: 22 },
+  { label: '2× Unterland-Tour', amount: 22 },
+  { label: '2× Premium-Tour', amount: 44 },
+  { label: 'Familie Unterland (2+2)', amount: 34 },
+  { label: 'Familie Premium (2+2)', amount: 74 },
+];
 
 const COUNTRY_OPTIONS = [
   'Deutschland', 'Österreich', 'Schweiz', 'Niederlande', 'Belgien',
@@ -174,19 +181,24 @@ export default function GutscheinPage() {
               <label className="block text-sm font-semibold text-dark mb-3">
                 Betrag w&auml;hlen
               </label>
-              <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 mb-3">
-                {PRESET_AMOUNTS.map((preset) => (
+              <div className="grid grid-cols-2 sm:grid-cols-3 gap-3 mb-3">
+                {TOUR_PRESETS.map((preset) => (
                   <button
-                    key={preset}
+                    key={preset.label}
                     type="button"
-                    onClick={() => handlePresetClick(preset)}
-                    className={`py-3 px-4 rounded-lg border-2 text-center font-semibold transition-all ${
-                      !isCustom && selectedAmount === preset
-                        ? 'border-primary bg-primary/5 text-primary'
-                        : 'border-gray-200 text-dark/70 hover:border-gray-300'
+                    onClick={() => handlePresetClick(preset.amount)}
+                    className={`py-3 px-4 rounded-xl border-2 text-center transition-all ${
+                      !isCustom && selectedAmount === preset.amount
+                        ? 'border-primary bg-primary/5'
+                        : 'border-gray-200 hover:border-gray-300'
                     }`}
                   >
-                    {preset},00&nbsp;&euro;
+                    <span className="block text-sm font-medium text-dark/70">{preset.label}</span>
+                    <span className={`block text-lg font-bold mt-1 ${
+                      !isCustom && selectedAmount === preset.amount ? 'text-primary' : 'text-dark'
+                    }`}>
+                      {preset.amount.toFixed(2).replace('.', ',')}&nbsp;&euro;
+                    </span>
                   </button>
                 ))}
               </div>
@@ -194,7 +206,7 @@ export default function GutscheinPage() {
                 <input
                   type="text"
                   inputMode="decimal"
-                  placeholder="Eigener Betrag (5\u20AC \u2013 500\u20AC)"
+                  placeholder="Eigener Betrag (5 € – 500 €)"
                   value={customAmount}
                   onFocus={handleCustomFocus}
                   onChange={handleCustomChange}

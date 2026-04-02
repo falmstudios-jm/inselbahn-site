@@ -121,86 +121,111 @@ function buildReminderEmail(params: ReminderEmailParams): string {
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
 </head>
-<body style="margin:0;padding:0;background-color:#f4f4f4;font-family:Arial,Helvetica,sans-serif;">
-  <table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="background-color:#f4f4f4;padding:24px 0;">
+<body style="margin:0;padding:0;background-color:#F7F7F7;font-family:'Montserrat',Arial,Helvetica,sans-serif;">
+  <table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="background-color:#F7F7F7;padding:24px 0;">
     <tr>
       <td align="center">
         <table role="presentation" width="600" cellpadding="0" cellspacing="0" style="background-color:#ffffff;border-radius:8px;overflow:hidden;max-width:600px;width:100%;">
+          <!-- Red top border -->
+          <tr>
+            <td style="background-color:#F24444;height:4px;font-size:0;line-height:0;">&nbsp;</td>
+          </tr>
+
           <!-- Header -->
           <tr>
-            <td style="background-color:#1a3a5c;padding:32px 24px;text-align:center;">
-              <h1 style="color:#ffffff;margin:0;font-size:24px;font-weight:700;">Inselbahn Helgoland</h1>
-              <p style="color:#a3c4e0;margin:8px 0 0;font-size:14px;">Erinnerung an Ihre heutige Tour</p>
+            <td style="padding:28px 24px 20px;text-align:center;">
+              <h1 style="color:#333333;margin:0;font-size:22px;font-weight:700;letter-spacing:2px;">INSELBAHN HELGOLAND</h1>
+            </td>
+          </tr>
+
+          <!-- Friendly Banner -->
+          <tr>
+            <td style="padding:0 24px 24px;">
+              <table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="background-color:#4B8B3B;border-radius:8px;">
+                <tr>
+                  <td style="padding:20px;text-align:center;">
+                    <p style="margin:0;font-size:22px;font-weight:700;color:#ffffff;">Heute geht\u2019s los! \uD83C\uDF89</p>
+                  </td>
+                </tr>
+              </table>
             </td>
           </tr>
 
           <!-- Body -->
           <tr>
-            <td style="padding:32px 24px;">
-              <h2 style="color:#1a3a5c;margin:0 0 8px;font-size:20px;">Heute geht\u2019s los! \u{1F680}</h2>
+            <td style="padding:0 24px 32px;">
               <p style="color:#555;font-size:15px;line-height:1.6;margin:0 0 24px;">
-                Hallo ${customerName}, wir freuen uns auf Sie! Hier noch einmal die wichtigsten Infos zu Ihrer heutigen Tour:
+                Hallo ${customerName}, wir freuen uns auf Sie! Hier die wichtigsten Infos:
               </p>
 
               <!-- Tour Details -->
-              <table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="background-color:#f8f9fa;border-radius:8px;margin-bottom:24px;">
+              <table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="background-color:#F7F7F7;border-radius:8px;margin-bottom:24px;">
                 <tr>
                   <td style="padding:20px;">
-                    <p style="margin:0 0 4px;font-size:12px;color:#888;text-transform:uppercase;letter-spacing:1px;">Tour</p>
-                    <p style="margin:0 0 16px;font-size:15px;font-weight:700;color:#1a3a5c;">${tourName}</p>
+                    <p style="margin:0 0 4px;font-size:11px;color:#888;text-transform:uppercase;letter-spacing:1px;">Tour</p>
+                    <p style="margin:0 0 14px;font-size:16px;font-weight:700;color:#333333;">${tourName}</p>
 
-                    <p style="margin:0 0 4px;font-size:12px;color:#888;text-transform:uppercase;letter-spacing:1px;">Datum &amp; Uhrzeit</p>
-                    <p style="margin:0 0 16px;font-size:15px;color:#333;">${formattedDate}, ${formattedTime} Uhr</p>
+                    <p style="margin:0 0 4px;font-size:11px;color:#888;text-transform:uppercase;letter-spacing:1px;">Datum &amp; Uhrzeit</p>
+                    <p style="margin:0 0 14px;font-size:15px;color:#333;">${formattedDate}, ${formattedTime} Uhr</p>
 
-                    <p style="margin:0 0 4px;font-size:12px;color:#888;text-transform:uppercase;letter-spacing:1px;">Treffpunkt</p>
+                    <p style="margin:0 0 4px;font-size:11px;color:#888;text-transform:uppercase;letter-spacing:1px;">Treffpunkt</p>
                     <p style="margin:0;font-size:15px;font-weight:700;color:#333;">Franz-Schensky-Platz, Helgoland</p>
                   </td>
                 </tr>
               </table>
 
-              <!-- Meeting Point Reminder -->
-              <table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="border-left:4px solid #e8a838;padding-left:16px;margin-bottom:24px;">
+              <!-- Meeting Point with walking times -->
+              <table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="border-left:4px solid #F24444;padding-left:16px;margin-bottom:24px;">
                 <tr>
                   <td>
-                    <p style="margin:0;font-size:14px;color:#555;line-height:1.5;">
-                      Bitte seien Sie <strong>15 Minuten vor Abfahrt</strong> (also um <strong>${subtractMinutes(formattedTime, 15)} Uhr</strong>) am Treffpunkt.
+                    <p style="margin:0 0 6px;font-size:14px;font-weight:700;color:#333;">Bitte um ${subtractMinutes(formattedTime, 15)} Uhr am Treffpunkt sein</p>
+                    <p style="margin:0;font-size:13px;color:#555;line-height:1.6;">
+                      Vom Anleger der Halunder Jet / Katamarane: ca. 5 Min. Fu\u00DFweg<br>
+                      Von der Landungsbr\u00FCcke (B\u00F6rteboot): ca. 3 Min. Fu\u00DFweg
                     </p>
                   </td>
                 </tr>
               </table>
 
               <!-- Weather Tip -->
-              <table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="background-color:#eef6ff;border-radius:8px;margin-bottom:24px;">
+              <table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="background-color:#F7F7F7;border-radius:8px;margin-bottom:24px;">
                 <tr>
-                  <td style="padding:16px;">
-                    <p style="margin:0;font-size:14px;color:#1a3a5c;line-height:1.5;">
-                      <strong>Wetter-Tipp:</strong> Auf Helgoland kann es windig sein \u2014 bringen Sie am besten eine leichte Jacke mit, auch bei Sonnenschein!
+                  <td style="padding:16px 20px;">
+                    <p style="margin:0;font-size:13px;color:#555;line-height:1.6;">
+                      <strong>\uD83C\uDF24\uFE0F Wetter-Tipp:</strong> Auf Helgoland kann es windig sein \u2014 bringen Sie eine leichte Jacke mit, auch bei Sonnenschein! Bei Regen fahren wir trotzdem (unsere Wagen sind \u00FCberdacht).
                     </p>
                   </td>
                 </tr>
               </table>
 
               <!-- Ticket Download -->
-              <p style="font-size:14px;color:#555;line-height:1.6;margin:0 0 12px;">
-                Ihre Fahrkarte können Sie hier herunterladen:
+              <table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="margin-bottom:24px;">
+                <tr>
+                  <td>
+                    <a href="${ticketUrl}" style="display:block;background-color:#F24444;color:#ffffff;font-size:14px;font-weight:700;text-decoration:none;padding:14px 24px;border-radius:6px;text-align:center;">
+                      Fahrkarte herunterladen (PDF)
+                    </a>
+                  </td>
+                </tr>
+              </table>
+
+              <p style="font-size:15px;color:#333;text-align:center;font-weight:700;margin:0;">
+                Wir freuen uns auf Sie! \uD83D\uDE80
               </p>
-              <a href="${ticketUrl}" style="display:inline-block;background-color:#1a3a5c;color:#ffffff;font-size:14px;font-weight:700;text-decoration:none;padding:12px 24px;border-radius:6px;">
-                Fahrkarte herunterladen (PDF)
-              </a>
             </td>
           </tr>
 
           <!-- Footer -->
           <tr>
-            <td style="background-color:#f8f9fa;padding:24px;text-align:center;border-top:1px solid #e0e0e0;">
-              <p style="margin:0 0 4px;font-size:13px;color:#888;">
-                Wir wünschen Ihnen eine wunderbare Fahrt!
+            <td style="background-color:#F7F7F7;padding:24px;text-align:center;border-top:1px solid #E0E0E0;">
+              <p style="margin:0 0 6px;font-size:12px;color:#888;">
+                Helgol\u00E4nder Dienstleistungs GmbH \u00B7 Am Falm 302 A \u00B7 27498 Helgoland
               </p>
-              <a href="mailto:info@helgolandbahn.de" style="font-size:13px;color:#1a3a5c;text-decoration:none;">
+              <a href="mailto:info@helgolandbahn.de" style="font-size:12px;color:#F24444;text-decoration:none;">
                 info@helgolandbahn.de
               </a>
-              <p style="margin:16px 0 0;font-size:11px;color:#aaa;">
-                Inselbahn Helgoland — Geführte Inselrundfahrten
+              <p style="margin:12px 0 0;font-size:11px;color:#aaa;">
+                Inselbahn Helgoland \u2014 Gef\u00FChrte Inselrundfahrten
               </p>
             </td>
           </tr>

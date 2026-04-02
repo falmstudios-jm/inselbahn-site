@@ -94,8 +94,8 @@ export async function GET(req: NextRequest) {
         if (date === today) {
           const [depH, depM] = dep.departure_time.split(':').map(Number);
           const depTotalMinutes = depH * 60 + depM;
-          if (depTotalMinutes <= nowTotalMinutes + 120) {
-            return null; // Too late to book — hide this slot
+          if (depTotalMinutes < nowTotalMinutes + 120) {
+            return null; // Too late to book — less than 2h before departure
           }
         }
 

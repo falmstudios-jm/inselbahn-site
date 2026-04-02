@@ -214,13 +214,12 @@ function buildConfirmationEmail(params: EmailParams): string {
     { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' }
   );
 
-  // Format time: "10:00:00" → "10:00"
   const formattedTime = departureTime.slice(0, 5);
 
   const passengers: string[] = [];
   passengers.push(`${adults} ${adults === 1 ? 'Erwachsener' : 'Erwachsene'}`);
-  if (children > 0) passengers.push(`${children} ${children === 1 ? 'Kind' : 'Kinder'} (6–14 Jahre)`);
-  if (childrenFree > 0) passengers.push(`${childrenFree} ${childrenFree === 1 ? 'Kind' : 'Kinder'} (0–5 Jahre, frei)`);
+  if (children > 0) passengers.push(`${children} ${children === 1 ? 'Kind' : 'Kinder'} (6\u201314 Jahre)`);
+  if (childrenFree > 0) passengers.push(`${childrenFree} ${childrenFree === 1 ? 'Kind' : 'Kinder'} (0\u20135 Jahre, frei)`);
 
   return `
 <!DOCTYPE html>
@@ -229,121 +228,155 @@ function buildConfirmationEmail(params: EmailParams): string {
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
 </head>
-<body style="margin:0;padding:0;background-color:#f4f4f4;font-family:Arial,Helvetica,sans-serif;">
-  <table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="background-color:#f4f4f4;padding:24px 0;">
+<body style="margin:0;padding:0;background-color:#F7F7F7;font-family:'Montserrat',Arial,Helvetica,sans-serif;">
+  <table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="background-color:#F7F7F7;padding:24px 0;">
     <tr>
       <td align="center">
         <table role="presentation" width="600" cellpadding="0" cellspacing="0" style="background-color:#ffffff;border-radius:8px;overflow:hidden;max-width:600px;width:100%;">
+          <!-- Red top border -->
+          <tr>
+            <td style="background-color:#F24444;height:4px;font-size:0;line-height:0;">&nbsp;</td>
+          </tr>
+
           <!-- Header -->
           <tr>
-            <td style="background-color:#1a3a5c;padding:32px 24px;text-align:center;">
-              <h1 style="color:#ffffff;margin:0;font-size:24px;font-weight:700;">Inselbahn Helgoland</h1>
-              <p style="color:#a3c4e0;margin:8px 0 0;font-size:14px;">Geführte Inselrundfahrten</p>
+            <td style="padding:28px 24px 20px;text-align:center;">
+              <h1 style="color:#333333;margin:0;font-size:22px;font-weight:700;letter-spacing:2px;">INSELBAHN HELGOLAND</h1>
+            </td>
+          </tr>
+
+          <!-- Success Banner -->
+          <tr>
+            <td style="padding:0 24px 24px;">
+              <table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="background-color:#4B8B3B;border-radius:8px;">
+                <tr>
+                  <td style="padding:16px 20px;text-align:center;">
+                    <p style="margin:0;font-size:18px;font-weight:700;color:#ffffff;">\u2713 Buchung best\u00E4tigt</p>
+                  </td>
+                </tr>
+              </table>
             </td>
           </tr>
 
           <!-- Body -->
           <tr>
-            <td style="padding:32px 24px;">
-              <h2 style="color:#1a3a5c;margin:0 0 8px;font-size:20px;">Vielen Dank für Ihre Buchung!</h2>
+            <td style="padding:0 24px 32px;">
               <p style="color:#555;font-size:15px;line-height:1.6;margin:0 0 24px;">
-                Hallo ${customerName}, Ihre Buchung wurde erfolgreich bestätigt.
+                Hallo ${customerName}, vielen Dank f\u00FCr Ihre Buchung!
               </p>
 
-              <!-- Booking Details -->
-              <table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="background-color:#f8f9fa;border-radius:8px;padding:20px;margin-bottom:24px;">
+              <!-- Booking Reference -->
+              <table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="margin-bottom:20px;">
+                <tr>
+                  <td style="text-align:center;">
+                    <p style="margin:0 0 4px;font-size:11px;color:#888;text-transform:uppercase;letter-spacing:1.5px;">Buchungsnummer</p>
+                    <p style="margin:0;font-size:28px;font-weight:700;color:#333333;letter-spacing:3px;">${bookingReference}</p>
+                  </td>
+                </tr>
+              </table>
+
+              <!-- Tour Card -->
+              <table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="background-color:#F7F7F7;border-radius:8px;margin-bottom:24px;">
                 <tr>
                   <td style="padding:20px;">
-                    <p style="margin:0 0 4px;font-size:12px;color:#888;text-transform:uppercase;letter-spacing:1px;">Buchungsnummer</p>
-                    <p style="margin:0 0 16px;font-size:18px;font-weight:700;color:#1a3a5c;">${bookingReference}</p>
+                    <p style="margin:0 0 4px;font-size:11px;color:#888;text-transform:uppercase;letter-spacing:1px;">Tour</p>
+                    <p style="margin:0 0 14px;font-size:16px;font-weight:700;color:#333333;">${tourName}</p>
 
-                    <p style="margin:0 0 4px;font-size:12px;color:#888;text-transform:uppercase;letter-spacing:1px;">Tour</p>
-                    <p style="margin:0 0 16px;font-size:15px;color:#333;">${tourName}</p>
+                    <p style="margin:0 0 4px;font-size:11px;color:#888;text-transform:uppercase;letter-spacing:1px;">Datum &amp; Uhrzeit</p>
+                    <p style="margin:0 0 14px;font-size:15px;color:#333;">${formattedDate}, ${formattedTime} Uhr</p>
 
-                    <p style="margin:0 0 4px;font-size:12px;color:#888;text-transform:uppercase;letter-spacing:1px;">Datum &amp; Uhrzeit</p>
-                    <p style="margin:0 0 16px;font-size:15px;color:#333;">${formattedDate}, ${formattedTime} Uhr</p>
+                    <p style="margin:0 0 4px;font-size:11px;color:#888;text-transform:uppercase;letter-spacing:1px;">Fahrg\u00E4ste</p>
+                    <p style="margin:0 0 14px;font-size:15px;color:#333;">${passengers.join('<br>')}</p>
 
-                    <p style="margin:0 0 4px;font-size:12px;color:#888;text-transform:uppercase;letter-spacing:1px;">Fahrgäste</p>
-                    <p style="margin:0 0 16px;font-size:15px;color:#333;">${passengers.join(', ')}</p>
-
-                    <p style="margin:0 0 4px;font-size:12px;color:#888;text-transform:uppercase;letter-spacing:1px;">Gesamtpreis</p>
-                    <p style="margin:0;font-size:18px;font-weight:700;color:#1a3a5c;">${totalAmount.toFixed(2).replace('.', ',')} €</p>
+                    <p style="margin:0 0 4px;font-size:11px;color:#888;text-transform:uppercase;letter-spacing:1px;">Gesamtpreis</p>
+                    <p style="margin:0;font-size:20px;font-weight:700;color:#333333;">${totalAmount.toFixed(2).replace('.', ',')} \u20AC</p>
                   </td>
                 </tr>
               </table>
 
               <!-- Meeting Point -->
-              <table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="border-left:4px solid #e8a838;padding-left:16px;margin-bottom:24px;">
+              <table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="border-left:4px solid #F24444;padding-left:16px;margin-bottom:24px;">
                 <tr>
                   <td>
-                    <p style="margin:0 0 4px;font-size:14px;font-weight:700;color:#333;">Treffpunkt</p>
-                    <p style="margin:0;font-size:14px;color:#555;line-height:1.5;">
-                      Franz-Schensky-Platz, Helgoland<br>
-                      Bitte seien Sie <strong>15 Minuten vor Abfahrt</strong> am Treffpunkt.
+                    <p style="margin:0 0 4px;font-size:14px;font-weight:700;color:#333;">Treffpunkt: Franz-Schensky-Platz</p>
+                    <p style="margin:0;font-size:13px;color:#555;line-height:1.6;">
+                      Vom Anleger der Halunder Jet / Katamarane: ca. 5 Min. Fu\u00DFweg<br>
+                      Von der Landungsbr\u00FCcke (B\u00F6rteboot): ca. 3 Min. Fu\u00DFweg
                     </p>
                   </td>
                 </tr>
               </table>
 
-              <!-- Ticket Download -->
-              <p style="font-size:14px;color:#555;line-height:1.6;margin:0 0 8px;">
-                Ihre Fahrkarte können Sie hier herunterladen:
-              </p>
-              <a href="${ticketUrl}" style="display:inline-block;background-color:#1a3a5c;color:#ffffff;font-size:14px;font-weight:700;text-decoration:none;padding:10px 20px;border-radius:6px;margin-bottom:24px;">
-                Fahrkarte herunterladen (PDF)
-              </a>
-              <br><br>
+              <!-- Tips Section -->
+              <table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="background-color:#F7F7F7;border-radius:8px;margin-bottom:24px;">
+                <tr>
+                  <td style="padding:16px 20px;">
+                    <p style="margin:0 0 10px;font-size:13px;font-weight:700;color:#333;">Gut zu wissen</p>
+                    <p style="margin:0 0 8px;font-size:13px;color:#555;line-height:1.5;">\u23F0 Bitte 15 Min. vor Abfahrt da sein</p>
+                    <p style="margin:0 0 8px;font-size:13px;color:#555;line-height:1.5;">\uD83D\uDEBB Toilette an der Landungsbr\u00FCcke (kostenlos). Keine Toilette w\u00E4hrend der Premium-Tour!</p>
+                    <p style="margin:0 0 8px;font-size:13px;color:#555;line-height:1.5;">\uD83C\uDF27\uFE0F Bei Regen fahren wir (\u00FCberdachte Wagen)</p>
+                    <p style="margin:0 0 8px;font-size:13px;color:#555;line-height:1.5;">\uD83E\uDD85 M\u00F6wen klauen Essen \u2014 Fischbr\u00F6tchen vorher essen!</p>
+                    <p style="margin:0;font-size:13px;color:#555;line-height:1.5;">\uD83C\uDFAB Stornierung kostenlos bis Mitternacht am Vortag</p>
+                  </td>
+                </tr>
+              </table>
 
-              <!-- Invoice -->
-              ${invoiceUrl ? `
-              <p style="font-size:14px;color:#555;line-height:1.6;margin:0 0 8px;">
-                Ihre Rechnung:
-              </p>
-              <a href="${invoiceUrl}" style="display:inline-block;background-color:#e8a838;color:#ffffff;font-size:14px;font-weight:700;text-decoration:none;padding:10px 20px;border-radius:6px;margin-bottom:24px;">
-                Rechnung herunterladen (PDF)
-              </a>
-              <br><br>
-              ` : `
-              <p style="font-size:14px;color:#555;line-height:1.6;margin:0 0 8px;">
-                Benötigen Sie eine Rechnung? Sie können Ihre Rechnungsdaten jederzeit ergänzen:
-              </p>
-              <a href="${invoicePageUrl}" style="display:inline-block;color:#1a3a5c;font-size:14px;text-decoration:underline;margin-bottom:24px;">
-                Rechnung anfordern
-              </a>
-              <br><br>
-              `}
+              <!-- Action Buttons -->
+              <table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="margin-bottom:8px;">
+                <tr>
+                  <td style="padding-bottom:12px;">
+                    <a href="${ticketUrl}" style="display:block;background-color:#F24444;color:#ffffff;font-size:14px;font-weight:700;text-decoration:none;padding:14px 24px;border-radius:6px;text-align:center;">
+                      Fahrkarte herunterladen (PDF)
+                    </a>
+                  </td>
+                </tr>
+                ${invoiceUrl ? `
+                <tr>
+                  <td style="padding-bottom:12px;">
+                    <a href="${invoiceUrl}" style="display:block;background-color:#555555;color:#ffffff;font-size:14px;font-weight:700;text-decoration:none;padding:14px 24px;border-radius:6px;text-align:center;">
+                      Rechnung herunterladen (PDF)
+                    </a>
+                  </td>
+                </tr>
+                ` : ''}
+                <tr>
+                  <td style="padding-bottom:12px;">
+                    <a href="${cancelUrl}" style="display:block;color:#555555;font-size:14px;font-weight:700;text-decoration:none;padding:12px 24px;border-radius:6px;text-align:center;border:2px solid #E0E0E0;">
+                      Buchung stornieren
+                    </a>
+                  </td>
+                </tr>
+              </table>
 
-              <!-- Tax-free notice -->
-              <p style="font-size:12px;color:#888;line-height:1.6;margin:0 0 24px;padding:12px;background-color:#f8f9fa;border-radius:6px;">
-                Alle Preise sind Endpreise. Gemäß §1 Abs. 2 UStG wird keine Umsatzsteuer erhoben (Helgoland).
-              </p>
+              <!-- Self-service Links -->
+              <table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="margin-bottom:16px;">
+                <tr>
+                  <td style="padding:12px 0;border-top:1px solid #E0E0E0;">
+                    ${!invoiceUrl ? `<p style="margin:0 0 6px;font-size:13px;"><a href="${invoicePageUrl}" style="color:#333333;text-decoration:underline;">Rechnung nachtr\u00E4glich anfordern</a></p>` : ''}
+                    <p style="margin:0 0 6px;font-size:13px;"><a href="${cancelUrl}" style="color:#333333;text-decoration:underline;">Kostenlose Stornierung bis Mitternacht am Vortag</a></p>
+                    <p style="margin:0;font-size:13px;"><a href="${BASE_URL}/agb" style="color:#333333;text-decoration:underline;">AGB &amp; Stornierungsbedingungen</a></p>
+                  </td>
+                </tr>
+              </table>
 
-              <!-- Cancellation -->
-              <p style="font-size:14px;color:#555;line-height:1.6;margin:0 0 16px;">
-                Kostenlose Stornierung bis Mitternacht am Vortag:
-              </p>
-              <a href="${cancelUrl}" style="display:inline-block;color:#c0392b;font-size:14px;text-decoration:underline;">
-                Buchung stornieren
-              </a>
-
-              <!-- AGB -->
-              <p style="font-size:12px;color:#888;margin:20px 0 0;">
-                Es gelten unsere <a href="${BASE_URL}/agb" style="color:#1a3a5c;text-decoration:underline;">AGB</a> und <a href="${BASE_URL}/agb#stornierung" style="color:#1a3a5c;text-decoration:underline;">Stornierungsbedingungen</a>.
+              <!-- Tax note -->
+              <p style="font-size:11px;color:#999;line-height:1.5;margin:0;">
+                Alle Preise sind Endpreise. Gem\u00E4\u00DF \u00A71 Abs. 2 UStG wird keine Umsatzsteuer erhoben (Helgoland).
               </p>
             </td>
           </tr>
 
           <!-- Footer -->
           <tr>
-            <td style="background-color:#f8f9fa;padding:24px;text-align:center;border-top:1px solid #e0e0e0;">
-              <p style="margin:0 0 4px;font-size:13px;color:#888;">
-                Fragen? Kontaktieren Sie uns:
+            <td style="background-color:#F7F7F7;padding:24px;text-align:center;border-top:1px solid #E0E0E0;">
+              <p style="margin:0 0 6px;font-size:12px;color:#888;">
+                Helgol\u00E4nder Dienstleistungs GmbH \u00B7 Am Falm 302 A \u00B7 27498 Helgoland
               </p>
-              <a href="mailto:info@helgolandbahn.de" style="font-size:13px;color:#1a3a5c;text-decoration:none;">
+              <a href="mailto:info@helgolandbahn.de" style="font-size:12px;color:#F24444;text-decoration:none;">
                 info@helgolandbahn.de
               </a>
-              <p style="margin:16px 0 0;font-size:11px;color:#aaa;">
-                Inselbahn Helgoland — Geführte Inselrundfahrten
+              <p style="margin:12px 0 0;font-size:11px;color:#aaa;">
+                Inselbahn Helgoland \u2014 Gef\u00FChrte Inselrundfahrten
               </p>
             </td>
           </tr>
@@ -420,13 +453,19 @@ interface GiftCardEmailParams {
 function buildGiftCardEmail(params: GiftCardEmailParams): string {
   const { code, amount, purchaserName, recipientName, recipientMessage } = params;
 
+  const validUntil = (() => {
+    const d = new Date();
+    d.setFullYear(d.getFullYear() + 3);
+    return d.toLocaleDateString('de-DE', { year: 'numeric', month: 'long', day: 'numeric' });
+  })();
+
   const recipientSection = recipientName
     ? `
-      <p style="margin:0 0 4px;font-size:12px;color:#888;text-transform:uppercase;letter-spacing:1px;">Für</p>
-      <p style="margin:0 0 16px;font-size:15px;color:#333;">${recipientName}</p>
+      <p style="margin:0 0 4px;font-size:11px;color:#888;text-transform:uppercase;letter-spacing:1px;">F\u00FCr</p>
+      <p style="margin:0 0 16px;font-size:16px;font-weight:700;color:#333;">${recipientName}</p>
       ${recipientMessage ? `
-      <p style="margin:0 0 4px;font-size:12px;color:#888;text-transform:uppercase;letter-spacing:1px;">Persönliche Nachricht</p>
-      <p style="margin:0 0 16px;font-size:15px;color:#333;font-style:italic;">&bdquo;${recipientMessage}&ldquo;</p>
+      <p style="margin:0 0 4px;font-size:11px;color:#888;text-transform:uppercase;letter-spacing:1px;">Pers\u00F6nliche Nachricht</p>
+      <p style="margin:0 0 16px;font-size:15px;color:#333;font-style:italic;border-left:3px solid #F24444;padding-left:12px;">&bdquo;${recipientMessage}&ldquo;</p>
       ` : ''}
     `
     : '';
@@ -438,58 +477,92 @@ function buildGiftCardEmail(params: GiftCardEmailParams): string {
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
 </head>
-<body style="margin:0;padding:0;background-color:#f4f4f4;font-family:Arial,Helvetica,sans-serif;">
-  <table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="background-color:#f4f4f4;padding:24px 0;">
+<body style="margin:0;padding:0;background-color:#F7F7F7;font-family:'Montserrat',Arial,Helvetica,sans-serif;">
+  <table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="background-color:#F7F7F7;padding:24px 0;">
     <tr>
       <td align="center">
         <table role="presentation" width="600" cellpadding="0" cellspacing="0" style="background-color:#ffffff;border-radius:8px;overflow:hidden;max-width:600px;width:100%;">
+          <!-- Red top border -->
+          <tr>
+            <td style="background-color:#F24444;height:4px;font-size:0;line-height:0;">&nbsp;</td>
+          </tr>
+
           <!-- Header -->
           <tr>
-            <td style="background-color:#1a3a5c;padding:32px 24px;text-align:center;">
-              <h1 style="color:#ffffff;margin:0;font-size:24px;font-weight:700;">Inselbahn Helgoland</h1>
-              <p style="color:#a3c4e0;margin:8px 0 0;font-size:14px;">Geschenkgutschein</p>
+            <td style="padding:28px 24px 20px;text-align:center;">
+              <h1 style="color:#333333;margin:0;font-size:22px;font-weight:700;letter-spacing:2px;">INSELBAHN HELGOLAND</h1>
+            </td>
+          </tr>
+
+          <!-- Celebratory Banner -->
+          <tr>
+            <td style="padding:0 24px 24px;">
+              <table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="background-color:#F24444;border-radius:8px;">
+                <tr>
+                  <td style="padding:20px;text-align:center;">
+                    <p style="margin:0 0 4px;font-size:14px;color:rgba(255,255,255,0.85);">Geschenkgutschein</p>
+                    <p style="margin:0;font-size:24px;font-weight:700;color:#ffffff;">\uD83C\uDF81 Vielen Dank f\u00FCr Ihr Geschenk!</p>
+                  </td>
+                </tr>
+              </table>
             </td>
           </tr>
 
           <!-- Body -->
           <tr>
-            <td style="padding:32px 24px;">
-              <h2 style="color:#1a3a5c;margin:0 0 8px;font-size:20px;">Ihr Geschenkgutschein</h2>
+            <td style="padding:0 24px 32px;">
               <p style="color:#555;font-size:15px;line-height:1.6;margin:0 0 24px;">
-                ${purchaserName ? `Hallo ${purchaserName}, v` : 'V'}ielen Dank für Ihren Kauf! Hier sind die Gutschein-Details:
+                ${purchaserName ? `Hallo ${purchaserName}, I` : 'I'}hr Gutschein wurde erfolgreich erstellt.
               </p>
 
-              <!-- Gift Card Details -->
-              <table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="background-color:#f8f9fa;border-radius:8px;margin-bottom:24px;">
+              <!-- Gift Card Code - very prominent -->
+              <table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="border:2px dashed #F24444;border-radius:12px;margin-bottom:24px;">
                 <tr>
-                  <td style="padding:20px;">
-                    <p style="margin:0 0 4px;font-size:12px;color:#888;text-transform:uppercase;letter-spacing:1px;">Gutscheincode</p>
-                    <p style="margin:0 0 16px;font-size:22px;font-weight:700;color:#1a3a5c;letter-spacing:2px;">${code}</p>
+                  <td style="padding:24px;text-align:center;">
+                    <p style="margin:0 0 6px;font-size:11px;color:#888;text-transform:uppercase;letter-spacing:2px;">Gutscheincode</p>
+                    <p style="margin:0 0 16px;font-size:28px;font-weight:700;color:#F24444;letter-spacing:4px;font-family:'Courier New',monospace;">${code}</p>
 
-                    <p style="margin:0 0 4px;font-size:12px;color:#888;text-transform:uppercase;letter-spacing:1px;">Wert</p>
-                    <p style="margin:0 0 16px;font-size:18px;font-weight:700;color:#1a3a5c;">${amount.toFixed(2).replace('.', ',')} &euro;</p>
-
-                    ${recipientSection}
-
-                    <p style="margin:0 0 4px;font-size:12px;color:#888;text-transform:uppercase;letter-spacing:1px;">Gültig bis</p>
-                    <p style="margin:0;font-size:15px;color:#333;">${(() => { const d = new Date(); d.setFullYear(d.getFullYear() + 3); return d.toLocaleDateString('de-DE', { year: 'numeric', month: 'long', day: 'numeric' }); })()} (3 Jahre ab Kaufdatum)</p>
+                    <p style="margin:0 0 6px;font-size:11px;color:#888;text-transform:uppercase;letter-spacing:2px;">Wert</p>
+                    <p style="margin:0;font-size:24px;font-weight:700;color:#333333;">${amount.toFixed(2).replace('.', ',')} &euro;</p>
                   </td>
                 </tr>
               </table>
 
-              <!-- Info -->
-              <table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="border-left:4px solid #e8a838;padding-left:16px;margin-bottom:24px;">
+              <!-- Recipient & Validity -->
+              <table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="background-color:#F7F7F7;border-radius:8px;margin-bottom:24px;">
+                <tr>
+                  <td style="padding:20px;">
+                    ${recipientSection}
+                    <p style="margin:0 0 4px;font-size:11px;color:#888;text-transform:uppercase;letter-spacing:1px;">G\u00FCltig bis</p>
+                    <p style="margin:0 0 16px;font-size:15px;color:#333;">${validUntil} (3 Jahre ab Kaufdatum)</p>
+
+                    <p style="margin:0 0 4px;font-size:11px;color:#888;text-transform:uppercase;letter-spacing:1px;">Teileinl\u00F6sung</p>
+                    <p style="margin:0;font-size:15px;color:#333;">M\u00F6glich \u2014 Restwert bleibt erhalten</p>
+                  </td>
+                </tr>
+              </table>
+
+              <!-- Redemption Instructions -->
+              <table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="border-left:4px solid #F24444;padding-left:16px;margin-bottom:24px;">
                 <tr>
                   <td>
-                    <p style="margin:0 0 4px;font-size:14px;font-weight:700;color:#333;">So lösen Sie den Gutschein ein</p>
-                    <p style="margin:0;font-size:14px;color:#555;line-height:1.5;">
-                      Geben Sie den Gutscheincode bei der Online-Buchung auf
-                      <a href="${BASE_URL}" style="color:#1a3a5c;">helgolandbahn.de</a>
-                      im Feld &bdquo;Gutscheincode&ldquo; ein. Der Betrag wird automatisch verrechnet.
+                    <p style="margin:0 0 4px;font-size:14px;font-weight:700;color:#333;">So l\u00F6sen Sie den Gutschein ein</p>
+                    <p style="margin:0;font-size:14px;color:#555;line-height:1.6;">
+                      1. Buchen Sie eine Tour auf <a href="${BASE_URL}" style="color:#F24444;font-weight:700;">helgolandbahn.de</a><br>
+                      2. Geben Sie den Gutscheincode im Feld &bdquo;Gutscheincode&ldquo; ein<br>
+                      3. Der Betrag wird automatisch verrechnet
                     </p>
-                    <p style="margin:8px 0 0;font-size:14px;color:#555;line-height:1.5;">
-                      Teileinlösung möglich — der Restwert bleibt erhalten.
-                    </p>
+                  </td>
+                </tr>
+              </table>
+
+              <!-- Book Now Button -->
+              <table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="margin-bottom:16px;">
+                <tr>
+                  <td>
+                    <a href="${BASE_URL}" style="display:block;background-color:#F24444;color:#ffffff;font-size:14px;font-weight:700;text-decoration:none;padding:14px 24px;border-radius:6px;text-align:center;">
+                      Jetzt Tour buchen
+                    </a>
                   </td>
                 </tr>
               </table>
@@ -498,15 +571,15 @@ function buildGiftCardEmail(params: GiftCardEmailParams): string {
 
           <!-- Footer -->
           <tr>
-            <td style="background-color:#f8f9fa;padding:24px;text-align:center;border-top:1px solid #e0e0e0;">
-              <p style="margin:0 0 4px;font-size:13px;color:#888;">
-                Fragen? Kontaktieren Sie uns:
+            <td style="background-color:#F7F7F7;padding:24px;text-align:center;border-top:1px solid #E0E0E0;">
+              <p style="margin:0 0 6px;font-size:12px;color:#888;">
+                Helgol\u00E4nder Dienstleistungs GmbH \u00B7 Am Falm 302 A \u00B7 27498 Helgoland
               </p>
-              <a href="mailto:info@helgolandbahn.de" style="font-size:13px;color:#1a3a5c;text-decoration:none;">
+              <a href="mailto:info@helgolandbahn.de" style="font-size:12px;color:#F24444;text-decoration:none;">
                 info@helgolandbahn.de
               </a>
-              <p style="margin:16px 0 0;font-size:11px;color:#aaa;">
-                Inselbahn Helgoland — Geführte Inselrundfahrten
+              <p style="margin:12px 0 0;font-size:11px;color:#aaa;">
+                Inselbahn Helgoland \u2014 Gef\u00FChrte Inselrundfahrten
               </p>
             </td>
           </tr>

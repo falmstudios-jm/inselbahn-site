@@ -8,13 +8,13 @@ import {
 } from '@react-pdf/renderer';
 
 const colors = {
-  primary: '#1a3a5c',
-  accent: '#e8a838',
-  text: '#333333',
+  red: '#F24444',
+  dark: '#333333',
+  surface: '#F7F7F7',
+  green: '#4B8B3B',
   textLight: '#666666',
-  border: '#d0d0d0',
-  bg: '#f8f9fa',
-  white: '#ffffff',
+  border: '#E0E0E0',
+  white: '#FFFFFF',
 };
 
 const styles = StyleSheet.create({
@@ -22,43 +22,55 @@ const styles = StyleSheet.create({
     padding: 40,
     fontFamily: 'Helvetica',
     backgroundColor: colors.white,
-    fontSize: 11,
+    fontSize: 10,
+    color: colors.dark,
   },
   // ── Header ──
   header: {
     flexDirection: 'row',
     justifyContent: 'space-between',
+    alignItems: 'flex-start',
     marginBottom: 30,
+    borderBottomWidth: 3,
+    borderBottomColor: colors.red,
+    paddingBottom: 16,
   },
   headerLeft: {},
+  companyName: {
+    fontSize: 11,
+    fontFamily: 'Helvetica-Bold',
+    color: colors.dark,
+    letterSpacing: 2,
+    marginBottom: 2,
+  },
+  companyTagline: {
+    fontSize: 8,
+    color: colors.textLight,
+  },
   rechnungTitle: {
     fontSize: 28,
     fontFamily: 'Helvetica-Bold',
-    color: colors.primary,
+    color: colors.dark,
     letterSpacing: 3,
-    marginBottom: 6,
+    textAlign: 'right',
   },
-  invoiceNumber: {
-    fontSize: 13,
-    fontFamily: 'Helvetica-Bold',
-    color: colors.text,
-    marginBottom: 2,
-  },
-  invoiceDate: {
+  invoiceNumberHeader: {
     fontSize: 11,
     color: colors.textLight,
+    textAlign: 'right',
+    marginTop: 4,
   },
   // ── Address blocks ──
   addressRow: {
     flexDirection: 'row',
     justifyContent: 'space-between',
-    marginBottom: 30,
+    marginBottom: 24,
   },
   addressBlock: {
     width: '48%',
   },
   addressLabel: {
-    fontSize: 9,
+    fontSize: 8,
     color: colors.textLight,
     textTransform: 'uppercase',
     letterSpacing: 1.5,
@@ -68,37 +80,37 @@ const styles = StyleSheet.create({
     paddingBottom: 4,
   },
   addressText: {
-    fontSize: 11,
-    color: colors.text,
+    fontSize: 10,
+    color: colors.dark,
     lineHeight: 1.6,
   },
   addressTextBold: {
-    fontSize: 11,
-    color: colors.text,
+    fontSize: 10,
+    color: colors.dark,
     fontFamily: 'Helvetica-Bold',
     lineHeight: 1.6,
   },
-  // ── Reference row ──
-  referenceRow: {
+  // ── Invoice details row ──
+  detailsRow: {
     flexDirection: 'row',
-    backgroundColor: colors.bg,
+    backgroundColor: colors.surface,
     borderRadius: 4,
     padding: 12,
     marginBottom: 24,
   },
-  referenceItem: {
+  detailItem: {
     flex: 1,
   },
-  referenceLabel: {
-    fontSize: 9,
+  detailLabel: {
+    fontSize: 8,
     color: colors.textLight,
     textTransform: 'uppercase',
     letterSpacing: 1,
     marginBottom: 2,
   },
-  referenceValue: {
-    fontSize: 11,
-    color: colors.text,
+  detailValue: {
+    fontSize: 10,
+    color: colors.dark,
     fontFamily: 'Helvetica-Bold',
   },
   // ── Table ──
@@ -107,38 +119,50 @@ const styles = StyleSheet.create({
   },
   tableHeader: {
     flexDirection: 'row',
-    backgroundColor: colors.primary,
-    borderRadius: 3,
+    backgroundColor: colors.dark,
     paddingVertical: 8,
     paddingHorizontal: 10,
   },
   tableHeaderCell: {
-    fontSize: 9,
+    fontSize: 8,
     color: colors.white,
     fontFamily: 'Helvetica-Bold',
     textTransform: 'uppercase',
     letterSpacing: 0.8,
   },
-  tableRow: {
+  tableTourRow: {
     flexDirection: 'row',
     paddingVertical: 8,
     paddingHorizontal: 10,
+    backgroundColor: colors.surface,
     borderBottomWidth: 1,
-    borderBottomColor: '#eee',
+    borderBottomColor: colors.border,
+  },
+  tableTourCell: {
+    fontSize: 10,
+    color: colors.dark,
+    fontFamily: 'Helvetica-Bold',
+  },
+  tableRow: {
+    flexDirection: 'row',
+    paddingVertical: 7,
+    paddingHorizontal: 10,
+    borderBottomWidth: 1,
+    borderBottomColor: colors.border,
   },
   tableCell: {
-    fontSize: 11,
-    color: colors.text,
+    fontSize: 10,
+    color: colors.dark,
   },
   tableCellBold: {
-    fontSize: 11,
-    color: colors.text,
+    fontSize: 10,
+    color: colors.dark,
     fontFamily: 'Helvetica-Bold',
   },
   colDescription: { width: '45%' },
-  colQuantity: { width: '12%', textAlign: 'right' },
-  colUnitPrice: { width: '18%', textAlign: 'right' },
-  colTotal: { width: '25%', textAlign: 'right' },
+  colQuantity: { width: '15%', textAlign: 'center' },
+  colUnitPrice: { width: '20%', textAlign: 'right' },
+  colTotal: { width: '20%', textAlign: 'right' },
   // ── Totals ──
   totalsContainer: {
     alignItems: 'flex-end',
@@ -157,61 +181,63 @@ const styles = StyleSheet.create({
     justifyContent: 'space-between',
     paddingVertical: 8,
     borderTopWidth: 2,
-    borderTopColor: colors.primary,
+    borderTopColor: colors.dark,
     marginTop: 4,
   },
   totalLabel: {
-    fontSize: 11,
+    fontSize: 10,
     color: colors.textLight,
   },
   totalValue: {
-    fontSize: 11,
-    color: colors.text,
+    fontSize: 10,
+    color: colors.dark,
   },
   totalLabelFinal: {
-    fontSize: 13,
+    fontSize: 12,
     fontFamily: 'Helvetica-Bold',
-    color: colors.primary,
+    color: colors.dark,
   },
   totalValueFinal: {
-    fontSize: 13,
+    fontSize: 12,
     fontFamily: 'Helvetica-Bold',
-    color: colors.primary,
+    color: colors.dark,
+  },
+  // ── Payment ──
+  paymentBox: {
+    backgroundColor: colors.surface,
+    borderRadius: 4,
+    padding: 14,
+    marginBottom: 20,
+    borderLeftWidth: 4,
+    borderLeftColor: colors.green,
+  },
+  paymentTitle: {
+    fontSize: 10,
+    fontFamily: 'Helvetica-Bold',
+    color: colors.dark,
+    marginBottom: 2,
+  },
+  paymentText: {
+    fontSize: 10,
+    color: colors.textLight,
   },
   // ── Notes ──
   noteBox: {
-    backgroundColor: colors.bg,
+    backgroundColor: colors.surface,
     borderRadius: 4,
     padding: 14,
     marginBottom: 20,
   },
   noteTitle: {
-    fontSize: 10,
+    fontSize: 9,
     fontFamily: 'Helvetica-Bold',
-    color: colors.text,
+    color: colors.dark,
     marginBottom: 4,
   },
   noteText: {
     fontSize: 9,
     color: colors.textLight,
     lineHeight: 1.6,
-  },
-  // ── Payment info ──
-  paymentBox: {
-    borderLeftWidth: 4,
-    borderLeftColor: colors.accent,
-    paddingLeft: 14,
-    marginBottom: 20,
-  },
-  paymentTitle: {
-    fontSize: 11,
-    fontFamily: 'Helvetica-Bold',
-    color: colors.text,
-    marginBottom: 2,
-  },
-  paymentText: {
-    fontSize: 11,
-    color: colors.textLight,
   },
   // ── Footer ──
   footer: {
@@ -316,7 +342,7 @@ export function InvoiceDocument({ data }: { data: InvoiceData }) {
 
   if (data.adults > 0) {
     lineItems.push({
-      description: `${data.tourName} — Erwachsene`,
+      description: 'Erwachsene',
       quantity: data.adults,
       unitPrice: data.priceAdult,
       total: data.adults * data.priceAdult,
@@ -325,7 +351,7 @@ export function InvoiceDocument({ data }: { data: InvoiceData }) {
 
   if (data.children > 0) {
     lineItems.push({
-      description: `${data.tourName} — Kinder (6–14 Jahre)`,
+      description: 'Kinder (6\u201314 Jahre)',
       quantity: data.children,
       unitPrice: data.priceChild,
       total: data.children * data.priceChild,
@@ -334,7 +360,7 @@ export function InvoiceDocument({ data }: { data: InvoiceData }) {
 
   if (data.childrenFree > 0) {
     lineItems.push({
-      description: `${data.tourName} — Kinder (0–5 Jahre, frei)`,
+      description: 'Kinder (0\u20135 Jahre)',
       quantity: data.childrenFree,
       unitPrice: 0,
       total: 0,
@@ -343,17 +369,22 @@ export function InvoiceDocument({ data }: { data: InvoiceData }) {
 
   const subtotal = lineItems.reduce((sum, item) => sum + item.total, 0);
 
+  const tourLine = `${data.tourName}, ${formatGermanDate(data.bookingDate)}, ${formatTime(data.departureTime)}`;
+
+  const paymentDate = formatGermanDate(data.invoiceDate);
+
   return (
     <Document>
       <Page size="A4" style={styles.page}>
         {/* Header */}
         <View style={styles.header}>
           <View style={styles.headerLeft}>
+            <Text style={styles.companyName}>INSELBAHN HELGOLAND</Text>
+            <Text style={styles.companyTagline}>Helgoländer Dienstleistungs GmbH</Text>
+          </View>
+          <View>
             <Text style={styles.rechnungTitle}>RECHNUNG</Text>
-            <Text style={styles.invoiceNumber}>{data.invoiceNumber}</Text>
-            <Text style={styles.invoiceDate}>
-              Rechnungsdatum: {formatGermanDate(data.invoiceDate)}
-            </Text>
+            <Text style={styles.invoiceNumberHeader}>{data.invoiceNumber}</Text>
           </View>
         </View>
 
@@ -390,24 +421,24 @@ export function InvoiceDocument({ data }: { data: InvoiceData }) {
           </View>
         </View>
 
-        {/* Reference row */}
-        <View style={styles.referenceRow}>
-          <View style={styles.referenceItem}>
-            <Text style={styles.referenceLabel}>Buchungsnummer</Text>
-            <Text style={styles.referenceValue}>
-              {data.bookingReference}
-            </Text>
+        {/* Invoice details row */}
+        <View style={styles.detailsRow}>
+          <View style={styles.detailItem}>
+            <Text style={styles.detailLabel}>Rechnungsnr.</Text>
+            <Text style={styles.detailValue}>{data.invoiceNumber}</Text>
           </View>
-          <View style={styles.referenceItem}>
-            <Text style={styles.referenceLabel}>Tourdatum</Text>
-            <Text style={styles.referenceValue}>
-              {formatGermanDate(data.bookingDate)}
-            </Text>
+          <View style={styles.detailItem}>
+            <Text style={styles.detailLabel}>Rechnungsdatum</Text>
+            <Text style={styles.detailValue}>{formatGermanDate(data.invoiceDate)}</Text>
           </View>
-          <View style={styles.referenceItem}>
-            <Text style={styles.referenceLabel}>Abfahrt</Text>
-            <Text style={styles.referenceValue}>
-              {formatTime(data.departureTime)}
+          <View style={styles.detailItem}>
+            <Text style={styles.detailLabel}>Buchungsnr.</Text>
+            <Text style={styles.detailValue}>{data.bookingReference}</Text>
+          </View>
+          <View style={styles.detailItem}>
+            <Text style={styles.detailLabel}>Zahlung</Text>
+            <Text style={styles.detailValue}>
+              {data.paidOnline ? 'Online' : 'Vor Ort'}
             </Text>
           </View>
         </View>
@@ -430,7 +461,14 @@ export function InvoiceDocument({ data }: { data: InvoiceData }) {
             </Text>
           </View>
 
-          {/* Table rows */}
+          {/* Tour name row */}
+          <View style={styles.tableTourRow}>
+            <Text style={[styles.tableTourCell, { width: '100%' }]}>
+              {tourLine}
+            </Text>
+          </View>
+
+          {/* Line item rows */}
           {lineItems.map((item, idx) => (
             <View style={styles.tableRow} key={idx}>
               <Text style={[styles.tableCell, styles.colDescription]}>
@@ -459,7 +497,7 @@ export function InvoiceDocument({ data }: { data: InvoiceData }) {
               </Text>
             </View>
             <View style={styles.totalRow}>
-              <Text style={styles.totalLabel}>Umsatzsteuer</Text>
+              <Text style={styles.totalLabel}>USt 0% (§1 Abs. 2 UStG)</Text>
               <Text style={styles.totalValue}>0,00 \u20AC</Text>
             </View>
             <View style={styles.totalRowFinal}>
@@ -471,22 +509,23 @@ export function InvoiceDocument({ data }: { data: InvoiceData }) {
           </View>
         </View>
 
+        {/* Payment status */}
+        <View style={styles.paymentBox}>
+          <Text style={styles.paymentTitle}>Zahlungsstatus</Text>
+          <Text style={styles.paymentText}>
+            {data.paidOnline
+              ? `Bezahlt am ${paymentDate} via Online-Zahlung`
+              : 'Bezahlt vor Ort (Bar/Karte)'}
+          </Text>
+        </View>
+
         {/* VAT Note */}
         <View style={styles.noteBox}>
           <Text style={styles.noteTitle}>Hinweis zur Umsatzsteuer</Text>
           <Text style={styles.noteText}>
             Helgoland ist gemäß §1 Abs. 2 UStG kein Inland im Sinne des
             Umsatzsteuergesetzes. Daher wird keine Umsatzsteuer erhoben.
-          </Text>
-        </View>
-
-        {/* Payment info */}
-        <View style={styles.paymentBox}>
-          <Text style={styles.paymentTitle}>Zahlungsstatus</Text>
-          <Text style={styles.paymentText}>
-            {data.paidOnline
-              ? 'Bereits bezahlt via Online-Zahlung'
-              : 'Bezahlt vor Ort'}
+            Alle Preise sind Endpreise.
           </Text>
         </View>
 
@@ -508,10 +547,11 @@ export function InvoiceDocument({ data }: { data: InvoiceData }) {
             </Text>
           </View>
           <View style={styles.footerCol}>
-            <Text style={styles.footerLabel}>Hinweis</Text>
+            <Text style={styles.footerLabel}>Steuerhinweis</Text>
             <Text style={styles.footerText}>
               Kein Vorsteuerabzug —{'\n'}
-              Helgoland ist umsatzsteuerfreie Zone
+              Helgoland ist gemäß §1 Abs. 2{'\n'}
+              UStG umsatzsteuerfrei
             </Text>
           </View>
         </View>

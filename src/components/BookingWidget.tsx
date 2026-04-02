@@ -63,7 +63,7 @@ const tourOptions = [
   },
 ];
 
-const MAX_FUTURE_DAYS = 90;
+const MAX_FUTURE_DAYS = 30;
 
 const STEPS = ["Datum", "Tour", "Uhrzeit", "Personen", "Rabatt", "Kontakt", "Zahlung"];
 

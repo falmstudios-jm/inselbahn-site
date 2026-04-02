@@ -5,16 +5,19 @@ import {
   Text,
   View,
   StyleSheet,
+  Link,
 } from '@react-pdf/renderer';
 
 const colors = {
-  primary: '#1a3a5c',
-  accent: '#e8a838',
-  text: '#333333',
+  red: '#F24444',
+  dark: '#333333',
+  surface: '#F7F7F7',
+  green: '#4B8B3B',
   textLight: '#666666',
-  border: '#d0d0d0',
-  bg: '#f8f9fa',
-  white: '#ffffff',
+  border: '#E0E0E0',
+  white: '#FFFFFF',
+  amber: '#D97706',
+  navy: '#1E3A5F',
 };
 
 const styles = StyleSheet.create({
@@ -22,137 +25,225 @@ const styles = StyleSheet.create({
     padding: 40,
     fontFamily: 'Helvetica',
     backgroundColor: colors.white,
+    fontSize: 11,
+    color: colors.dark,
   },
-  header: {
-    backgroundColor: colors.primary,
-    padding: 24,
-    borderRadius: 6,
-    marginBottom: 24,
-    alignItems: 'center',
+  // ── Header ──
+  headerBar: {
+    borderBottomWidth: 3,
+    borderBottomColor: colors.red,
+    paddingBottom: 16,
+    marginBottom: 20,
   },
   headerTitle: {
-    color: colors.white,
-    fontSize: 22,
+    fontSize: 24,
     fontFamily: 'Helvetica-Bold',
-    letterSpacing: 2,
+    color: colors.dark,
+    letterSpacing: 3,
   },
   headerSubtitle: {
-    color: '#a3c4e0',
-    fontSize: 12,
-    marginTop: 6,
+    fontSize: 14,
+    fontFamily: 'Helvetica-Bold',
+    color: colors.red,
+    marginTop: 4,
+    letterSpacing: 2,
   },
+  // ── Reference ──
   referenceBox: {
-    borderWidth: 2,
-    borderColor: colors.accent,
+    backgroundColor: colors.surface,
     borderRadius: 6,
-    padding: 16,
-    marginBottom: 24,
+    padding: 20,
+    marginBottom: 20,
     alignItems: 'center',
   },
   referenceLabel: {
+    fontSize: 9,
+    color: colors.textLight,
+    textTransform: 'uppercase',
+    letterSpacing: 2,
+    marginBottom: 6,
+  },
+  referenceValue: {
+    fontSize: 32,
+    fontFamily: 'Helvetica-Bold',
+    color: colors.dark,
+    letterSpacing: 3,
+  },
+  // ── Customer ──
+  customerRow: {
+    marginBottom: 20,
+  },
+  customerLabel: {
+    fontSize: 10,
+    color: colors.textLight,
+  },
+  customerName: {
+    fontSize: 16,
+    fontFamily: 'Helvetica-Bold',
+    color: colors.dark,
+  },
+  // ── Info Boxes ──
+  infoBox: {
+    backgroundColor: colors.surface,
+    borderRadius: 6,
+    padding: 16,
+    marginBottom: 16,
+    borderLeftWidth: 4,
+  },
+  infoBoxAmber: {
+    borderLeftColor: colors.amber,
+  },
+  infoBoxNavy: {
+    borderLeftColor: colors.navy,
+  },
+  infoBoxDefault: {
+    borderLeftColor: colors.red,
+  },
+  infoRow: {
+    flexDirection: 'row',
+    marginBottom: 8,
+  },
+  infoLabel: {
+    fontSize: 9,
+    color: colors.textLight,
+    textTransform: 'uppercase',
+    letterSpacing: 1,
+    width: 90,
+    paddingTop: 2,
+  },
+  infoValue: {
+    fontSize: 12,
+    color: colors.dark,
+    flex: 1,
+  },
+  infoValueBold: {
+    fontSize: 12,
+    fontFamily: 'Helvetica-Bold',
+    color: colors.dark,
+    flex: 1,
+  },
+  // ── Passengers ──
+  passengersBox: {
+    backgroundColor: colors.surface,
+    borderRadius: 6,
+    padding: 16,
+    marginBottom: 16,
+  },
+  passengersTitle: {
     fontSize: 10,
     color: colors.textLight,
     textTransform: 'uppercase',
     letterSpacing: 1.5,
+    marginBottom: 8,
+  },
+  passengerLine: {
+    fontSize: 12,
+    color: colors.dark,
     marginBottom: 4,
+    lineHeight: 1.6,
   },
-  referenceValue: {
-    fontSize: 28,
-    fontFamily: 'Helvetica-Bold',
-    color: colors.primary,
-  },
-  detailsCard: {
-    backgroundColor: colors.bg,
-    borderRadius: 6,
-    padding: 20,
-    marginBottom: 24,
-  },
-  detailRow: {
+  // ── Total ──
+  totalBox: {
     flexDirection: 'row',
-    marginBottom: 12,
-  },
-  detailLabel: {
-    fontSize: 10,
-    color: colors.textLight,
-    textTransform: 'uppercase',
-    letterSpacing: 1,
-    width: 120,
-    paddingTop: 2,
-  },
-  detailValue: {
-    fontSize: 13,
-    color: colors.text,
-    flex: 1,
-  },
-  detailValueBold: {
-    fontSize: 13,
-    color: colors.text,
-    fontFamily: 'Helvetica-Bold',
-    flex: 1,
-  },
-  amountRow: {
-    flexDirection: 'row',
-    borderTopWidth: 1,
-    borderTopColor: colors.border,
-    paddingTop: 12,
-    marginTop: 4,
-  },
-  amountValue: {
-    fontSize: 18,
-    fontFamily: 'Helvetica-Bold',
-    color: colors.primary,
-    flex: 1,
-  },
-  infoBox: {
-    borderLeftWidth: 4,
-    borderLeftColor: colors.accent,
-    paddingLeft: 14,
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    borderTopWidth: 2,
+    borderTopColor: colors.dark,
+    borderBottomWidth: 2,
+    borderBottomColor: colors.dark,
+    paddingVertical: 12,
     marginBottom: 20,
   },
-  infoTitle: {
-    fontSize: 12,
+  totalLabel: {
+    fontSize: 14,
     fontFamily: 'Helvetica-Bold',
-    color: colors.text,
-    marginBottom: 4,
+    color: colors.dark,
   },
-  infoText: {
-    fontSize: 11,
-    color: colors.textLight,
-    lineHeight: 1.5,
+  totalValue: {
+    fontSize: 22,
+    fontFamily: 'Helvetica-Bold',
+    color: colors.dark,
   },
-  hintsBox: {
-    backgroundColor: colors.bg,
+  // ── Meeting Point ──
+  meetingBox: {
+    backgroundColor: colors.surface,
     borderRadius: 6,
     padding: 16,
-    marginBottom: 24,
+    marginBottom: 16,
+    borderLeftWidth: 4,
+    borderLeftColor: colors.green,
   },
-  hintText: {
-    fontSize: 10,
+  meetingTitle: {
+    fontSize: 12,
+    fontFamily: 'Helvetica-Bold',
+    color: colors.dark,
+    marginBottom: 6,
+  },
+  meetingText: {
+    fontSize: 11,
     color: colors.textLight,
     lineHeight: 1.6,
+  },
+  // ── Tips ──
+  tipsBox: {
+    backgroundColor: colors.surface,
+    borderRadius: 6,
+    padding: 16,
+    marginBottom: 20,
+  },
+  tipsTitle: {
+    fontSize: 10,
+    fontFamily: 'Helvetica-Bold',
+    color: colors.dark,
+    textTransform: 'uppercase',
+    letterSpacing: 1.5,
+    marginBottom: 8,
+  },
+  tipLine: {
+    fontSize: 10,
+    color: colors.textLight,
+    lineHeight: 1.7,
+    marginBottom: 3,
+  },
+  // ── Cancel link ──
+  cancelText: {
+    fontSize: 9,
+    color: colors.textLight,
     marginBottom: 4,
   },
+  cancelLink: {
+    fontSize: 9,
+    color: colors.red,
+    textDecoration: 'underline',
+  },
+  // ── Divider ──
   divider: {
     borderBottomWidth: 1,
     borderBottomColor: colors.border,
-    marginVertical: 20,
     borderStyle: 'dashed',
+    marginVertical: 16,
   },
+  // ── Footer ──
   footer: {
     position: 'absolute',
     bottom: 30,
     left: 40,
     right: 40,
+    borderTopWidth: 1,
+    borderTopColor: colors.border,
+    paddingTop: 10,
     textAlign: 'center',
   },
   footerText: {
-    fontSize: 9,
-    color: '#aaaaaa',
+    fontSize: 8,
+    color: '#999999',
+    marginBottom: 3,
   },
 });
 
 export interface TicketData {
   bookingReference: string;
+  customerName: string;
   tourName: string;
   bookingDate: string; // ISO date string e.g. "2026-04-04"
   departureTime: string; // e.g. "14:00:00"
@@ -160,6 +251,7 @@ export interface TicketData {
   children: number;
   childrenFree: number;
   totalAmount: number;
+  cancelUrl?: string;
 }
 
 function formatGermanDate(isoDate: string): string {
@@ -184,11 +276,20 @@ function formatAmount(amount: number): string {
   return amount.toFixed(2).replace('.', ',') + ' \u20AC';
 }
 
+function getTourBorderStyle(tourName: string) {
+  const lower = tourName.toLowerCase();
+  if (lower.includes('premium')) return styles.infoBoxNavy;
+  if (lower.includes('unterland')) return styles.infoBoxAmber;
+  return styles.infoBoxDefault;
+}
+
 export function TicketDocument({ data }: { data: TicketData }) {
   const passengers: string[] = [];
-  passengers.push(
-    `${data.adults} ${data.adults === 1 ? 'Erwachsener' : 'Erwachsene'}`
-  );
+  if (data.adults > 0) {
+    passengers.push(
+      `${data.adults} ${data.adults === 1 ? 'Erwachsener' : 'Erwachsene'}`
+    );
+  }
   if (data.children > 0) {
     passengers.push(
       `${data.children} ${data.children === 1 ? 'Kind' : 'Kinder'} (6\u201314 Jahre)`
@@ -196,7 +297,7 @@ export function TicketDocument({ data }: { data: TicketData }) {
   }
   if (data.childrenFree > 0) {
     passengers.push(
-      `${data.childrenFree} ${data.childrenFree === 1 ? 'Kind' : 'Kinder'} (0\u20135 Jahre)`
+      `${data.childrenFree} ${data.childrenFree === 1 ? 'Kind' : 'Kinder'} (0\u20135 Jahre, kostenlos)`
     );
   }
 
@@ -204,68 +305,93 @@ export function TicketDocument({ data }: { data: TicketData }) {
     <Document>
       <Page size="A4" style={styles.page}>
         {/* Header */}
-        <View style={styles.header}>
+        <View style={styles.headerBar}>
           <Text style={styles.headerTitle}>INSELBAHN HELGOLAND</Text>
-          <Text style={styles.headerSubtitle}>Fahrkarte / Ticket</Text>
+          <Text style={styles.headerSubtitle}>FAHRKARTE</Text>
         </View>
 
-        {/* Booking Reference */}
+        {/* Booking Reference — large and prominent */}
         <View style={styles.referenceBox}>
           <Text style={styles.referenceLabel}>Buchungsnummer</Text>
           <Text style={styles.referenceValue}>{data.bookingReference}</Text>
         </View>
 
-        {/* Details Card */}
-        <View style={styles.detailsCard}>
-          <View style={styles.detailRow}>
-            <Text style={styles.detailLabel}>Tour</Text>
-            <Text style={styles.detailValueBold}>{data.tourName}</Text>
-          </View>
+        {/* Customer Name */}
+        <View style={styles.customerRow}>
+          <Text style={styles.customerLabel}>Fahrgast</Text>
+          <Text style={styles.customerName}>{data.customerName}</Text>
+        </View>
 
-          <View style={styles.detailRow}>
-            <Text style={styles.detailLabel}>Datum</Text>
-            <Text style={styles.detailValue}>
-              {formatGermanDate(data.bookingDate)}
-            </Text>
+        {/* Tour Info Box */}
+        <View style={[styles.infoBox, getTourBorderStyle(data.tourName)]}>
+          <View style={styles.infoRow}>
+            <Text style={styles.infoLabel}>Tour</Text>
+            <Text style={styles.infoValueBold}>{data.tourName}</Text>
           </View>
+          <View style={styles.infoRow}>
+            <Text style={styles.infoLabel}>Datum</Text>
+            <Text style={styles.infoValue}>{formatGermanDate(data.bookingDate)}</Text>
+          </View>
+          <View style={[styles.infoRow, { marginBottom: 0 }]}>
+            <Text style={styles.infoLabel}>Abfahrt</Text>
+            <Text style={styles.infoValueBold}>{formatTime(data.departureTime)}</Text>
+          </View>
+        </View>
 
-          <View style={styles.detailRow}>
-            <Text style={styles.detailLabel}>Abfahrt</Text>
-            <Text style={styles.detailValueBold}>
-              {formatTime(data.departureTime)}
-            </Text>
-          </View>
+        {/* Passengers */}
+        <View style={styles.passengersBox}>
+          <Text style={styles.passengersTitle}>Fahrgäste</Text>
+          {passengers.map((p, i) => (
+            <Text key={i} style={styles.passengerLine}>{'\u2022'} {p}</Text>
+          ))}
+        </View>
 
-          <View style={styles.detailRow}>
-            <Text style={styles.detailLabel}>Fahrgäste</Text>
-            <Text style={styles.detailValue}>{passengers.join(', ')}</Text>
-          </View>
-
-          <View style={styles.amountRow}>
-            <Text style={styles.detailLabel}>Gesamtpreis</Text>
-            <Text style={styles.amountValue}>
-              {formatAmount(data.totalAmount)}
-            </Text>
-          </View>
+        {/* Total Amount */}
+        <View style={styles.totalBox}>
+          <Text style={styles.totalLabel}>Gesamtpreis</Text>
+          <Text style={styles.totalValue}>{formatAmount(data.totalAmount)}</Text>
         </View>
 
         {/* Meeting Point */}
-        <View style={styles.infoBox}>
-          <Text style={styles.infoTitle}>Treffpunkt</Text>
-          <Text style={styles.infoText}>
-            Franz-Schensky-Platz, Helgoland
+        <View style={styles.meetingBox}>
+          <Text style={styles.meetingTitle}>Treffpunkt: Franz-Schensky-Platz</Text>
+          <Text style={styles.meetingText}>
+            Vom Anleger der Halunder Jet / Katamarane: ca. 5 Min. Fußweg{'\n'}
+            Von der Landungsbrücke (Börteboot): ca. 3 Min. Fußweg
           </Text>
         </View>
 
-        {/* Hints */}
-        <View style={styles.hintsBox}>
-          <Text style={styles.hintText}>
+        {/* Important Tips */}
+        <View style={styles.tipsBox}>
+          <Text style={styles.tipsTitle}>Wichtige Hinweise</Text>
+          <Text style={styles.tipLine}>
             {'\u2022'} Bitte 15 Minuten vor Abfahrt am Treffpunkt sein
           </Text>
-          <Text style={styles.hintText}>
-            {'\u2022'} Stornierung bis Mitternacht am Vortag kostenlos
+          <Text style={styles.tipLine}>
+            {'\u2022'} Toilette: Im Gebäude der Landungsbrücke (kostenlos). Während der Premium-Tour gibt es keine Toilettenmöglichkeit!
+          </Text>
+          <Text style={styles.tipLine}>
+            {'\u2022'} Snacks & Getränke erlaubt (nichts was kleckert). Vorsicht vor Möwen!
+          </Text>
+          <Text style={styles.tipLine}>
+            {'\u2022'} Bei Regen fahren wir — unsere Wagen sind überdacht
+          </Text>
+          <Text style={styles.tipLine}>
+            {'\u2022'} Kostenlose Stornierung bis Mitternacht am Vortag
           </Text>
         </View>
+
+        {/* Cancellation Link */}
+        {data.cancelUrl ? (
+          <View style={{ marginBottom: 16 }}>
+            <Text style={styles.cancelText}>
+              Buchung stornieren (kostenlos bis Mitternacht am Vortag):
+            </Text>
+            <Link src={data.cancelUrl} style={styles.cancelLink}>
+              {data.cancelUrl}
+            </Link>
+          </View>
+        ) : null}
 
         {/* Divider */}
         <View style={styles.divider} />
@@ -273,7 +399,10 @@ export function TicketDocument({ data }: { data: TicketData }) {
         {/* Footer */}
         <View style={styles.footer}>
           <Text style={styles.footerText}>
-            Helgoländer Dienstleistungs GmbH · info@helgolandbahn.de
+            Helgoländer Dienstleistungs GmbH · Am Falm 302 A · 27498 Helgoland · info@helgolandbahn.de
+          </Text>
+          <Text style={styles.footerText}>
+            Alle Preise sind Endpreise. Keine Umsatzsteuer (§1 Abs. 2 UStG).
           </Text>
         </View>
       </Page>
