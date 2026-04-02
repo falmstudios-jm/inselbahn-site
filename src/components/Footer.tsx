@@ -8,6 +8,10 @@ export default function Footer() {
           &copy; 2026 Helgoländer Dienstleistungs GmbH
         </p>
         <div className="flex items-center gap-4 flex-wrap justify-center sm:justify-end">
+          <a href="/gutschein" className="text-dark/40 hover:text-dark text-sm transition-colors">
+            Gutscheine
+          </a>
+          <span className="text-dark/20">&middot;</span>
           <a href="/booking/cancel" className="text-dark/40 hover:text-dark text-sm transition-colors">
             Stornierung
           </a>

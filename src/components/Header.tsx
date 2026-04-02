@@ -8,6 +8,8 @@ const navItems = [
   { label: "Touren", href: "/#touren" },
   { label: "Fahrplan", href: "/#fahrplan" },
   { label: "Buchen", href: "/#buchung" },
+  { label: "Gutscheine", href: "/gutschein" },
+  { label: "Kontakt", href: "/#kontakt" },
 ];
 
 const entdeckenItems = [
