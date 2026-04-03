@@ -1,0 +1,1 @@
+ALTER TABLE bookings ADD COLUMN IF NOT EXISTS wheelchair_seat BOOLEAN DEFAULT false;

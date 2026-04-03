@@ -242,6 +242,35 @@ export default function AGBPage() {
             <p className="mt-2">
               Gutscheine k&ouml;nnen mit Rabattcodes kombiniert werden.
             </p>
+            <p className="mt-2">
+              Der Gutscheincode ist vertraulich zu behandeln. F&uuml;r die
+              missbr&auml;uchliche Nutzung durch Dritte &uuml;bernehmen wir
+              keine Haftung.
+            </p>
+            <p className="mt-2">
+              Bei Verlust des Gutscheincodes kann kein Ersatz gew&auml;hrt
+              werden.
+            </p>
+          </section>
+
+          {/* §8a */}
+          <section>
+            <h2 className="text-lg font-semibold text-dark mb-2">
+              &sect;8a Rabattcodes
+            </h2>
+            <p>
+              Rabattcodes sind freiwillige Verg&uuml;nstigungen und k&ouml;nnen
+              jederzeit ohne Vorank&uuml;ndigung ge&auml;ndert, eingeschr&auml;nkt
+              oder eingestellt werden.
+            </p>
+            <p className="mt-2">
+              Es besteht kein Rechtsanspruch auf die dauerhafte Verf&uuml;gbarkeit
+              oder G&uuml;ltigkeit von Rabattcodes.
+            </p>
+            <p className="mt-2">
+              Rabattcodes sind nicht mit anderen Rabatten oder Gutscheinen
+              kombinierbar, sofern nicht ausdr&uuml;cklich anders angegeben.
+            </p>
           </section>
 
           {/* §9 */}

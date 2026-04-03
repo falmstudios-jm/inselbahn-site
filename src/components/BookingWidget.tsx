@@ -26,6 +26,7 @@ interface AvailabilitySlot {
   past?: boolean;
   price_adult: number;
   price_child: number;
+  wheelchair_available?: boolean;
 }
 
 interface AvailabilityResponse {
@@ -275,6 +276,7 @@ export default function BookingWidget({ tours: supabaseTours }: BookingWidgetPro
   const [contactPhone, setContactPhone] = useState("");
   const [gdprConsent, setGdprConsent] = useState(false);
   const [hinweiseAccepted, setHinweiseAccepted] = useState(false);
+  const [wheelchairSeat, setWheelchairSeat] = useState(false);
   const [wantsInvoice, setWantsInvoice] = useState(false);
   const [invoiceCompany, setInvoiceCompany] = useState("");
   const [invoiceStreet, setInvoiceStreet] = useState("");
@@ -478,6 +480,7 @@ export default function BookingWidget({ tours: supabaseTours }: BookingWidgetPro
           customer_name: contactName.trim(),
           customer_email: contactEmail.trim(),
           customer_phone: contactPhone.trim(),
+          ...(wheelchairSeat ? { wheelchair_seat: true } : {}),
           ...(appliedGiftCard ? { gift_card_code: appliedGiftCard.code } : {}),
           ...(appliedDiscount ? { discount_code: appliedDiscount.code } : {}),
           ...(giftCardCoversAll ? { skip_payment: true } : {}),
@@ -571,6 +574,7 @@ export default function BookingWidget({ tours: supabaseTours }: BookingWidgetPro
     setInvoiceCity("");
     setInvoiceVatId("");
     setInvoiceCountry("Deutschland");
+    setWheelchairSeat(false);
     setAppliedGiftCard(null);
     setAppliedDiscount(null);
     setClientSecret(null);
@@ -609,6 +613,11 @@ export default function BookingWidget({ tours: supabaseTours }: BookingWidgetPro
 
   const totalPassengers = adults + children + childrenFree;
   const canAddMore = totalPassengers < remaining;
+
+  // Wheelchair availability: only for wheelchair-accessible tours (Unterland)
+  const selectedTourConfig = mergedTourOptions.find((t) => t.id === selectedTour);
+  const isWheelchairTour = selectedTourConfig?.wheelchair === true;
+  const wheelchairAvailable = selectedSlot?.wheelchair_available !== false;
 
   /* ─── Payment Success ─── */
   if (paymentSuccess) {
@@ -1396,6 +1405,34 @@ export default function BookingWidget({ tours: supabaseTours }: BookingWidgetPro
                       <button onClick={() => canAddMore && setChildrenFree(childrenFree + 1)} className={`w-10 h-10 rounded-full flex items-center justify-center transition-colors text-lg ${canAddMore ? "bg-dark/5 text-dark hover:bg-dark/10" : "bg-dark/5 text-dark/20 cursor-not-allowed"}`}>+</button>
                     </div>
                   </div>
+
+                  {/* Wheelchair seat toggle (Unterland only) */}
+                  {isWheelchairTour && (
+                    <div className="flex items-center justify-between pt-2 border-t border-gray-100">
+                      <div>
+                        <p className="font-medium text-dark">Rollstuhlplatz</p>
+                        <p className="text-sm text-dark/50">
+                          {wheelchairAvailable
+                            ? '1 verf\u00FCgbar pro Tour'
+                            : 'Rollstuhlplatz bereits vergeben'}
+                        </p>
+                      </div>
+                      <label className="relative inline-flex items-center cursor-pointer">
+                        <input
+                          type="checkbox"
+                          checked={wheelchairSeat}
+                          disabled={!wheelchairAvailable && !wheelchairSeat}
+                          onChange={(e) => setWheelchairSeat(e.target.checked)}
+                          className="sr-only peer"
+                        />
+                        <div className={`w-11 h-6 rounded-full peer transition-colors ${
+                          !wheelchairAvailable && !wheelchairSeat
+                            ? 'bg-dark/10 cursor-not-allowed'
+                            : 'bg-dark/20 peer-checked:bg-primary'
+                        } peer-focus:outline-none after:content-[""] after:absolute after:top-[2px] after:start-[2px] after:bg-white after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:after:translate-x-full`} />
+                      </label>
+                    </div>
+                  )}
 
                   {/* Capacity note */}
                   <p className="text-xs text-dark/40 text-center">

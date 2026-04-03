@@ -8,6 +8,7 @@ import {
   generateBookingReference,
   generateCancelToken,
 } from '@/lib/booking-utils';
+import { buildConfirmationEmail } from '@/lib/email-templates';
 
 const BASE_URL = process.env.NEXT_PUBLIC_BASE_URL || 'https://inselbahnhelgoland.vercel.app';
 
@@ -131,6 +132,7 @@ export async function POST(req: Request) {
 
     // Deduct gift card value if used
     let giftCardDeduction = 0;
+    let giftCardId: string | null = null;
     if (input.gift_card_code) {
       const { data: gc } = await supabaseAdmin
         .from('gift_cards')
@@ -141,6 +143,7 @@ export async function POST(req: Request) {
         .single();
       if (gc) {
         giftCardDeduction = Math.min(Number(gc.remaining_value), totalPrice);
+        giftCardId = gc.id;
         await supabaseAdmin
           .from('gift_cards')
           .update({ remaining_value: Number(gc.remaining_value) - giftCardDeduction })
@@ -168,6 +171,7 @@ export async function POST(req: Request) {
         cancel_token: cancelToken,
         status: 'pending',
         invoice_data: input.invoice || null,
+        wheelchair_seat: input.wheelchair_seat || false,
       })
       .select()
       .single();
@@ -180,6 +184,15 @@ export async function POST(req: Request) {
       );
     }
 
+    // Record gift card usage
+    if (giftCardId && giftCardDeduction > 0) {
+      await supabaseAdmin.from('gift_card_usage').insert({
+        gift_card_id: giftCardId,
+        booking_id: booking.id,
+        amount_used: giftCardDeduction,
+      });
+    }
+
     // Check if payment is skipped (gift card covers full amount)
     if (input.skip_payment || amountToCharge <= 0) {
       // Confirm booking immediately — no Stripe needed
@@ -188,7 +201,7 @@ export async function POST(req: Request) {
         .update({ status: 'confirmed', payment_method: 'gift_card' })
         .eq('id', booking.id);
 
-      // Send confirmation email (reuse webhook logic)
+      // Send confirmation email using branded HTML template
       try {
         const resend = new (await import('resend')).Resend(process.env.RESEND_API_KEY);
         const { data: confirmedBooking } = await supabaseAdmin
@@ -202,12 +215,29 @@ export async function POST(req: Request) {
           const dep = confirmedBooking.departure;
           const ticketUrl = `${BASE_URL}/api/booking/${booking.id}/ticket?token=${cancelToken}`;
           const cancelUrl = `${BASE_URL}/booking/cancel?id=${booking.id}&token=${cancelToken}`;
+          const hasInvoiceData = !!confirmedBooking.invoice_data;
+          const invoiceUrl = hasInvoiceData
+            ? `${BASE_URL}/api/booking/${booking.id}/invoice?token=${cancelToken}`
+            : undefined;
 
           await resend.emails.send({
             from: 'Inselbahn Helgoland <buchung@helgolandbahn.de>',
             to: input.customer_email,
             subject: `Buchungsbestätigung ${bookingReference} — ${tour?.name || 'Inselbahn Tour'}`,
-            html: `<p>Hallo ${input.customer_name},</p><p>Ihre Buchung <strong>${bookingReference}</strong> wurde bestätigt (bezahlt via Gutschein).</p><p>Tour: ${tour?.name}<br/>Datum: ${input.booking_date}<br/>Uhrzeit: ${dep?.departure_time?.slice(0, 5)} Uhr</p><p><a href="${ticketUrl}">Fahrkarte herunterladen</a> · <a href="${cancelUrl}">Stornieren</a></p>`,
+            html: buildConfirmationEmail({
+              customerName: input.customer_name,
+              bookingReference,
+              tourName: tour?.name || 'Inselbahn Tour',
+              bookingDate: input.booking_date,
+              departureTime: dep?.departure_time || '',
+              adults: input.adults,
+              children: input.children,
+              childrenFree: input.children_free,
+              totalAmount: String(totalPrice),
+              ticketUrl,
+              cancelUrl,
+              invoiceUrl,
+            }),
           });
         }
       } catch (emailErr) {

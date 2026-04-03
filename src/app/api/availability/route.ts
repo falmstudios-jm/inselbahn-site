@@ -37,13 +37,13 @@ export async function GET(req: NextRequest) {
 
     const { data: confirmedBookings, error: confError } = await supabase
       .from('bookings')
-      .select('departure_id, adults, children, ghost_seats, children_free')
+      .select('departure_id, adults, children, ghost_seats, children_free, wheelchair_seat')
       .eq('booking_date', date)
       .eq('status', 'confirmed');
 
     const { data: pendingBookings, error: pendError } = await supabase
       .from('bookings')
-      .select('departure_id, adults, children, ghost_seats, children_free')
+      .select('departure_id, adults, children, ghost_seats, children_free, wheelchair_seat')
       .eq('booking_date', date)
       .eq('status', 'pending')
       .gte('created_at', fifteenMinAgo);
@@ -61,10 +61,14 @@ export async function GET(req: NextRequest) {
 
     // Build booking counts per departure
     const bookingCounts = new Map<string, number>();
+    const wheelchairBooked = new Map<string, boolean>();
     if (bookings) {
       for (const b of bookings) {
         const current = bookingCounts.get(b.departure_id) || 0;
         bookingCounts.set(b.departure_id, current + b.adults + b.children + (b.ghost_seats || 0) + (b.children_free || 0));
+        if (b.wheelchair_seat) {
+          wheelchairBooked.set(b.departure_id, true);
+        }
       }
     }
 
@@ -118,6 +122,7 @@ export async function GET(req: NextRequest) {
           price_adult: tour.price_adult,
           price_child: tour.price_child,
           child_age_limit: tour.child_age_limit,
+          wheelchair_available: !wheelchairBooked.get(dep.id),
         };
       });
 

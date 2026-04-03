@@ -20,6 +20,7 @@ export const bookingSchema = z.object({
     vat_id: z.string().optional(),
   }).optional(),
   skip_payment: z.boolean().optional(),
+  wheelchair_seat: z.boolean().optional(),
 });
 
 export type BookingInput = z.infer<typeof bookingSchema>;
