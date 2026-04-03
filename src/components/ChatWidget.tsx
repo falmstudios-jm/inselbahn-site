@@ -24,20 +24,31 @@ export default function ChatWidget() {
   const messagesEndRef = useRef<HTMLDivElement>(null);
   const inputRef = useRef<HTMLInputElement>(null);
 
+  // Check sessionStorage for existing consent on mount
+  useEffect(() => {
+    const consent = sessionStorage.getItem("chatbot-consent");
+    if (consent === "true") {
+      setHasConsented(true);
+    }
+  }, []);
+
   useEffect(() => {
     messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
   }, [messages, isLoading]);
 
   useEffect(() => {
-    if (isOpen && inputRef.current) {
+    if (isOpen && hasConsented && inputRef.current) {
       inputRef.current.focus();
     }
-  }, [isOpen]);
+  }, [isOpen, hasConsented]);
+
+  const handleConsent = () => {
+    setHasConsented(true);
+    sessionStorage.setItem("chatbot-consent", "true");
+  };
 
   const sendMessage = async (text: string) => {
-    if (!text.trim() || isLoading) return;
-
-    if (!hasConsented) setHasConsented(true);
+    if (!text.trim() || isLoading || !hasConsented) return;
 
     const userMessage: Message = { role: "user", content: text.trim() };
     const updatedMessages = [...messages, userMessage];
@@ -162,169 +173,229 @@ export default function ChatWidget() {
             </button>
           </div>
 
-          {/* Messages area */}
-          <div className="flex-1 overflow-y-auto px-4 py-4 space-y-3 bg-gray-50/50">
-            {/* DSGVO notice */}
-            {!hasConsented && (
-              <div className="bg-amber-50 border border-amber-200 rounded-lg px-3 py-2 text-xs text-amber-800 text-center">
-                Dieser Chat wird von KI betrieben. Es werden keine
-                Gespr&auml;chsdaten gespeichert.
-              </div>
-            )}
-
-            {/* Welcome message */}
-            {messages.length === 0 && (
-              <div className="flex gap-2.5">
-                <div className="w-7 h-7 rounded-full bg-primary/10 flex items-center justify-center shrink-0 mt-0.5">
-                  <svg
-                    width="14"
-                    height="14"
-                    viewBox="0 0 24 24"
-                    fill="none"
-                    stroke="#F24444"
-                    strokeWidth="2"
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                  >
-                    <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z" />
-                  </svg>
-                </div>
-                <div className="bg-white rounded-2xl rounded-tl-sm px-4 py-3 shadow-sm border border-gray-100 max-w-[85%]">
-                  <p className="text-sm text-dark leading-relaxed">
-                    Hallo! &#128075; Ich bin der Inselbahn-Assistent. Fragen Sie
-                    mich zu Touren, Preisen oder Abfahrtszeiten!
-                  </p>
-                </div>
-              </div>
-            )}
-
-            {/* Messages */}
-            {messages.map((msg, i) => (
-              <div
-                key={i}
-                className={`flex gap-2.5 ${
-                  msg.role === "user" ? "justify-end" : ""
-                }`}
-              >
-                {msg.role === "assistant" && (
-                  <div className="w-7 h-7 rounded-full bg-primary/10 flex items-center justify-center shrink-0 mt-0.5">
-                    <svg
-                      width="14"
-                      height="14"
-                      viewBox="0 0 24 24"
-                      fill="none"
-                      stroke="#F24444"
-                      strokeWidth="2"
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                    >
-                      <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z" />
-                    </svg>
-                  </div>
-                )}
-                <div
-                  className={`rounded-2xl px-4 py-3 max-w-[85%] ${
-                    msg.role === "user"
-                      ? "bg-primary text-white rounded-tr-sm"
-                      : "bg-white text-dark shadow-sm border border-gray-100 rounded-tl-sm"
-                  }`}
-                >
-                  <p className="text-sm leading-relaxed whitespace-pre-wrap">
-                    {msg.content}
-                  </p>
-                </div>
-              </div>
-            ))}
-
-            {/* Typing indicator */}
-            {isLoading && (
-              <div className="flex gap-2.5">
-                <div className="w-7 h-7 rounded-full bg-primary/10 flex items-center justify-center shrink-0 mt-0.5">
-                  <svg
-                    width="14"
-                    height="14"
-                    viewBox="0 0 24 24"
-                    fill="none"
-                    stroke="#F24444"
-                    strokeWidth="2"
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                  >
-                    <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z" />
-                  </svg>
-                </div>
-                <div className="bg-white rounded-2xl rounded-tl-sm px-4 py-3 shadow-sm border border-gray-100">
-                  <div className="flex gap-1.5 items-center h-5">
-                    <span className="w-2 h-2 bg-gray-400 rounded-full animate-bounce [animation-delay:-0.3s]" />
-                    <span className="w-2 h-2 bg-gray-400 rounded-full animate-bounce [animation-delay:-0.15s]" />
-                    <span className="w-2 h-2 bg-gray-400 rounded-full animate-bounce" />
-                  </div>
-                </div>
-              </div>
-            )}
-
-            <div ref={messagesEndRef} />
-          </div>
-
-          {/* Quick replies */}
-          {messages.length === 0 && (
-            <div className="px-4 py-2 flex flex-wrap gap-2 bg-white border-t border-gray-100">
-              {QUICK_REPLIES.map((text) => (
-                <button
-                  key={text}
-                  onClick={() => sendMessage(text)}
-                  className="text-xs px-3 py-1.5 rounded-full bg-primary/5 text-primary border border-primary/20 hover:bg-primary/10 transition-colors font-medium"
-                >
-                  {text}
-                </button>
-              ))}
-            </div>
-          )}
-
-          {/* Input area */}
-          <div className="border-t border-gray-200 bg-white px-4 py-3 shrink-0">
-            <form onSubmit={handleSubmit} className="flex gap-2">
-              <input
-                ref={inputRef}
-                type="text"
-                value={input}
-                onChange={(e) => setInput(e.target.value)}
-                placeholder="Ihre Frage..."
-                className="flex-1 bg-gray-100 rounded-full px-4 py-2.5 text-sm text-dark placeholder:text-gray-400 focus:outline-none focus:ring-2 focus:ring-primary/30 transition-shadow"
-                disabled={isLoading}
-                maxLength={500}
-              />
-              <button
-                type="submit"
-                disabled={!input.trim() || isLoading}
-                className="w-10 h-10 rounded-full bg-primary text-white flex items-center justify-center hover:bg-primary/90 transition-colors disabled:opacity-40 disabled:cursor-not-allowed shrink-0"
-                aria-label="Nachricht senden"
-              >
+          {/* Consent Screen — shown before chat starts */}
+          {!hasConsented ? (
+            <div className="flex-1 flex flex-col items-center justify-center px-6 py-8 bg-gray-50/50">
+              <div className="w-12 h-12 rounded-full bg-primary/10 flex items-center justify-center mb-4">
                 <svg
-                  width="16"
-                  height="16"
+                  width="24"
+                  height="24"
                   viewBox="0 0 24 24"
                   fill="none"
-                  stroke="currentColor"
-                  strokeWidth="2.5"
+                  stroke="#F24444"
+                  strokeWidth="2"
                   strokeLinecap="round"
                   strokeLinejoin="round"
                 >
-                  <line x1="22" y1="2" x2="11" y2="13" />
-                  <polygon points="22 2 15 22 11 13 2 9 22 2" />
+                  <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z" />
                 </svg>
-              </button>
-            </form>
-            <p className="text-[10px] text-gray-400 text-center mt-2">
-              KI-Assistent &middot;{" "}
-              <Link
-                href="/datenschutz"
-                className="underline hover:text-gray-600 transition-colors"
+              </div>
+              <h3 className="text-lg font-semibold text-dark mb-3">
+                KI-Assistent
+              </h3>
+              <p className="text-sm text-dark/70 leading-relaxed text-center mb-6">
+                Dieser Chat wird von einer K&uuml;nstlichen Intelligenz (OpenAI) betrieben.
+                Ihre Nachrichten werden zur Beantwortung an OpenAI &uuml;bermittelt. OpenAI
+                nutzt API-Daten gem&auml;&szlig; ihrem Data Processing Agreement nicht f&uuml;r
+                Modelltraining. Es werden keine vollst&auml;ndigen Gespr&auml;chsverl&auml;ufe
+                gespeichert &mdash; lediglich anonymisierte Themenzusammenfassungen zur
+                Verbesserung unseres Service.
+              </p>
+              <button
+                onClick={handleConsent}
+                className="w-full max-w-[240px] bg-green-600 hover:bg-green-700 text-white font-semibold py-2.5 px-6 rounded-full transition-colors text-sm"
               >
-                Datenschutz
-              </Link>
-            </p>
-          </div>
+                Einverstanden
+              </button>
+              <p className="text-[11px] text-gray-400 text-center mt-3 leading-relaxed">
+                Mit Klick stimmen Sie der Verarbeitung gem&auml;&szlig; unserer{" "}
+                <Link
+                  href="/datenschutz"
+                  className="underline hover:text-gray-600 transition-colors"
+                >
+                  Datenschutzerkl&auml;rung
+                </Link>{" "}
+                zu.
+              </p>
+            </div>
+          ) : (
+            <>
+              {/* Messages area */}
+              <div className="flex-1 overflow-y-auto px-4 py-4 space-y-3 bg-gray-50/50">
+                {/* Welcome message */}
+                {messages.length === 0 && (
+                  <div className="flex gap-2.5">
+                    <div className="w-7 h-7 rounded-full bg-primary/10 flex items-center justify-center shrink-0 mt-0.5">
+                      <svg
+                        width="14"
+                        height="14"
+                        viewBox="0 0 24 24"
+                        fill="none"
+                        stroke="#F24444"
+                        strokeWidth="2"
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                      >
+                        <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z" />
+                      </svg>
+                    </div>
+                    <div className="bg-white rounded-2xl rounded-tl-sm px-4 py-3 shadow-sm border border-gray-100 max-w-[85%]">
+                      <p className="text-sm text-dark leading-relaxed">
+                        Hallo! &#128075; Ich bin der Inselbahn-Assistent. Fragen Sie
+                        mich zu Touren, Preisen oder Abfahrtszeiten!
+                      </p>
+                      <p className="text-[11px] text-gray-400 mt-1">
+                        KI-generierte Antwort
+                      </p>
+                    </div>
+                  </div>
+                )}
+
+                {/* Messages */}
+                {messages.map((msg, i) => (
+                  <div
+                    key={i}
+                    className={`flex gap-2.5 ${
+                      msg.role === "user" ? "justify-end" : ""
+                    }`}
+                  >
+                    {msg.role === "assistant" && (
+                      <div className="w-7 h-7 rounded-full bg-primary/10 flex items-center justify-center shrink-0 mt-0.5">
+                        <svg
+                          width="14"
+                          height="14"
+                          viewBox="0 0 24 24"
+                          fill="none"
+                          stroke="#F24444"
+                          strokeWidth="2"
+                          strokeLinecap="round"
+                          strokeLinejoin="round"
+                        >
+                          <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z" />
+                        </svg>
+                      </div>
+                    )}
+                    <div
+                      className={`rounded-2xl px-4 py-3 max-w-[85%] ${
+                        msg.role === "user"
+                          ? "bg-primary text-white rounded-tr-sm"
+                          : "bg-white text-dark shadow-sm border border-gray-100 rounded-tl-sm"
+                      }`}
+                    >
+                      <p className="text-sm leading-relaxed whitespace-pre-wrap">
+                        {msg.content}
+                      </p>
+                      {/* KI-Kennzeichnung for bot responses */}
+                      {msg.role === "assistant" && (
+                        <p className="text-[11px] text-gray-400 mt-1">
+                          KI-generierte Antwort
+                        </p>
+                      )}
+                    </div>
+                  </div>
+                ))}
+
+                {/* Typing indicator */}
+                {isLoading && (
+                  <div className="flex gap-2.5">
+                    <div className="w-7 h-7 rounded-full bg-primary/10 flex items-center justify-center shrink-0 mt-0.5">
+                      <svg
+                        width="14"
+                        height="14"
+                        viewBox="0 0 24 24"
+                        fill="none"
+                        stroke="#F24444"
+                        strokeWidth="2"
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                      >
+                        <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z" />
+                      </svg>
+                    </div>
+                    <div className="bg-white rounded-2xl rounded-tl-sm px-4 py-3 shadow-sm border border-gray-100">
+                      <div className="flex gap-1.5 items-center h-5">
+                        <span className="w-2 h-2 bg-gray-400 rounded-full animate-bounce [animation-delay:-0.3s]" />
+                        <span className="w-2 h-2 bg-gray-400 rounded-full animate-bounce [animation-delay:-0.15s]" />
+                        <span className="w-2 h-2 bg-gray-400 rounded-full animate-bounce" />
+                      </div>
+                    </div>
+                  </div>
+                )}
+
+                <div ref={messagesEndRef} />
+              </div>
+
+              {/* Quick replies */}
+              {messages.length === 0 && (
+                <div className="px-4 py-2 flex flex-wrap gap-2 bg-white border-t border-gray-100">
+                  {QUICK_REPLIES.map((text) => (
+                    <button
+                      key={text}
+                      onClick={() => sendMessage(text)}
+                      className="text-xs px-3 py-1.5 rounded-full bg-primary/5 text-primary border border-primary/20 hover:bg-primary/10 transition-colors font-medium"
+                    >
+                      {text}
+                    </button>
+                  ))}
+                </div>
+              )}
+
+              {/* Input area */}
+              <div className="border-t border-gray-200 bg-white px-4 py-3 shrink-0">
+                {/* Privacy banner */}
+                <p className="text-[11px] text-gray-400 text-center mb-2">
+                  Ihre Eingaben werden an OpenAI zur Verarbeitung &uuml;bermittelt.{" "}
+                  <Link
+                    href="/datenschutz"
+                    className="underline hover:text-gray-600 transition-colors"
+                  >
+                    Mehr erfahren
+                  </Link>
+                </p>
+                <form onSubmit={handleSubmit} className="flex gap-2">
+                  <input
+                    ref={inputRef}
+                    type="text"
+                    value={input}
+                    onChange={(e) => setInput(e.target.value)}
+                    placeholder="Ihre Frage..."
+                    className="flex-1 bg-gray-100 rounded-full px-4 py-2.5 text-sm text-dark placeholder:text-gray-400 focus:outline-none focus:ring-2 focus:ring-primary/30 transition-shadow"
+                    disabled={isLoading}
+                    maxLength={500}
+                  />
+                  <button
+                    type="submit"
+                    disabled={!input.trim() || isLoading}
+                    className="w-10 h-10 rounded-full bg-primary text-white flex items-center justify-center hover:bg-primary/90 transition-colors disabled:opacity-40 disabled:cursor-not-allowed shrink-0"
+                    aria-label="Nachricht senden"
+                  >
+                    <svg
+                      width="16"
+                      height="16"
+                      viewBox="0 0 24 24"
+                      fill="none"
+                      stroke="currentColor"
+                      strokeWidth="2.5"
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                    >
+                      <line x1="22" y1="2" x2="11" y2="13" />
+                      <polygon points="22 2 15 22 11 13 2 9 22 2" />
+                    </svg>
+                  </button>
+                </form>
+                <p className="text-[10px] text-gray-400 text-center mt-2">
+                  KI-Assistent &middot;{" "}
+                  <Link
+                    href="/datenschutz"
+                    className="underline hover:text-gray-600 transition-colors"
+                  >
+                    Datenschutz
+                  </Link>
+                </p>
+              </div>
+            </>
+          )}
         </div>
       </div>
     </>

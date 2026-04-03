@@ -486,6 +486,7 @@ export async function POST(req: NextRequest) {
         ],
         max_completion_tokens: 1000,
         temperature: 0.7,
+        store: false,
       }),
     });
 
@@ -507,7 +508,6 @@ export async function POST(req: NextRequest) {
 async function logChatSummary(
   apiKey: string,
   messages: { role: string; content: string }[],
-  ip: string,
 ) {
   try {
     // Ask GPT to create a one-line anonymous summary
@@ -548,6 +548,7 @@ Beispiele:
         ],
         max_completion_tokens: 200,
         temperature: 0.3,
+        store: false,
       }),
     });
 
@@ -588,7 +589,7 @@ Beispiele:
       topics,
       status,
       message_count: messages.length,
-      ip_hash: await hashIP(ip),
+      created_at: new Date().toISOString(),
     });
     if (insertError) {
       console.error('Supabase chat_logs insert failed:', insertError.message, insertError.code, insertError.details);
@@ -598,10 +599,3 @@ Beispiele:
   }
 }
 
-async function hashIP(ip: string): Promise<string> {
-  const encoder = new TextEncoder();
-  const data = encoder.encode(ip + 'inselbahn-salt-2026');
-  const hashBuffer = await crypto.subtle.digest('SHA-256', data);
-  const hashArray = Array.from(new Uint8Array(hashBuffer));
-  return hashArray.map(b => b.toString(16).padStart(2, '0')).join('').slice(0, 16);
-}

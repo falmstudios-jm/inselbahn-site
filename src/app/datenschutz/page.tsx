@@ -302,22 +302,46 @@ export default function DatenschutzPage() {
               11. KI-Chatbot
             </h2>
             <p>
-              Auf unserer Website bieten wir einen KI-gest&uuml;tzten Chatbot an. Der Chatbot
-              dient der Beantwortung h&auml;ufiger Fragen zu unseren Touren, Preisen,
-              Abfahrtszeiten und allgemeinen Informationen &uuml;ber Helgoland.
+              Auf unserer Website bieten wir einen KI-gest&uuml;tzten Chatbot an.
             </p>
 
             <h3 className="text-lg font-semibold text-dark mt-4 mb-2">
-              a) Datenverarbeitung durch OpenAI
+              a) Zweck
             </h3>
             <p>
-              Ihre Chat-Nachrichten werden zur Verarbeitung an OpenAI, L.L.C., 3180 18th Street,
-              San Francisco, CA 94110, USA &uuml;bermittelt. Es wird das Modell
-              &bdquo;GPT-5.4-mini&ldquo; verwendet. OpenAI verarbeitet die Daten
-              ausschlie&szlig;lich zur Beantwortung Ihrer Anfrage und nutzt sie
-              <strong className="text-dark"> nicht zum Training</strong> eigener Modelle
-              (Zero Data Retention im API-Modus). Die Daten&uuml;bermittlung erfolgt auf
-              Grundlage der EU-Standardvertragsklauseln (Art. 46 Abs. 2 lit. c DSGVO).
+              Beantwortung von Fragen zu Touren, Preisen, Abfahrtszeiten und allgemeinen
+              Informationen &uuml;ber Helgoland.
+            </p>
+
+            <h3 className="text-lg font-semibold text-dark mt-4 mb-2">
+              b) Rechtsgrundlage
+            </h3>
+            <p>
+              Einwilligung (Art. 6 Abs. 1 lit. a DSGVO) via Consent-Screen vor Chatbeginn.
+              F&uuml;r die Speicherung anonymisierter Themenzusammenfassungen: berechtigtes Interesse
+              (Art. 6 Abs. 1 lit. f DSGVO) an der Analyse und Verbesserung unseres Kundenservices.
+            </p>
+
+            <h3 className="text-lg font-semibold text-dark mt-4 mb-2">
+              c) Verarbeitete Daten
+            </h3>
+            <p>
+              Ihre Texteingaben im Chat.
+            </p>
+
+            <h3 className="text-lg font-semibold text-dark mt-4 mb-2">
+              d) Empf&auml;nger &amp; Drittlandtransfer
+            </h3>
+            <p>
+              Ihre Chat-Nachrichten werden zur Verarbeitung an <strong className="text-dark">OpenAI, L.L.C.</strong>,
+              3180 18th Street, San Francisco, CA 94110, USA &uuml;bermittelt. Es wird das Modell
+              &bdquo;GPT-5.4-mini&ldquo; verwendet. Die Daten&uuml;bermittlung erfolgt auf Basis von{" "}
+              <strong className="text-dark">EU-Standardvertragsklauseln</strong> (Art. 46 Abs. 2 lit. c DSGVO)
+              und dem <strong className="text-dark">Data Processing Agreement</strong> von OpenAI.
+              OpenAI nutzt API-Daten{" "}
+              <strong className="text-dark">nicht f&uuml;r Modelltraining</strong>.
+              Zus&auml;tzlich wird der Parameter <code className="bg-gray-100 px-1 rounded text-xs">store:&nbsp;false</code> gesetzt,
+              sodass OpenAI die &uuml;bermittelten Daten nicht speichert.
             </p>
             <p className="mt-2">
               Weitere Informationen:{" "}
@@ -327,46 +351,51 @@ export default function DatenschutzPage() {
             </p>
 
             <h3 className="text-lg font-semibold text-dark mt-4 mb-2">
-              b) Vollst&auml;ndige Chatverl&auml;ufe
+              e) Speicherdauer
             </h3>
             <p>
-              Die vollst&auml;ndigen Chatverl&auml;ufe werden <strong className="text-dark">nicht
-              gespeichert</strong>. Sobald Sie den Chat schlie&szlig;en oder die Seite verlassen,
-              werden alle Nachrichten im Browser unwiderruflich gel&ouml;scht. Auf unseren
-              Servern werden keine vollst&auml;ndigen Konversationen vorgehalten.
+              Ihre Chatnachrichten werden <strong className="text-dark">nicht persistent gespeichert</strong>.
+              Sobald Sie den Chat schlie&szlig;en oder die Seite verlassen, werden alle Nachrichten
+              im Browser unwiderruflich gel&ouml;scht. Auf unseren Servern werden keine vollst&auml;ndigen
+              Konversationen vorgehalten.
             </p>
-
-            <h3 className="text-lg font-semibold text-dark mt-4 mb-2">
-              c) Anonymisierte Zusammenfassungen
-            </h3>
-            <p>
-              Zur Verbesserung unseres Serviceangebots erstellen wir nach jeder Chat-Interaktion
-              eine <strong className="text-dark">anonymisierte, maschinell generierte
-              Zusammenfassung</strong> des Gespr&auml;chsthemas (z.&nbsp;B. &bdquo;Gast fragte
-              nach Abfahrtszeiten und Hundemitnahme bei der Premium-Tour&ldquo;). Diese
-              Zusammenfassungen enthalten:
+            <p className="mt-2">
+              Lediglich <strong className="text-dark">anonymisierte Themenzusammenfassungen</strong>{" "}
+              (z.&nbsp;B. &bdquo;Frage zu Hunden&ldquo;) werden zur Serviceverbesserung erfasst.
+              Diese enthalten:
             </p>
             <ul className="mt-1 space-y-1 list-disc pl-5">
               <li>Das Thema der Anfrage (max. 2&ndash;3 S&auml;tze)</li>
               <li>Thematische Kategorien (z.&nbsp;B. &bdquo;preise&ldquo;, &bdquo;hunde&ldquo;, &bdquo;stornierung&ldquo;)</li>
               <li>Einen Erfolgsstatus (ob die Anfrage beantwortet werden konnte)</li>
               <li>Die Anzahl der Nachrichten</li>
-              <li>Einen kryptographischen Hash der IP-Adresse (SHA-256, gesalzen &mdash; nicht r&uuml;ckverfolgbar)</li>
             </ul>
             <p className="mt-2">
               <strong className="text-dark">Keine personenbezogenen Daten:</strong> Die
-              Zusammenfassungen enthalten keine Namen, E-Mail-Adressen, Telefonnummern oder
-              sonstige personenbezogene Daten. Sie dienen ausschlie&szlig;lich der statistischen
-              Auswertung h&auml;ufiger Fragestellungen und der Verbesserung unseres
-              Informationsangebots.
-            </p>
-            <p className="mt-2">
-              Die Verarbeitung erfolgt auf Grundlage von Art. 6 Abs. 1 lit. f DSGVO
-              (berechtigtes Interesse an der Analyse und Verbesserung unseres Kundenservices).
+              Zusammenfassungen enthalten keine Namen, E-Mail-Adressen, Telefonnummern,
+              IP-Adressen oder sonstige personenbezogene Daten.
             </p>
 
             <h3 className="text-lg font-semibold text-dark mt-4 mb-2">
-              d) Keine Erhebung personenbezogener Daten
+              f) Widerruf
+            </h3>
+            <p>
+              Sie k&ouml;nnen Ihre Einwilligung jederzeit widerrufen, indem Sie den Chat
+              schlie&szlig;en und die Seite neu laden. Die Einwilligung wird nur f&uuml;r die
+              Dauer der Browser-Sitzung gespeichert (sessionStorage) und verf&auml;llt automatisch.
+            </p>
+
+            <h3 className="text-lg font-semibold text-dark mt-4 mb-2">
+              g) KI-Kennzeichnung (EU-KI-Verordnung)
+            </h3>
+            <p>
+              Alle Antworten des Chatbots sind als &bdquo;KI-generierte Antwort&ldquo;
+              gekennzeichnet. Dies erfolgt gem&auml;&szlig; den Transparenzanforderungen
+              der <strong className="text-dark">EU-KI-Verordnung (KI-VO / AI Act)</strong>.
+            </p>
+
+            <h3 className="text-lg font-semibold text-dark mt-4 mb-2">
+              h) Keine Erhebung personenbezogener Daten
             </h3>
             <p>
               Der Chatbot erfragt und speichert keine personenbezogenen Daten. Bitte geben Sie
@@ -377,32 +406,21 @@ export default function DatenschutzPage() {
             </p>
 
             <h3 className="text-lg font-semibold text-dark mt-4 mb-2">
-              e) Missbrauchsschutz
+              i) Missbrauchsschutz
             </h3>
             <p>
               Zum Schutz vor Missbrauch werden folgende Ma&szlig;nahmen eingesetzt:
             </p>
             <ul className="mt-1 space-y-1 list-disc pl-5">
               <li>Rate-Limiting: Begrenzung auf 20 Nachrichten pro Minute pro IP-Adresse</li>
-              <li>Eingabebegrenzung: Nachrichten sind auf 1.000 Zeichen limitiert</li>
+              <li>Eingabebegrenzung: Nachrichten sind auf 500 Zeichen limitiert</li>
               <li>Konversationsverlauf: Nur die letzten 10 Nachrichten werden zur Verarbeitung gesendet</li>
-              <li>Prompt-Injection-Erkennung: Automatische Erkennung und Abwehr von Manipulationsversuchen</li>
+              <li>Prompt-Injection-Erkennung: Automatische Erkennung und Abwehr von Manipulationsversuchen (25+ Regex-Filter)</li>
             </ul>
             <p className="mt-2">
               Dabei wird die IP-Adresse tempor&auml;r im Arbeitsspeicher verarbeitet (max. 1 Minute)
               und nicht dauerhaft gespeichert. Die Verarbeitung erfolgt auf Grundlage von
               Art. 6 Abs. 1 lit. f DSGVO (berechtigtes Interesse am Schutz vor Missbrauch).
-            </p>
-
-            <h3 className="text-lg font-semibold text-dark mt-4 mb-2">
-              f) Einwilligung &amp; Widerruf
-            </h3>
-            <p>
-              Die Nutzung des Chatbots ist freiwillig. Durch das Klicken auf &bdquo;Chat
-              starten&ldquo; erkl&auml;ren Sie sich mit der Verarbeitung Ihrer eingegebenen
-              Nachrichten gem&auml;&szlig; dieser Datenschutzerkl&auml;rung einverstanden.
-              Sie k&ouml;nnen den Chat jederzeit schlie&szlig;en; mit dem Schlie&szlig;en
-              werden alle Nachrichten im Browser gel&ouml;scht.
             </p>
           </section>
 
