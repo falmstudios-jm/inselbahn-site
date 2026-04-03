@@ -217,50 +217,76 @@ export async function cancel_departures(args: {
 
     refundedCount++;
 
-    // Send cancellation email
+    // Create a SORRY coupon for this customer (20% off, valid 90 days, single use)
+    const couponCode = `SORRY-${booking.booking_reference.replace('IB-', '')}`;
+    const couponExpiry = new Date();
+    couponExpiry.setDate(couponExpiry.getDate() + 90);
+    try {
+      await supabase.from('discount_codes').insert({
+        code: couponCode,
+        type: 'percentage',
+        value: 20,
+        description: `Entschädigung für Ausfall ${args.date}`,
+        max_uses: 1,
+        current_uses: 0,
+        valid_until: couponExpiry.toISOString(),
+        is_active: true,
+      });
+    } catch (couponErr) {
+      console.error(`Coupon creation failed for ${booking.booking_reference}:`, couponErr);
+    }
+
+    // Send cancellation email with SORRY coupon
     const tour = booking.departures?.tours;
+    const formattedDate = new Date(args.date + 'T00:00:00').toLocaleDateString('de-DE', { weekday: 'long', day: 'numeric', month: 'long', year: 'numeric' });
+    const refundInfo = booking.stripe_payment_intent_id
+      ? `Der gezahlte Betrag von ${Number(booking.total_amount).toFixed(2).replace('.', ',')} &euro; wird Ihnen in den n&auml;chsten 5&ndash;10 Werktagen automatisch erstattet.`
+      : booking.gift_card_id
+        ? 'Der Gutscheinbetrag wurde zur&uuml;ck auf Ihren Gutschein gebucht.'
+        : '';
+
     try {
       await resend.emails.send({
         from: 'Inselbahn Helgoland <buchung@helgolandbahn.de>',
         to: booking.customer_email,
-        subject: `Stornierung Ihrer Buchung ${booking.booking_reference} — Inselbahn Helgoland`,
-        html: `
-<!DOCTYPE html>
-<html lang="de">
-<head><meta charset="UTF-8"></head>
+        subject: `Tour abgesagt — ${booking.booking_reference}`,
+        html: `<!DOCTYPE html><html lang="de"><head><meta charset="UTF-8"></head>
 <body style="margin:0;padding:0;background:#f4f4f4;font-family:Arial,sans-serif;">
-  <table width="100%" cellpadding="0" cellspacing="0" style="background:#f4f4f4;padding:24px 0;">
-    <tr><td align="center">
-      <table width="600" cellpadding="0" cellspacing="0" style="background:#fff;border-radius:8px;max-width:600px;width:100%;">
-        <tr><td style="background:#1a3a5c;padding:32px 24px;text-align:center;">
-          <h1 style="color:#fff;margin:0;font-size:24px;">Inselbahn Helgoland</h1>
-        </td></tr>
-        <tr><td style="padding:32px 24px;">
-          <h2 style="color:#c0392b;margin:0 0 16px;">Tour leider abgesagt</h2>
-          <p style="color:#555;font-size:15px;line-height:1.6;">
-            Hallo ${booking.customer_name},<br><br>
-            leider müssen wir Ihre Buchung <strong>${booking.booking_reference}</strong>
-            für die <strong>${tour?.name || 'Tour'}</strong> am
-            <strong>${new Date(args.date + 'T00:00:00').toLocaleDateString('de-DE', { weekday: 'long', day: 'numeric', month: 'long', year: 'numeric' })}</strong>
-            absagen.
-            ${args.reason ? `<br><br><strong>Grund:</strong> ${args.reason}` : ''}
-            <br><br>
-            ${booking.stripe_payment_intent_id ? 'Der gezahlte Betrag wird Ihnen in den nächsten 5–10 Werktagen erstattet.' : ''}
-          </p>
-          <p style="color:#555;font-size:14px;line-height:1.6;">
-            Wir entschuldigen uns für die Unannehmlichkeiten und hoffen, Sie bald auf Helgoland begrüßen zu dürfen!
-          </p>
-        </td></tr>
-        <tr><td style="background:#f8f9fa;padding:24px;text-align:center;border-top:1px solid #e0e0e0;">
-          <p style="margin:0;font-size:13px;color:#888;">
-            Fragen? <a href="mailto:info@helgolandbahn.de" style="color:#1a3a5c;">info@helgolandbahn.de</a>
-          </p>
-        </td></tr>
-      </table>
-    </td></tr>
-  </table>
-</body>
-</html>`,
+<table width="100%" cellpadding="0" cellspacing="0" style="background:#f4f4f4;padding:24px 0;"><tr><td align="center">
+<table width="600" cellpadding="0" cellspacing="0" style="background:#fff;border-radius:8px;max-width:600px;width:100%;">
+  <tr><td style="border-top:4px solid #F24444;padding:24px 32px 0;">
+    <h1 style="font-size:18px;color:#333;margin:0 0 20px;">INSELBAHN HELGOLAND</h1>
+    <div style="background:#FFF0F0;border-radius:8px;padding:16px;text-align:center;margin-bottom:20px;">
+      <p style="font-size:18px;font-weight:700;color:#dc2626;margin:0;">Tour leider abgesagt</p>
+    </div>
+    <p style="color:#555;font-size:15px;line-height:1.6;">Hallo ${booking.customer_name},</p>
+    <p style="color:#555;font-size:15px;line-height:1.6;">wir geben uns immer unser Bestes, Touren nur im absoluten Notfall abzusagen &mdash; aber manchmal kommt es leider dazu. Wir m&uuml;ssen Ihre Buchung <strong>${booking.booking_reference}</strong> absagen.</p>
+    <div style="background:#f9f9f9;border-radius:8px;padding:16px;margin:16px 0;">
+      <p style="margin:4px 0;font-size:14px;"><strong>Tour:</strong> ${tour?.name || 'Tour'}</p>
+      <p style="margin:4px 0;font-size:14px;"><strong>Datum:</strong> ${formattedDate}</p>
+      ${args.reason ? `<p style="margin:4px 0;font-size:14px;"><strong>Grund:</strong> ${args.reason}</p>` : ''}
+    </div>
+    ${refundInfo ? `<div style="border-left:4px solid #F24444;padding-left:16px;margin:16px 0;">
+      <p style="font-size:14px;color:#555;line-height:1.5;">${refundInfo}</p>
+    </div>` : ''}
+    <p style="color:#555;font-size:14px;line-height:1.6;"><strong>Bitte beachten Sie:</strong> Eine Umbuchung ist leider nicht m&ouml;glich. Sie k&ouml;nnen aber jederzeit eine neue Tour buchen.</p>
+    <div style="background:#F0FFF4;border:1px solid #C6F6D5;border-radius:8px;padding:20px;margin:20px 0;text-align:center;">
+      <p style="font-size:14px;font-weight:700;color:#22543D;margin:0 0 8px;">&#127873; Als Entsch&auml;digung: 20% Rabatt auf Ihre n&auml;chste Buchung!</p>
+      <p style="font-size:24px;font-weight:700;color:#F24444;margin:0 0 8px;letter-spacing:2px;font-family:monospace;">${couponCode}</p>
+      <p style="font-size:12px;color:#666;margin:0;">G&uuml;ltig f&uuml;r 90 Tage &middot; Einmalig einl&ouml;sbar &middot; Teilen Sie ihn gerne mit Freunden &amp; Familie!</p>
+    </div>
+    <div style="text-align:center;margin:24px 0;">
+      <a href="${BASE_URL}" style="display:inline-block;background:#F24444;color:white;padding:14px 32px;border-radius:8px;text-decoration:none;font-weight:bold;font-size:15px;">Neue Tour buchen</a>
+    </div>
+    <p style="color:#555;font-size:14px;line-height:1.6;">Wir entschuldigen uns f&uuml;r die Unannehmlichkeiten und hoffen, Sie bald auf Helgoland begr&uuml;&szlig;en zu d&uuml;rfen!</p>
+  </td></tr>
+  <tr><td style="background:#f8f9fa;padding:20px 32px;text-align:center;border-top:1px solid #e0e0e0;">
+    <p style="margin:0 0 4px;font-size:12px;color:#888;">Helgol&auml;nder Dienstleistungs GmbH &middot; Von-Aschen-Str. 594 &middot; 27498 Helgoland</p>
+    <a href="mailto:info@helgolandbahn.de" style="font-size:12px;color:#F24444;text-decoration:none;">info@helgolandbahn.de</a>
+  </td></tr>
+</table>
+</td></tr></table>
+</body></html>`,
       });
       emailsSent++;
     } catch (e) {
