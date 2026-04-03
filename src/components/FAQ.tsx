@@ -5,129 +5,39 @@ import Image from "next/image";
 
 const faqs = [
   {
-    question: "Was ist die Inselbahn für ein Fahrzeug?",
-    answer:
-      "Eine Bimmelbahn und zwei Sonderanfertigungen aus dem Jahr 2025, gebaut vom weltweit bekannten Achterbahnhersteller INTAMIN — perfekt für die Bedingungen auf Helgoland abgestimmt, mega stark und robust. Auf Helgoland dürfen alle Fahrzeuge max. 10 km/h fahren, innerorts 6 km/h.",
-  },
-  {
-    question: "Können Babys und Kleinkinder mitfahren?",
-    answer:
-      "Ja, jedes Alter ist willkommen! Babytragen sind kein Problem. Kinder unter 6 Jahren bekommen einen eigenen Sitzplatz und fahren kostenlos.",
-  },
-  {
-    question: "Gibt es einen Familienpreis oder Rabatt?",
-    answer:
-      "Nein, es gibt keine speziellen Familienrabatte. Kinder unter 6 fahren kostenlos, Kinder von 6 bis 14 Jahren zahlen den reduzierten Kinderpreis. Bei der Unterland-Tour um 14:30 Uhr fahren alle Kinder kostenlos.",
-  },
-  {
-    question: "Gibt es einen Stammkunden-Rabatt?",
-    answer:
-      "Nach jeder Tour erhalten Sie per E-Mail einen persönlichen 10%-Rabattcode für Ihre nächste Buchung. Teilen Sie ihn gerne mit Freunden und Familie!",
-  },
-  {
-    question: "Kann ich die Bahn privat buchen?",
-    answer:
-      "Ja, auf Anfrage möglich. Alternativ können Sie auch alle Plätze eines Fahrzeugs buchen.",
-  },
-  {
-    question: "Gibt es eine Mindestteilnehmerzahl?",
-    answer:
-      "Nein. Wenn wir eine Person glücklich machen können, sind wir glücklich.",
-  },
-  {
-    question: "Geburtstage oder Junggesellenabschiede?",
-    answer:
-      "Ja, auf Anfrage möglich! Kontaktieren Sie uns per E-Mail für individuelle Absprachen.",
-  },
-  {
     question: "Darf ich mir aussuchen, wo ich sitzen möchte?",
     answer:
-      "Ja, freie Platzwahl. Es gilt: first come, first serve — also am besten 15 Minuten vor Abfahrt da sein!",
-  },
-  {
-    question: "Sind die Fahrzeuge überdacht?",
-    answer:
-      "Ja, unsere Fahrzeuge sind von oben überdacht. Bei Kälte und Regen gibt es zusätzliche Seitenabdeckungen — Sie bleiben also trocken!",
-  },
-  {
-    question: "Darf man während der Fahrt stehen?",
-    answer:
-      "Nein, auf keinen Fall. Bitte bleiben Sie während der gesamten Fahrt immer sitzen.",
-  },
-  {
-    question: "Darf man während der Fahrt telefonieren?",
-    answer:
-      "Nein, bitte nicht. Aus Rücksicht auf die anderen Fahrgäste und die Audioansage bitten wir darum, auf Telefonate zu verzichten.",
+      "Ja, grundsätzlich freie Platzwahl. Unsere Mitarbeiter bemühen sich, die Sitzplätze so zu organisieren, dass jeder mit seinen Bekannten zusammensitzen kann. Am besten 15 Minuten vor Abfahrt da sein!",
   },
   {
     question: "Darf ich Snacks und Getränke mitbringen?",
     answer:
-      "Ja, aber bitte nichts was kleckert oder tropft — kein Eis, kein Ketchup. Ein Bier ist auch okay. Und Vorsicht vor den Möwen!",
+      "Gerne dürfen Sie sich Snacks und Getränke mitbringen. Allerdings bitten wir darum, Speisen zu vermeiden, die leicht kleckern oder verschütten können — kein Eis, kein Ketchup. Ein Bier ist auch okay. Und Vorsicht vor den Möwen!",
   },
   {
     question: "Kann ich mein Gepäck mitnehmen?",
     answer:
-      "Nein, Gepäck kann leider nicht mitgenommen werden. Unser Ticketverkäufer Tomek kann zwischen 11:30 und 14:30 Uhr ein Auge auf Ihre Sachen werfen — allerdings ohne Haftung.",
-  },
-  {
-    question: "Gibt es eine Gepäckaufbewahrung?",
-    answer:
-      "Unser Ticketverkäufer Tomek ist von 11:30 bis 14:30 Uhr vor Ort und kann Gepäck beaufsichtigen. Keine Haftung — aber auf Helgoland klaut keiner!",
+      "Leider können wir weder Gepäcktransport noch Gepäckmitnahme anbieten. Unser Ticketverkäufer Tomek kann zwischen 11:30 und 14:30 Uhr ein Auge auf Ihre Sachen werfen — allerdings ohne Haftung. Aber auf Helgoland klaut keiner!",
   },
   {
     question: "Wie sieht es mit Rollatoren oder Rollstühlen aus?",
     answer:
-      "Unterland-Tour: 1 Rollstuhlplatz (kein E-Rollstuhl, zu schwer). Rollatoren können bei Tomek geparkt werden. Premium-Tour: Ein zusammenklappbarer Rollator kann bei nicht voller Belegung mitgenommen und am Zugfahrzeug befestigt werden, ist aber nicht garantiert.",
+      "Unterland-Tour: 1 Rollstuhlplatz verfügbar (kein E-Rollstuhl, zu schwer). Rollatoren können bei Tomek am Platz geparkt werden. Premium-Tour: Ein zusammenklappbarer Rollator kann bei nicht voller Belegung mitgenommen werden — ist aber nicht garantiert. Der Weg an der Langen Anna ist erneuert und es gibt viele Bänke.",
   },
   {
     question: "Kann ich meinen Hund mitnehmen?",
     answer:
-      "Unterland-Tour: Ja, Hunde bis mittlerer Größe, angeleint bitte. Premium-Tour: Leider keine Hunde, wegen der steilen Wege und engen Pfade im Oberland.",
+      "Unterland-Tour: Ja, Hunde bis mittlerer Größe, angeleint bitte. Kleine Hunde dürfen auf den Schoß. Premium-Tour: Leider keine Hunde erlaubt.",
   },
   {
     question: "Gibt es Toiletten in der Nähe?",
     answer:
-      "Ja, direkt an der Landungsbrücke gibt es eine kostenlose öffentliche Toilette. Wichtig: Während der Touren gibt es keine Toilettenmöglichkeit — auch nicht an der Langen Anna!",
+      "Ja, direkt an der Landungsbrücke gibt es eine kostenlose öffentliche Toilette. Wichtig: Während der Touren gibt es keine Toilettenmöglichkeit — auch nicht an der Langen Anna! Bitte vorher gehen.",
   },
   {
     question: "Was passiert bei schlechtem Wetter?",
     answer:
-      "Bei Regen fahren wir ganz normal — unsere Wagen sind überdacht und haben bei Bedarf Seitenabdeckungen. Bei Sturm oder Gewitter können Touren ausfallen — Sie erhalten dann automatisch eine volle Rückerstattung.",
-  },
-  {
-    question: "Was passiert bei Sturmwarnung?",
-    answer:
-      "Wenn alle Schiffe den Betrieb einstellen, müssen auch wir wahrscheinlich pausieren. Bei Gewitter und extremem Regen ebenfalls. Bei Ausfall erhalten Sie eine volle Rückerstattung.",
-  },
-  {
-    question: "Wann ist die beste Jahreszeit für eine Tour?",
-    answer:
-      "Die beste Helgoland-Saison ist Juni bis August, aber unsere Tour ist immer gut. Bei Regen bleibt man trocken, bei Sonne ist es wunderbar, und der Fahrtwind ist auch klasse.",
-  },
-  {
-    question: "Wie lange im Voraus sollte ich buchen?",
-    answer:
-      "Idealerweise sobald Sie sich entschieden haben. Unsere Touren, insbesondere die Premium-Tour, sind sehr beliebt und können schnell ausgebucht sein.",
-  },
-  {
-    question: "Fährt die Bahn auch an Feiertagen oder im Winter?",
-    answer:
-      "Nein, wir fahren nicht im Winter. Unsere Saison ist in der Regel von Anfang April bis Ende Oktober.",
-  },
-  {
-    question: "Kann ich meine Buchung stornieren?",
-    answer:
-      "Ja, kostenlose Stornierung bis Mitternacht am Vortag — für alle gleich. Nutzen Sie den Stornierungslink in Ihrer Bestätigungs-E-Mail oder unseren Self-Service-Bereich.",
-  },
-  {
-    question: "Wann ist die beste Zeit zur Vogelbeobachtung?",
-    answer:
-      "Die beste Zeit ist Mai bis August. Im Juni findet der berühmte Lummensprung statt. Bis zu 15.000 Vögel werden jährlich auf Helgoland beringt.",
-  },
-  {
-    question: "Wie komme ich zur Düne und was kostet die Fähre?",
-    answer:
-      "Die Dünenfähre \u201EWitte Kliff\u201C fährt alle 30 Minuten vom Helgoländer Hafen. Erwachsene zahlen 6\u00A0\u20AC, Kinder den halben Preis.",
+      "Bei Regen fahren wir ganz normal — unsere Wagen sind überdacht und haben bei Bedarf Seitenabdeckungen. Bei extremem Wetter (Sturm, Gewitter) können Touren ausfallen. Online-Buchungen erhalten in dem Fall automatisch eine volle Rückerstattung.",
   },
 ];
 
