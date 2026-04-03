@@ -333,38 +333,7 @@ export default function RevenuePage() {
             </div>
           </div>
 
-          {/* By payment method */}
-          <h2 className="text-sm font-semibold text-gray-500 uppercase tracking-wider mb-2">
-            Nach Zahlungsart
-          </h2>
-          <div className="space-y-2 mb-6">
-            {myRevenueData.by_payment_method.map((pm) => (
-              <div
-                key={pm.method}
-                className="bg-white rounded-xl p-4 shadow-sm border border-gray-200 flex items-center justify-between"
-              >
-                <div className="flex items-center gap-3">
-                  <div className={`w-10 h-10 rounded-lg flex items-center justify-center text-sm font-bold ${paymentIcon(pm.method)}`}>
-                    {pm.count}
-                  </div>
-                  <div>
-                    <div className="font-medium text-dark">{paymentLabel(pm.method)}</div>
-                    <div className="text-xs text-gray-500">{pm.count} Buchungen</div>
-                  </div>
-                </div>
-                <div className="text-xl font-bold text-dark">
-                  {pm.revenue.toFixed(2)} &euro;
-                </div>
-              </div>
-            ))}
-            {myRevenueData.by_payment_method.length === 0 && (
-              <div className="text-center text-gray-400 py-4">
-                Noch keine Verk&auml;ufe
-              </div>
-            )}
-          </div>
-
-          {/* By departure */}
+          {/* By departure (driver view — no payment breakdown, just per-tour) */}
           {myRevenueData.by_departure && myRevenueData.by_departure.length > 0 && (
             <>
               <h2 className="text-sm font-semibold text-gray-500 uppercase tracking-wider mb-2">
