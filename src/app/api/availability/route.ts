@@ -70,7 +70,11 @@ export async function GET(req: NextRequest) {
         if (b.wheelchair_seat) {
           wheelchairBooked.set(b.departure_id, true);
         }
-        // Detect GESPERRT/our_cancellation bookings = departure is cancelled by operator
+      }
+    }
+    // Detect GESPERRT/our_cancellation bookings = departure is cancelled by operator
+    if (confirmedBookings) {
+      for (const b of confirmedBookings) {
         if (b.status === 'our_cancellation' && b.customer_name?.startsWith('GESPERRT')) {
           cancelledDepartures.add(b.departure_id);
         }

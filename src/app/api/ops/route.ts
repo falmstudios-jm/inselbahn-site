@@ -25,11 +25,11 @@ const TOOLS = [
     function: {
       name: 'cancel_departures',
       description:
-        'Cancel bookings for a tour on a specific date. Can cancel ALL departures of a tour on that date, or a SINGLE departure if time is specified. Issues refunds and sends cancellation emails.',
+        'Cancel bookings on a specific date. If tour_slug is omitted, ALL tours (unterland + premium) are cancelled. Can cancel ALL departures or a SINGLE departure if time is specified. Issues refunds and sends cancellation emails.',
       parameters: {
         type: 'object',
         properties: {
-          tour_slug: { type: 'string', enum: ['unterland', 'premium'] },
+          tour_slug: { type: 'string', enum: ['unterland', 'premium'], description: 'Optional: specific tour. Omit to cancel ALL tours.' },
           date: { type: 'string', description: 'YYYY-MM-DD format' },
           time: { type: 'string', description: 'Optional: specific departure time in HH:MM format (e.g. 16:00). If omitted, ALL departures of the tour on that date are cancelled.' },
           reason: { type: 'string' },
@@ -305,6 +305,9 @@ Wenn eine gefährliche Aktion angefragt wird:
 4. ERST DANN ausführen
 5. Wenn das Passwort falsch ist: "Falsches Sicherheitspasswort. Aktion abgebrochen."
 
+Wenn der Nutzer Passwort UND Befehl in einer Nachricht gibt (z.B. 'Alle Touren morgen absagen, Wetter, GER12234+GER12956!'), dann prüfe das Passwort und führe die Aktion SOFORT aus. Frage NICHT nochmal nach.
+Wenn du eine Aktion bereits ausgeführt hast (tool_calls waren erfolgreich), sage NIEMALS 'Falsches Passwort' in der gleichen Antwort!
+
 Du hast Zugriff auf folgende Funktionen:
 - Tourpreise ändern (update_tour_price) — >20% Änderung wird serverseitig blockiert
 - Tourdetails & Preise anzeigen (get_tour_details)
@@ -359,7 +362,8 @@ Wichtige Hinweise:
 - Bei "morgen" verwende das Datum von morgen
 - Bei Preisänderungen: Wenn nur Erwachsenenpreis genannt wird, Kinderpreis beibehalten
 - Bei Stornierungen: IMMER Grund angeben und an Rückerstattungen denken
-- "Alle Touren morgen canceln" = cancel_departures für BEIDE Tour-Slugs aufrufen`;
+- "Alle Touren morgen canceln" = cancel_departures für BEIDE Tour-Slugs aufrufen
+- WICHTIG: 'alle Touren' oder 'alles' ohne Tour-Angabe = BEIDE Tours (unterland UND premium). Rufe cancel_departures OHNE tour_slug auf, oder ZWEIMAL mit jeweils einem Tour-Slug.`;
 
 export async function POST(req: Request) {
   try {

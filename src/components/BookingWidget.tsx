@@ -1264,7 +1264,8 @@ export default function BookingWidget({ tours: supabaseTours }: BookingWidgetPro
                         const soldOut = slot.remaining <= 0;
                         const notBookableOnline = !slot.bookable_online;
                         const isPast = !!slot.past;
-                        const isDisabledSlot = soldOut || notBookableOnline || isPast;
+                        const isCancelled = !!slot.cancelled;
+                        const isDisabledSlot = soldOut || notBookableOnline || isPast || isCancelled;
                         const tourOpt = mergedTourOptions.find(t => t.id === selectedTour);
                         const isAmber = tourOpt?.accent === "amber";
 
@@ -1272,7 +1273,7 @@ export default function BookingWidget({ tours: supabaseTours }: BookingWidgetPro
                         const capacityPercent = slot.max_capacity > 0 ? (slot.booked / slot.max_capacity) * 100 : 0;
                         const remainingPercent = 100 - capacityPercent;
                         // Color for remaining text
-                        const remainColor = isPast || !slot.bookable_online
+                        const remainColor = isPast || !slot.bookable_online || isCancelled
                           ? "text-dark/30"
                           : soldOut
                             ? "text-red-400"
@@ -1307,10 +1308,13 @@ export default function BookingWidget({ tours: supabaseTours }: BookingWidgetPro
                             <div className="flex items-center justify-between mb-1.5">
                               <div className="flex items-center gap-2">
                                 <span className={isPast || notBookableOnline ? "text-dark/30" : ""}>{time} Uhr</span>
-                                {soldOut && slot.bookable_online && !slot.online_sold_out && (
+                                {isCancelled && (
+                                  <span className="text-[10px] font-bold uppercase bg-gray-200 text-gray-500 px-2 py-0.5 rounded-full">F&auml;llt aus</span>
+                                )}
+                                {!isCancelled && soldOut && slot.bookable_online && !slot.online_sold_out && (
                                   <span className="text-[10px] font-bold uppercase bg-red-100 text-red-600 px-2 py-0.5 rounded-full">ausgebucht</span>
                                 )}
-                                {slot.online_sold_out && (
+                                {!isCancelled && slot.online_sold_out && (
                                   <span className="text-[10px] font-bold uppercase bg-amber-100 text-amber-700 px-2 py-0.5 rounded-full">online ausgebucht</span>
                                 )}
                               </div>
@@ -1355,10 +1359,17 @@ export default function BookingWidget({ tours: supabaseTours }: BookingWidgetPro
                               </p>
                             )}
 
-                            {/* Online sold out but walk-up possible */}
-                            {slot.online_sold_out && !isPast && slot.bookable_online && (
+                            {/* Online sold out but walk-up possible (not for cancelled departures) */}
+                            {slot.online_sold_out && !isPast && slot.bookable_online && !isCancelled && (
                               <p className="text-xs text-amber-600 mt-1">
                                 Online ausgebucht — Restplätze ggf. vor Ort bei Tomek (11:30–14:30) oder beim Fahrer
+                              </p>
+                            )}
+
+                            {/* Cancelled departure notice */}
+                            {isCancelled && !isPast && (
+                              <p className="text-xs text-gray-400 mt-1">
+                                Diese Abfahrt wurde abgesagt.
                               </p>
                             )}
 
