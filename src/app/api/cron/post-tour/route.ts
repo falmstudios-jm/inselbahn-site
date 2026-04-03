@@ -128,7 +128,7 @@ function buildFeedbackEmail(params: FeedbackEmailParams): string {
                   <td style="padding:20px;text-align:center;">
                     <p style="margin:0 0 12px;font-size:14px;font-weight:700;color:#333;">\u2B50 Hat es Ihnen gefallen?</p>
                     <p style="margin:0 0 16px;font-size:13px;color:#555;">Eine Google-Bewertung hilft anderen Besuchern, uns zu finden \u2014 und uns, noch besser zu werden.</p>
-                    <a href="https://www.google.com/maps/place/Inselbahn+Rundfahrten+Helgoland/@54.1810127,7.8906696,17z" style="display:inline-block;background-color:#F24444;color:#ffffff;font-size:14px;font-weight:700;text-decoration:none;padding:12px 24px;border-radius:6px;">
+                    <a href="https://g.page/r/CeEvXFmlaLMwEBE/review" style="display:inline-block;background-color:#F24444;color:#ffffff;font-size:14px;font-weight:700;text-decoration:none;padding:12px 24px;border-radius:6px;">
                       Jetzt bewerten
                     </a>
                   </td>

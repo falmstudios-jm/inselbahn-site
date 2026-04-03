@@ -153,7 +153,7 @@ Hallo ${customerName}, vielen Dank, dass Sie mit uns die <strong>${tourName}</st
 <tr><td style="padding:20px;text-align:center;">
 <p style="margin:0 0 10px;font-size:14px;font-weight:700;color:#333;">Hat es Ihnen gefallen?</p>
 <p style="margin:0 0 14px;font-size:13px;color:#555;">Eine Google-Bewertung hilft anderen Besuchern, uns zu finden.</p>
-<a href="https://www.google.com/maps/place/Inselbahn+Rundfahrten+Helgoland/@54.1810127,7.8906696,17z" style="display:inline-block;background-color:#F24444;color:#fff;font-size:14px;font-weight:700;text-decoration:none;padding:12px 28px;border-radius:6px;">Jetzt bewerten</a>
+<a href="https://g.page/r/CeEvXFmlaLMwEBE/review" style="display:inline-block;background-color:#F24444;color:#fff;font-size:14px;font-weight:700;text-decoration:none;padding:12px 28px;border-radius:6px;">Jetzt bewerten</a>
 </td></tr>
 </table>
 
