@@ -57,7 +57,8 @@ export async function POST(req: Request) {
 
     const tourName = booking.departures?.tours?.name || 'Inselbahn Tour';
     const year = new Date().getFullYear();
-    const discountCode = `DANKE_${year}_${booking.booking_reference}`;
+    const refSuffix = booking.booking_reference?.replace('IB-2026-', '') || 'XXXX';
+    const discountCode = `DANKE-${year}-${refSuffix}`;
     const validUntil = `${year + 1}-12-31T23:59:59+01:00`;
 
     await supabase
