@@ -76,7 +76,7 @@ export const FALLBACK_TOURS: Tour[] = [
     slug: 'premium-tour',
     name: 'Premium-Tour',
     description:
-      'Das komplette Helgoland-Erlebnis in der exklusiven Kleingruppe. Zunächst erkunden Sie das Unterland, dann geht es hinauf ins Oberland („deät Bopperlun") bis zum Pinneberg auf 61,3 m — Deutschlands kleinster Gemeinde auf dem höchsten Punkt. Vorbei am stärksten Leuchtturm Deutschlands (ehemaliger Flak-Turm!), den rund 70 Kleingärten und dem Lummenfelsen mit 30 Minuten freier Erkundungszeit an der Langen Anna, dem berühmten 47-Meter-Wahrzeichen.',
+      'Das komplette Helgoland-Erlebnis in kleiner Gruppe. Zunächst erkunden Sie das Unterland, dann geht es hinauf ins Oberland („deät Bopperlun") bis zum Pinneberg auf 61,3 m — Deutschlands kleinster Gemeinde auf dem höchsten Punkt. Vorbei am stärksten Leuchtturm Deutschlands (ehemaliger Flak-Turm!), den rund 70 Kleingärten und dem Lummenfelsen mit 30 Minuten freier Erkundungszeit an der Langen Anna, dem berühmten 47-Meter-Wahrzeichen.',
     duration_minutes: 90,
     max_capacity: 18,
     price_adult: 22,
@@ -88,7 +88,8 @@ export const FALLBACK_TOURS: Tour[] = [
       'Unterland & Oberland mit Pinneberg (61,3 m)',
       '30 Min freie Erkundung an der Langen Anna',
       'Leuchtturm, Kleingärten & Lummenfelsen',
-      'Exklusive Kleingruppe (max. 18 Personen)',
+      'Kleine Gruppe (max. 18 Personen)',
+      'Einblicke in den Inselalltag — Geschichten, die nicht im Reiseführer stehen',
     ],
     notes: 'inkl. Ausstieg an der Langen Anna',
   },

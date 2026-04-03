@@ -22,7 +22,7 @@ const colors = {
 
 const styles = StyleSheet.create({
   page: {
-    padding: 40,
+    padding: 30,
     fontFamily: 'Helvetica',
     backgroundColor: colors.white,
     fontSize: 11,
@@ -32,8 +32,8 @@ const styles = StyleSheet.create({
   headerBar: {
     borderBottomWidth: 3,
     borderBottomColor: colors.red,
-    paddingBottom: 16,
-    marginBottom: 20,
+    paddingBottom: 12,
+    marginBottom: 14,
   },
   headerTitle: {
     fontSize: 24,
@@ -52,8 +52,8 @@ const styles = StyleSheet.create({
   referenceBox: {
     backgroundColor: colors.surface,
     borderRadius: 6,
-    padding: 20,
-    marginBottom: 20,
+    padding: 14,
+    marginBottom: 14,
     alignItems: 'center',
   },
   referenceLabel: {
@@ -71,7 +71,7 @@ const styles = StyleSheet.create({
   },
   // ── Customer ──
   customerRow: {
-    marginBottom: 20,
+    marginBottom: 14,
   },
   customerLabel: {
     fontSize: 10,
@@ -151,8 +151,8 @@ const styles = StyleSheet.create({
     borderTopColor: colors.dark,
     borderBottomWidth: 2,
     borderBottomColor: colors.dark,
-    paddingVertical: 12,
-    marginBottom: 20,
+    paddingVertical: 10,
+    marginBottom: 14,
   },
   totalLabel: {
     fontSize: 14,
@@ -188,8 +188,8 @@ const styles = StyleSheet.create({
   tipsBox: {
     backgroundColor: colors.surface,
     borderRadius: 6,
-    padding: 16,
-    marginBottom: 20,
+    padding: 12,
+    marginBottom: 14,
   },
   tipsTitle: {
     fontSize: 10,
@@ -252,6 +252,7 @@ export interface TicketData {
   childrenFree: number;
   totalAmount: number;
   cancelUrl?: string;
+  createdAt?: string; // ISO date string for when booking was made
 }
 
 function formatGermanDate(isoDate: string): string {
@@ -320,6 +321,11 @@ export function TicketDocument({ data }: { data: TicketData }) {
         <View style={styles.customerRow}>
           <Text style={styles.customerLabel}>Fahrgast</Text>
           <Text style={styles.customerName}>{data.customerName}</Text>
+          {data.createdAt && (
+            <Text style={[styles.customerLabel, { marginTop: 4 }]}>
+              Gebucht am: {formatGermanDate(data.createdAt)}
+            </Text>
+          )}
         </View>
 
         {/* Tour Info Box */}
@@ -356,8 +362,9 @@ export function TicketDocument({ data }: { data: TicketData }) {
         <View style={styles.meetingBox}>
           <Text style={styles.meetingTitle}>Treffpunkt: Franz-Schensky-Platz</Text>
           <Text style={styles.meetingText}>
-            Vom Anleger der Halunder Jet / Katamarane: ca. 5 Min. Fußweg{'\n'}
-            Von der Landungsbrücke (Börteboot): ca. 3 Min. Fußweg
+            Direkt zwischen Tourist-Information und Büste von H. Hoffmann von Fallersleben, am Landungsbrückenvorplatz{'\n'}
+            Halunder Jet / Katamarane: ca. 5 Min. · MS Helgoland: ca. 15 Min.{'\n'}
+            Landungsbrücke (Börteboot): ca. 3 Min. · Düne: ca. 2 Min.
           </Text>
         </View>
 
@@ -371,13 +378,7 @@ export function TicketDocument({ data }: { data: TicketData }) {
             {'\u2022'} Toilette: Im Gebäude der Landungsbrücke (kostenlos). Während der Premium-Tour gibt es keine Toilettenmöglichkeit!
           </Text>
           <Text style={styles.tipLine}>
-            {'\u2022'} Snacks & Getränke erlaubt (nichts was kleckert). Vorsicht vor Möwen!
-          </Text>
-          <Text style={styles.tipLine}>
             {'\u2022'} Bei Regen fahren wir — unsere Wagen sind überdacht
-          </Text>
-          <Text style={styles.tipLine}>
-            {'\u2022'} Kostenlose Stornierung bis Mitternacht am Vortag
           </Text>
         </View>
 
@@ -399,7 +400,7 @@ export function TicketDocument({ data }: { data: TicketData }) {
         {/* Footer */}
         <View style={styles.footer}>
           <Text style={styles.footerText}>
-            Helgoländer Dienstleistungs GmbH · Am Falm 302 A · 27498 Helgoland · info@helgolandbahn.de
+            Helgoländer Dienstleistungs GmbH · Von-Aschen-Str. 594 · 27498 Helgoland · info@helgolandbahn.de
           </Text>
           <Text style={styles.footerText}>
             Alle Preise sind Endpreise. Keine Umsatzsteuer (§1 Abs. 2 UStG).

@@ -270,7 +270,7 @@ function buildCancellationEmail(params: CancelEmailParams): string {
           <tr>
             <td style="background-color:#F7F7F7;padding:24px;text-align:center;border-top:1px solid #E0E0E0;">
               <p style="margin:0 0 6px;font-size:12px;color:#888;">
-                Helgol\u00E4nder Dienstleistungs GmbH \u00B7 Am Falm 302 A \u00B7 27498 Helgoland
+                Helgol\u00E4nder Dienstleistungs GmbH \u00B7 Von-Aschen-Str. 594 \u00B7 27498 Helgoland
               </p>
               <a href="mailto:info@helgolandbahn.de" style="font-size:12px;color:#F24444;text-decoration:none;">
                 info@helgolandbahn.de

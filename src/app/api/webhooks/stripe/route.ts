@@ -298,10 +298,10 @@ function buildConfirmationEmail(params: EmailParams): string {
               <table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="border-left:4px solid #F24444;padding-left:16px;margin-bottom:24px;">
                 <tr>
                   <td>
-                    <p style="margin:0 0 4px;font-size:14px;font-weight:700;color:#333;">Treffpunkt: Franz-Schensky-Platz</p>
+                    <p style="margin:0 0 4px;font-size:14px;font-weight:700;color:#333;"><a href="https://maps.app.goo.gl/wmp2NOgQJrpGNgmFx" style="color:#333;text-decoration:none;">Treffpunkt: Franz-Schensky-Platz \u{1F4CD}</a></p>
                     <p style="margin:0;font-size:13px;color:#555;line-height:1.6;">
-                      Vom Anleger der Halunder Jet / Katamarane: ca. 5 Min. Fu\u00DFweg<br>
-                      Von der Landungsbr\u00FCcke (B\u00F6rteboot): ca. 3 Min. Fu\u00DFweg
+                      Halunder Jet / Katamarane: ca. 5 Min. \u00B7 MS Helgoland: ca. 15 Min.<br>
+                      Landungsbr\u00FCcke (B\u00F6rteboot/D\u00FCne): ca. 2\u20133 Min.
                     </p>
                   </td>
                 </tr>
@@ -314,9 +314,7 @@ function buildConfirmationEmail(params: EmailParams): string {
                     <p style="margin:0 0 10px;font-size:13px;font-weight:700;color:#333;">Gut zu wissen</p>
                     <p style="margin:0 0 8px;font-size:13px;color:#555;line-height:1.5;">\u23F0 Bitte 15 Min. vor Abfahrt da sein</p>
                     <p style="margin:0 0 8px;font-size:13px;color:#555;line-height:1.5;">\uD83D\uDEBB Toilette an der Landungsbr\u00FCcke (kostenlos). Keine Toilette w\u00E4hrend der Premium-Tour!</p>
-                    <p style="margin:0 0 8px;font-size:13px;color:#555;line-height:1.5;">\uD83C\uDF27\uFE0F Bei Regen fahren wir (\u00FCberdachte Wagen)</p>
-                    <p style="margin:0 0 8px;font-size:13px;color:#555;line-height:1.5;">\uD83E\uDD85 M\u00F6wen klauen Essen \u2014 Fischbr\u00F6tchen vorher essen!</p>
-                    <p style="margin:0;font-size:13px;color:#555;line-height:1.5;">\uD83C\uDFAB Stornierung kostenlos bis Mitternacht am Vortag</p>
+                    <p style="margin:0;font-size:13px;color:#555;line-height:1.5;">\uD83C\uDF27\uFE0F Bei Regen fahren wir (\u00FCberdachte Wagen)</p>
                   </td>
                 </tr>
               </table>
@@ -339,22 +337,15 @@ function buildConfirmationEmail(params: EmailParams): string {
                   </td>
                 </tr>
                 ` : ''}
-                <tr>
-                  <td style="padding-bottom:12px;">
-                    <a href="${cancelUrl}" style="display:block;color:#555555;font-size:14px;font-weight:700;text-decoration:none;padding:12px 24px;border-radius:6px;text-align:center;border:2px solid #E0E0E0;">
-                      Buchung stornieren
-                    </a>
-                  </td>
-                </tr>
               </table>
 
               <!-- Self-service Links -->
               <table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="margin-bottom:16px;">
                 <tr>
                   <td style="padding:12px 0;border-top:1px solid #E0E0E0;">
-                    ${!invoiceUrl ? `<p style="margin:0 0 6px;font-size:13px;"><a href="${invoicePageUrl}" style="color:#333333;text-decoration:underline;">Rechnung nachtr\u00E4glich anfordern</a></p>` : ''}
-                    <p style="margin:0 0 6px;font-size:13px;"><a href="${cancelUrl}" style="color:#333333;text-decoration:underline;">Kostenlose Stornierung bis Mitternacht am Vortag</a></p>
-                    <p style="margin:0;font-size:13px;"><a href="${BASE_URL}/agb" style="color:#333333;text-decoration:underline;">AGB &amp; Stornierungsbedingungen</a></p>
+                    ${!invoiceUrl ? `<p style="margin:0 0 6px;font-size:12px;"><a href="${invoicePageUrl}" style="color:#888;text-decoration:underline;">Rechnung nachtr\u00E4glich anfordern</a></p>` : ''}
+                    <p style="margin:0 0 6px;font-size:12px;color:#888;">Kostenlose Stornierung bis Mitternacht am Vortag: <a href="${cancelUrl}" style="color:#888;text-decoration:underline;">Buchung stornieren</a></p>
+                    <p style="margin:0;font-size:12px;"><a href="${BASE_URL}/agb" style="color:#888;text-decoration:underline;">AGB &amp; Stornierungsbedingungen</a></p>
                   </td>
                 </tr>
               </table>
@@ -370,13 +361,13 @@ function buildConfirmationEmail(params: EmailParams): string {
           <tr>
             <td style="background-color:#F7F7F7;padding:24px;text-align:center;border-top:1px solid #E0E0E0;">
               <p style="margin:0 0 6px;font-size:12px;color:#888;">
-                Helgol\u00E4nder Dienstleistungs GmbH \u00B7 Am Falm 302 A \u00B7 27498 Helgoland
+                Helgol\u00E4nder Dienstleistungs GmbH \u00B7 Von-Aschen-Str. 594 \u00B7 27498 Helgoland
               </p>
               <a href="mailto:info@helgolandbahn.de" style="font-size:12px;color:#F24444;text-decoration:none;">
                 info@helgolandbahn.de
               </a>
               <p style="margin:12px 0 0;font-size:11px;color:#aaa;">
-                Inselbahn Helgoland \u2014 Gef\u00FChrte Inselrundfahrten
+                Inselbahn Helgoland \u2014 Gef\u00FChrte Inselrundfahrten auf Deutschlands einziger Hochseeinsel
               </p>
             </td>
           </tr>
@@ -574,7 +565,7 @@ function buildGiftCardEmail(params: GiftCardEmailParams): string {
           <tr>
             <td style="background-color:#F7F7F7;padding:24px;text-align:center;border-top:1px solid #E0E0E0;">
               <p style="margin:0 0 6px;font-size:12px;color:#888;">
-                Helgol\u00E4nder Dienstleistungs GmbH \u00B7 Am Falm 302 A \u00B7 27498 Helgoland
+                Helgol\u00E4nder Dienstleistungs GmbH \u00B7 Von-Aschen-Str. 594 \u00B7 27498 Helgoland
               </p>
               <a href="mailto:info@helgolandbahn.de" style="font-size:12px;color:#F24444;text-decoration:none;">
                 info@helgolandbahn.de

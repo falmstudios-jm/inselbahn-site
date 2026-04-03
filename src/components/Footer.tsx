@@ -2,7 +2,7 @@
 
 export default function Footer() {
   return (
-    <footer className="border-t border-gray-200 px-5 md:px-10 lg:px-20 py-6">
+    <footer className="border-t border-gray-200 px-5 md:px-10 lg:px-20 py-6 mb-[60px]">
       <div className="max-w-7xl mx-auto flex flex-col sm:flex-row items-center justify-between gap-4">
         <p className="text-dark/40 text-sm">
           &copy; 2026 Helgoländer Dienstleistungs GmbH

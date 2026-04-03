@@ -106,9 +106,14 @@ export default function Schedule({ tours, departures }: ScheduleProps) {
           );
         })}
 
-        <p className="text-sm text-dark/50 text-center">
-          *Bei den letzten Fahrten ist ein Ausstieg am Hafen / Schiff möglich.
-        </p>
+        <div className="text-center space-y-2 mt-4">
+          <p className="text-sm text-dark/50">
+            *Bei den letzten Fahrten des Tages ist ein Ausstieg am Hafen m&ouml;glich, damit Sie Ihr Schiff rechtzeitig erreichen.
+          </p>
+          <p className="text-sm font-medium text-dark/70">
+            Kinder unter 6 Jahren fahren kostenlos.
+          </p>
+        </div>
       </div>
     </section>
   );

@@ -35,7 +35,7 @@ export default function DatenschutzPage() {
             </p>
             <p className="mt-2">
               Helgol&auml;nder Dienstleistungs GmbH<br />
-              Am Falm 302 A<br />
+              Von-Aschen-Str. 594<br />
               27498 Helgoland<br />
               Telefon: +49 160 4170905<br />
               E-Mail:{" "}
@@ -44,7 +44,7 @@ export default function DatenschutzPage() {
               </a>
             </p>
             <p className="mt-2">
-              Vertretungsberechtigt: Jakob Martens
+              Gesch&auml;ftsf&uuml;hrer: Kay Martens
             </p>
           </section>
 

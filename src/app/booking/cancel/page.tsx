@@ -25,6 +25,123 @@ interface BookingDetails {
   } | null;
 }
 
+function CancelLookupForm() {
+  const [reference, setReference] = useState("");
+  const [email, setEmail] = useState("");
+  const [lookupLoading, setLookupLoading] = useState(false);
+  const [lookupError, setLookupError] = useState("");
+  const [foundBooking, setFoundBooking] = useState<{ id: string; token: string } | null>(null);
+
+  async function handleLookup(e: React.FormEvent) {
+    e.preventDefault();
+    if (!reference.trim() || !email.trim()) return;
+    setLookupLoading(true);
+    setLookupError("");
+
+    try {
+      const res = await fetch("/api/booking/lookup", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          booking_reference: reference.trim().toUpperCase(),
+          email: email.trim().toLowerCase(),
+        }),
+      });
+      const data = await res.json();
+      if (!res.ok) {
+        throw new Error(data.error || "Buchung nicht gefunden.");
+      }
+      setFoundBooking({ id: data.id, token: data.cancel_token });
+    } catch (err) {
+      setLookupError(
+        err instanceof Error ? err.message : "Buchung nicht gefunden."
+      );
+    } finally {
+      setLookupLoading(false);
+    }
+  }
+
+  if (foundBooking) {
+    // Redirect to the cancel page with params
+    if (typeof window !== "undefined") {
+      window.location.href = `/booking/cancel?id=${foundBooking.id}&token=${foundBooking.token}`;
+    }
+    return (
+      <main className="min-h-screen flex items-center justify-center bg-surface px-4">
+        <p className="text-dark/50 text-sm">Weiterleitung...</p>
+      </main>
+    );
+  }
+
+  return (
+    <main className="min-h-screen flex items-center justify-center bg-surface px-4 py-12">
+      <div className="max-w-md w-full">
+        <div className="bg-white rounded-2xl shadow-sm border border-gray-100 overflow-hidden">
+          <div className="bg-dark px-6 py-8 text-center">
+            <h1 className="text-2xl font-bold text-white">
+              Buchung stornieren
+            </h1>
+            <p className="text-white/60 mt-2 text-sm">
+              Inselbahn Helgoland
+            </p>
+          </div>
+          <form onSubmit={handleLookup} className="px-6 py-6 space-y-4">
+            <p className="text-dark/60 text-sm">
+              Geben Sie Ihre Buchungsnummer und E-Mail-Adresse ein, um Ihre Buchung aufzurufen.
+            </p>
+            <div>
+              <label className="block text-sm font-medium text-dark mb-1.5">
+                Buchungsnummer
+              </label>
+              <input
+                type="text"
+                value={reference}
+                onChange={(e) => setReference(e.target.value)}
+                placeholder="z.B. IB-123456"
+                required
+                className="w-full px-4 py-3 rounded-xl border border-gray-200 focus:border-dark focus:outline-none transition-colors bg-white"
+              />
+            </div>
+            <div>
+              <label className="block text-sm font-medium text-dark mb-1.5">
+                E-Mail-Adresse
+              </label>
+              <input
+                type="email"
+                value={email}
+                onChange={(e) => setEmail(e.target.value)}
+                placeholder="ihre@email.de"
+                required
+                className="w-full px-4 py-3 rounded-xl border border-gray-200 focus:border-dark focus:outline-none transition-colors bg-white"
+              />
+            </div>
+            {lookupError && (
+              <p className="text-red-600 text-sm bg-red-50 px-4 py-3 rounded-lg">
+                {lookupError}
+              </p>
+            )}
+            <button
+              type="submit"
+              disabled={lookupLoading}
+              className="w-full py-3.5 rounded-xl bg-dark text-white font-semibold text-base hover:bg-dark/85 transition-colors disabled:opacity-50"
+            >
+              {lookupLoading ? "Wird gesucht..." : "Buchung suchen"}
+            </button>
+          </form>
+          <div className="px-6 pb-6 text-center">
+            <Link
+              href="/"
+              className="text-dark/50 text-sm hover:text-dark transition-colors"
+            >
+              &larr; Zur Startseite
+            </Link>
+          </div>
+        </div>
+      </div>
+    </main>
+  );
+}
+
 function CancelPageContent() {
   const searchParams = useSearchParams();
   const bookingId = searchParams.get("id");
@@ -49,7 +166,6 @@ function CancelPageContent() {
 
   useEffect(() => {
     if (!bookingId || !token) {
-      setError("Ungültiger Stornierungslink.");
       setLoading(false);
       return;
     }
@@ -110,6 +226,11 @@ function CancelPageContent() {
     } finally {
       setCancelling(false);
     }
+  }
+
+  // No params — show lookup form
+  if (!bookingId || !token) {
+    return <CancelLookupForm />;
   }
 
   // Loading state
@@ -466,11 +587,7 @@ function CancelPageContent() {
             ) : (
               <div className="bg-amber-50 border border-amber-200 rounded-xl px-5 py-4 text-center">
                 <p className="text-amber-800 font-medium text-sm">
-                  Stornierung nicht mehr m&ouml;glich
-                </p>
-                <p className="text-amber-700/70 text-xs mt-1">
-                  Die Stornierungsfrist (Mitternacht am Vortag) ist bereits
-                  abgelaufen. Bitte kontaktieren Sie uns direkt.
+                  Stornierung nicht mehr m&ouml;glich. Die Stornierungsfrist (Mitternacht am Vortag) ist bereits abgelaufen.
                 </p>
               </div>
             )}

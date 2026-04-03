@@ -5,23 +5,20 @@ const giftCards = [
   {
     title: "1\u00D7 Unterland-Tour",
     price: "11,00",
-    illustration: "/images/inselbahn-illustration-unterland.svg",
-    alt: "Unterland-Tour Illustration",
-    bg: "bg-amber-50",
+    photo: "/images/helgolandbahn-photo-1.jpg",
+    alt: "Unterland-Tour",
   },
   {
     title: "1\u00D7 Premium-Tour",
     price: "22,00",
-    illustration: "/images/inselbahn-illustration-premium.svg",
-    alt: "Premium-Tour Illustration",
-    bg: "bg-[#f0f4f8]",
+    photo: "/images/helgolandbahn-photo-2.jpg",
+    alt: "Premium-Tour",
   },
   {
     title: "Familien-Gutschein",
     price: "ab 34,00",
-    illustration: "/images/inselbahn-illustration-premium.svg",
-    alt: "Familien-Gutschein Illustration",
-    bg: "bg-red-50",
+    photo: "/images/tour-photo-1.jpg",
+    alt: "Familien-Gutschein",
   },
 ];
 
@@ -47,14 +44,13 @@ export default function GutscheinSection() {
               key={card.title}
               className="bg-white rounded-2xl border border-gray-100 shadow-sm overflow-hidden hover:shadow-md transition-shadow"
             >
-              {/* Illustration */}
-              <div className={`flex items-center justify-center h-[120px] ${card.bg}`}>
+              {/* Photo */}
+              <div className="relative h-[120px]">
                 <Image
-                  src={card.illustration}
+                  src={card.photo}
                   alt={card.alt}
-                  width={200}
-                  height={90}
-                  className="h-[80px] w-auto"
+                  fill
+                  className="object-cover"
                 />
               </div>
 

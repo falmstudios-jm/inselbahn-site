@@ -153,7 +153,7 @@ export default function LangeAnnaPage() {
                 </li>
                 <li className="flex items-start gap-2.5">
                   <span className="text-green mt-0.5 font-bold">&#10003;</span>
-                  Exklusive Kleingruppe (max. 18 Personen)
+                  Kleine Gruppe (max. 18 Personen)
                 </li>
                 <li className="flex items-start gap-2.5">
                   <span className="text-green mt-0.5 font-bold">&#10003;</span>
@@ -175,7 +175,7 @@ export default function LangeAnnaPage() {
             Die Lange Anna hautnah erleben
           </h2>
           <p className="text-dark/60 text-base md:text-lg mb-8 max-w-2xl mx-auto">
-            Buchen Sie jetzt die Premium-Tour mit exklusivem Ausstieg an der
+            Buchen Sie jetzt die Premium-Tour mit Ausstieg an der
             Langen Anna. Täglich mehrere Abfahrten ab dem Franz-Schensky-Platz.
           </p>
           <Link

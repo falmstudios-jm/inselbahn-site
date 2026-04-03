@@ -180,8 +180,8 @@ function buildReminderEmail(params: ReminderEmailParams): string {
                   <td>
                     <p style="margin:0 0 6px;font-size:14px;font-weight:700;color:#333;">Bitte um ${subtractMinutes(formattedTime, 15)} Uhr am Treffpunkt sein</p>
                     <p style="margin:0;font-size:13px;color:#555;line-height:1.6;">
-                      Vom Anleger der Halunder Jet / Katamarane: ca. 5 Min. Fu\u00DFweg<br>
-                      Von der Landungsbr\u00FCcke (B\u00F6rteboot): ca. 3 Min. Fu\u00DFweg
+                      Halunder Jet / Katamarane: ca. 5 Min. \u00B7 MS Helgoland: ca. 15 Min.<br>
+                      Landungsbr\u00FCcke (B\u00F6rteboot/D\u00FCne): ca. 2\u20133 Min.
                     </p>
                   </td>
                 </tr>
@@ -219,7 +219,7 @@ function buildReminderEmail(params: ReminderEmailParams): string {
           <tr>
             <td style="background-color:#F7F7F7;padding:24px;text-align:center;border-top:1px solid #E0E0E0;">
               <p style="margin:0 0 6px;font-size:12px;color:#888;">
-                Helgol\u00E4nder Dienstleistungs GmbH \u00B7 Am Falm 302 A \u00B7 27498 Helgoland
+                Helgol\u00E4nder Dienstleistungs GmbH \u00B7 Von-Aschen-Str. 594 \u00B7 27498 Helgoland
               </p>
               <a href="mailto:info@helgolandbahn.de" style="font-size:12px;color:#F24444;text-decoration:none;">
                 info@helgolandbahn.de

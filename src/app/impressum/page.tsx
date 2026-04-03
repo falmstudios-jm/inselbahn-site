@@ -27,20 +27,20 @@ export default function ImpressumPage() {
         <div className="space-y-8 text-dark/70 text-base leading-relaxed">
           <section>
             <h2 className="text-lg font-semibold text-dark mb-2">
-              Angaben gem&auml;&szlig; &sect; 5 TMG
+              Angaben gem&auml;&szlig; &sect; 5 DDG
             </h2>
             <p>
               Helgol&auml;nder Dienstleistungs GmbH<br />
-              Am Falm 302 A<br />
+              Von-Aschen-Str. 594<br />
               27498 Helgoland
             </p>
           </section>
 
           <section>
             <h2 className="text-lg font-semibold text-dark mb-2">
-              Vertretungsberechtigt
+              Gesch&auml;ftsf&uuml;hrer
             </h2>
-            <p>Jakob Martens</p>
+            <p>Kay Martens</p>
           </section>
 
           <section>
@@ -72,17 +72,17 @@ export default function ImpressumPage() {
             </h2>
             <p>
               gem&auml;&szlig; &sect; 27a Umsatzsteuergesetz:<br />
-              DE458868378
+              DE173507934
             </p>
           </section>
 
           <section>
             <h2 className="text-lg font-semibold text-dark mb-2">
-              Verantwortlich f&uuml;r den Inhalt nach &sect; 55 Abs. 2 RStV
+              Verantwortlich f&uuml;r den Inhalt nach &sect; 18 Abs. 2 MStV
             </h2>
             <p>
-              Jakob Martens<br />
-              Am Falm 302 A<br />
+              Kay Martens<br />
+              Von-Aschen-Str. 594<br />
               27498 Helgoland
             </p>
           </section>

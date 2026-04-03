@@ -18,7 +18,7 @@ const rotatingTexts = [
   "einer Tour, die perfekt für Tagesgäste geeignet ist.",
   "der Möglichkeit, Helgolands Geschichte hautnah zu erleben.",
   "einer barrierefreien Tour für alle Altersgruppen.",
-  "exklusiven Einblicken in Helgolands Natur.",
+  "besonderen Einblicken in Helgolands Natur.",
   "einem stressfreien Start in Ihren Helgoland-Besuch.",
 ];
 

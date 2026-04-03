@@ -293,7 +293,7 @@ export default function AGBPage() {
             <p>
               Helgol&auml;nder Dienstleistungs GmbH
               <br />
-              Am Falm 302 A
+              Von-Aschen-Str. 594
               <br />
               27498 Helgoland
               <br />

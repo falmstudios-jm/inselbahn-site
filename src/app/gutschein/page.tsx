@@ -202,23 +202,49 @@ export default function GutscheinPage() {
                   </button>
                 ))}
               </div>
-              <div className="relative">
-                <input
-                  type="text"
-                  inputMode="decimal"
-                  placeholder="Eigener Betrag (5 € – 500 €)"
-                  value={customAmount}
-                  onFocus={handleCustomFocus}
-                  onChange={handleCustomChange}
-                  className={`w-full py-3 px-4 pr-10 rounded-lg border-2 text-dark placeholder-dark/40 outline-none transition-all ${
-                    isCustom
-                      ? 'border-primary bg-primary/5'
-                      : 'border-gray-200 hover:border-gray-300'
-                  }`}
-                />
-                <span className="absolute right-4 top-1/2 -translate-y-1/2 text-dark/40 font-medium">
-                  &euro;
-                </span>
+              <div className="flex items-center gap-2">
+                <button
+                  type="button"
+                  onClick={() => {
+                    const current = isCustom ? (parseFloat(customAmount) || 5) : selectedAmount;
+                    const newVal = Math.max(5, current - 1);
+                    setCustomAmount(String(newVal));
+                    setIsCustom(true);
+                  }}
+                  className="w-12 h-12 rounded-lg border-2 border-gray-200 hover:border-gray-300 flex items-center justify-center text-dark text-xl font-bold transition-colors"
+                >
+                  &minus;
+                </button>
+                <div className="relative flex-1">
+                  <input
+                    type="text"
+                    inputMode="decimal"
+                    placeholder="Eigener Betrag (5 \u20AC \u2013 500 \u20AC)"
+                    value={customAmount}
+                    onFocus={handleCustomFocus}
+                    onChange={handleCustomChange}
+                    className={`w-full py-3 px-4 pr-10 rounded-lg border-2 text-dark placeholder-dark/40 outline-none transition-all ${
+                      isCustom
+                        ? 'border-primary bg-primary/5'
+                        : 'border-gray-200 hover:border-gray-300'
+                    }`}
+                  />
+                  <span className="absolute right-4 top-1/2 -translate-y-1/2 text-dark/40 font-medium">
+                    &euro;
+                  </span>
+                </div>
+                <button
+                  type="button"
+                  onClick={() => {
+                    const current = isCustom ? (parseFloat(customAmount) || 5) : selectedAmount;
+                    const newVal = Math.min(500, current + 1);
+                    setCustomAmount(String(newVal));
+                    setIsCustom(true);
+                  }}
+                  className="w-12 h-12 rounded-lg border-2 border-gray-200 hover:border-gray-300 flex items-center justify-center text-dark text-xl font-bold transition-colors"
+                >
+                  +
+                </button>
               </div>
             </section>
 

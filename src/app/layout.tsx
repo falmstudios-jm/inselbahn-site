@@ -14,7 +14,7 @@ export const metadata: Metadata = {
   metadataBase: new URL("https://helgolandbahn.de"),
   title: "Inselbahn Helgoland — Geführte Inselrundfahrten & Touren",
   description:
-    "Entdecken Sie Helgoland mit der Inselbahn! Geführte Rundfahrten am Franz-Schensky-Platz. Unterland-Tour (45 Min, ab 11\u20AC) und exklusive Premium-Tour (90 Min, ab 22\u20AC) mit Ausstieg an der Langen Anna. Jetzt online buchen!",
+    "Entdecken Sie Helgoland mit der Inselbahn! Geführte Rundfahrten am Franz-Schensky-Platz. Unterland-Tour (45 Min, ab 11\u20AC) und Premium-Tour in kleiner Gruppe (90 Min, ab 22\u20AC) mit Ausstieg an der Langen Anna. Jetzt online buchen!",
   keywords: [
     "Helgoland",
     "Inselbahn",
@@ -36,7 +36,7 @@ export const metadata: Metadata = {
   openGraph: {
     title: "Inselbahn Helgoland — Geführte Inselrundfahrten & Touren",
     description:
-      "Entdecken Sie Helgoland mit der Inselbahn! Geführte Rundfahrten am Franz-Schensky-Platz. Unterland-Tour und exklusive Premium-Tour mit Ausstieg an der Langen Anna.",
+      "Entdecken Sie Helgoland mit der Inselbahn! Geführte Rundfahrten am Franz-Schensky-Platz. Unterland-Tour und Premium-Tour in kleiner Gruppe mit Ausstieg an der Langen Anna.",
     url: "https://helgolandbahn.de",
     siteName: "Inselbahn Helgoland",
     locale: "de_DE",
@@ -54,7 +54,7 @@ export const metadata: Metadata = {
     card: "summary_large_image",
     title: "Inselbahn Helgoland — Geführte Inselrundfahrten & Touren",
     description:
-      "Entdecken Sie Helgoland mit der Inselbahn! Unterland-Tour und exklusive Premium-Tour.",
+      "Entdecken Sie Helgoland mit der Inselbahn! Unterland-Tour und Premium-Tour in kleiner Gruppe.",
     images: ["/images/inselbahn-hero.png"],
   },
   robots: {
@@ -73,7 +73,7 @@ const jsonLd = {
   telephone: "+491604170905",
   address: {
     "@type": "PostalAddress",
-    streetAddress: "Franz-Schensky-Platz",
+    streetAddress: "Von-Aschen-Str. 594",
     addressLocality: "Helgoland",
     postalCode: "27498",
     addressCountry: "DE",

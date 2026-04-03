@@ -7,7 +7,6 @@ import Link from "next/link";
 const navItems = [
   { label: "Touren", href: "/#touren" },
   { label: "Fahrplan", href: "/#fahrplan" },
-  { label: "Buchen", href: "/#buchung" },
   { label: "Gutscheine", href: "/gutschein" },
   { label: "Kontakt", href: "/#kontakt" },
 ];
@@ -110,10 +109,10 @@ export default function Header() {
           </div>
 
           <Link
-            href="/#kontakt"
-            className="text-dark/70 hover:text-dark text-sm font-medium transition-colors"
+            href="/#buchung"
+            className="bg-primary text-white text-sm font-semibold px-5 py-2 rounded-full hover:bg-primary/90 transition-colors"
           >
-            Kontakt
+            Buchen
           </Link>
         </nav>
 
@@ -178,11 +177,11 @@ export default function Header() {
             ))}
           </div>
           <Link
-            href="/#kontakt"
+            href="/#buchung"
             onClick={() => setMobileOpen(false)}
-            className="block py-2.5 text-dark/70 hover:text-dark text-sm font-medium transition-colors"
+            className="block py-3 mt-2 bg-primary text-white text-center text-sm font-semibold rounded-xl hover:bg-primary/90 transition-colors"
           >
-            Kontakt
+            Jetzt buchen
           </Link>
         </div>
       )}

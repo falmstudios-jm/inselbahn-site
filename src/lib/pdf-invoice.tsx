@@ -396,9 +396,10 @@ export function InvoiceDocument({ data }: { data: InvoiceData }) {
             <Text style={styles.addressTextBold}>
               Helgoländer Dienstleistungs GmbH
             </Text>
-            <Text style={styles.addressText}>Am Falm 302 A</Text>
+            <Text style={styles.addressText}>Von-Aschen-Str. 594</Text>
             <Text style={styles.addressText}>27498 Helgoland</Text>
             <Text style={styles.addressText}>Deutschland</Text>
+            <Text style={styles.addressText}>USt-IdNr.: DE173507934</Text>
           </View>
           {/* Buyer */}
           <View style={styles.addressBlock}>
@@ -434,6 +435,10 @@ export function InvoiceDocument({ data }: { data: InvoiceData }) {
           <View style={styles.detailItem}>
             <Text style={styles.detailLabel}>Buchungsnr.</Text>
             <Text style={styles.detailValue}>{data.bookingReference}</Text>
+          </View>
+          <View style={styles.detailItem}>
+            <Text style={styles.detailLabel}>Buchungsdatum</Text>
+            <Text style={styles.detailValue}>{formatGermanDate(data.bookingDate)}</Text>
           </View>
           <View style={styles.detailItem}>
             <Text style={styles.detailLabel}>Zahlung</Text>
@@ -535,7 +540,7 @@ export function InvoiceDocument({ data }: { data: InvoiceData }) {
             <Text style={styles.footerLabel}>Unternehmen</Text>
             <Text style={styles.footerText}>
               Helgoländer Dienstleistungs GmbH{'\n'}
-              Am Falm 302 A{'\n'}
+              Von-Aschen-Str. 594{'\n'}
               27498 Helgoland
             </Text>
           </View>
