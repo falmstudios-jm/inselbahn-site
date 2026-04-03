@@ -35,6 +35,47 @@ export async function GET() {
     }
 
     if (!departures || departures.length === 0) {
+      // No more departures today — find the first departure tomorrow
+      const tomorrow = new Date(now);
+      tomorrow.setDate(tomorrow.getDate() + 1);
+      const tomorrowStr = tomorrow.toISOString().slice(0, 10);
+
+      const { data: tomorrowDeps } = await supabase
+        .from('departures')
+        .select(`
+          id, departure_time, notes,
+          tours (id, slug, name, max_capacity, online_capacity, price_adult, price_child)
+        `)
+        .eq('is_active', true)
+        .order('departure_time')
+        .limit(1);
+
+      if (tomorrowDeps && tomorrowDeps.length > 0) {
+        const tDep = tomorrowDeps[0];
+        const tTour = tDep.tours as unknown as { id: string; slug: string; name: string; max_capacity: number; online_capacity: number | null; price_adult: number; price_child: number };
+        return NextResponse.json({
+          date: tomorrowStr,
+          current_time: now.toISOString(),
+          is_tomorrow: true,
+          next_departure: {
+            departure_id: tDep.id,
+            departure_time: tDep.departure_time,
+            tour_name: tTour.name,
+            tour_slug: tTour.slug,
+            max_capacity: tTour.max_capacity,
+            online_capacity: tTour.online_capacity,
+            price_adult: tTour.price_adult,
+            price_child: tTour.price_child,
+            passengers: [],
+            total_adults: 0,
+            total_children: 0,
+            total_children_free: 0,
+            total_seats: 0,
+            remaining: tTour.max_capacity,
+          },
+        });
+      }
+
       return NextResponse.json({
         date: today,
         current_time: now.toISOString(),

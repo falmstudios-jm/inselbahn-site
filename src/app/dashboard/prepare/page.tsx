@@ -40,6 +40,8 @@ export default function PreparePage() {
   const [currentTime, setCurrentTime] = useState(() => new Date());
   const [departed, setDeparted] = useState(false);
   const [noMore, setNoMore] = useState(false);
+  const [isTomorrow, setIsTomorrow] = useState(false);
+  const [tomorrowDate, setTomorrowDate] = useState('');
 
   // Quick sell state
   const [sellAdults, setSellAdults] = useState(0);
@@ -65,9 +67,12 @@ export default function PreparePage() {
       const data = await res.json();
       if (data.next_departure) {
         setDeparture(data.next_departure);
+        setIsTomorrow(!!data.is_tomorrow);
+        setTomorrowDate(data.date || '');
         setNoMore(false);
       } else {
         setDeparture(null);
+        setIsTomorrow(false);
         setNoMore(true);
       }
     } catch {
@@ -220,9 +225,31 @@ export default function PreparePage() {
         </div>
 
         <div className="flex flex-col items-center justify-center min-h-[50vh]">
-          <div className="text-4xl mb-4">{'\u2705'}</div>
-          <div className="text-xl font-bold text-dark mb-2">Keine weiteren Touren heute</div>
-          <div className="text-gray-500 text-center">Feierabend! Alle Touren f&uuml;r heute sind abgeschlossen.</div>
+          {isTomorrow && departure ? (
+            <>
+              <div className="text-4xl mb-4">🌅</div>
+              <div className="text-xl font-bold text-dark mb-2">Feierabend für heute!</div>
+              <div className="text-gray-500 text-center mb-6">Alle Touren für heute sind abgeschlossen.</div>
+              <div className="bg-white rounded-xl border border-gray-200 p-6 text-center w-full max-w-sm">
+                <div className="text-xs text-gray-400 uppercase tracking-wider mb-1">Erste Tour morgen</div>
+                <div className="text-sm text-gray-500 mb-2">
+                  {new Date(tomorrowDate + 'T12:00:00').toLocaleDateString('de-DE', { weekday: 'long', day: 'numeric', month: 'long' })}
+                </div>
+                <div className={`inline-block text-xs font-medium px-3 py-1 rounded-full mb-2 ${departure.tour_slug?.includes('unterland') ? 'bg-amber-50 text-amber-700' : 'bg-blue-50 text-[#1B2A4A]'}`}>
+                  {departure.tour_name}
+                </div>
+                <div className="text-4xl font-bold text-dark">
+                  {departure.departure_time?.slice(0, 5)} Uhr
+                </div>
+              </div>
+            </>
+          ) : (
+            <>
+              <div className="text-4xl mb-4">✅</div>
+              <div className="text-xl font-bold text-dark mb-2">Keine weiteren Touren</div>
+              <div className="text-gray-500 text-center">Derzeit keine geplanten Abfahrten.</div>
+            </>
+          )}
         </div>
       </div>
     );
