@@ -173,15 +173,88 @@ const TOOLS = [
     type: 'function' as const,
     function: {
       name: 'partial_refund',
-      description: 'Issue a partial refund for a booking',
+      description: 'Issue a partial refund for a booking. Server-side validated: amount cannot exceed booking total.',
       parameters: {
         type: 'object',
         properties: {
           booking_reference: { type: 'string' },
-          amount: { type: 'number', description: 'Amount in EUR to refund' },
+          amount: { type: 'number', description: 'Amount in EUR to refund. Must be <= booking total.' },
           reason: { type: 'string' },
         },
         required: ['booking_reference', 'amount'],
+      },
+    },
+  },
+  {
+    type: 'function' as const,
+    function: {
+      name: 'get_tour_details',
+      description: 'Get current tour details including prices, capacity, and departure times. Call without tour_slug to get all tours.',
+      parameters: {
+        type: 'object',
+        properties: {
+          tour_slug: { type: 'string', enum: ['unterland', 'premium'], description: 'Optional: specific tour. Omit for all tours.' },
+        },
+      },
+    },
+  },
+  {
+    type: 'function' as const,
+    function: {
+      name: 'update_departure',
+      description: 'Update properties of an existing departure (e.g. bookable_online, notes)',
+      parameters: {
+        type: 'object',
+        properties: {
+          tour_slug: { type: 'string', enum: ['unterland', 'premium'] },
+          time: { type: 'string', description: 'HH:MM format' },
+          bookable_online: { type: 'boolean' },
+          notes: { type: 'string' },
+        },
+        required: ['tour_slug', 'time'],
+      },
+    },
+  },
+  {
+    type: 'function' as const,
+    function: {
+      name: 'get_discount_codes',
+      description: 'List all discount codes with usage stats and status',
+      parameters: {
+        type: 'object',
+        properties: {},
+      },
+    },
+  },
+  {
+    type: 'function' as const,
+    function: {
+      name: 'search_bookings',
+      description: 'Search bookings by customer name, email, status, or date range. Use this to find specific customers or view cancellation history.',
+      parameters: {
+        type: 'object',
+        properties: {
+          customer_name: { type: 'string', description: 'Partial name match (case-insensitive)' },
+          customer_email: { type: 'string', description: 'Partial email match' },
+          status: { type: 'string', enum: ['confirmed', 'pending', 'cancelled', 'refunded', 'our_cancellation', 'partial_refund', 'nopayment'] },
+          start_date: { type: 'string', description: 'YYYY-MM-DD' },
+          end_date: { type: 'string', description: 'YYYY-MM-DD' },
+        },
+      },
+    },
+  },
+  {
+    type: 'function' as const,
+    function: {
+      name: 'get_cancellation_stats',
+      description: 'Get cancellation/refund statistics for a date range. Shows counts and amounts by cancellation type.',
+      parameters: {
+        type: 'object',
+        properties: {
+          start_date: { type: 'string', description: 'YYYY-MM-DD' },
+          end_date: { type: 'string', description: 'YYYY-MM-DD' },
+        },
+        required: ['start_date', 'end_date'],
       },
     },
   },
@@ -210,9 +283,9 @@ EINZELBUCHUNG STORNIEREN (cancel_booking):
 SICHERHEIT — GEFÄHRLICHE AKTIONEN:
 Die folgenden Aktionen sind GEFÄHRLICH und erfordern das Sicherheitspasswort:
 - cancel_departures (MASSEN-Stornierung + Rückerstattungen für ALLE Buchungen eines Tages)
-- Preisänderungen über 20% Abweichung vom aktuellen Preis
-- Löschung von Abfahrten
-NICHT gefährlich (kein Passwort nötig): cancel_booking (einzelne Buchung), partial_refund (einzelne Teilerstattung), get_revenue, get_bookings, create_announcement, create_discount_code
+- Preisänderungen über 20% Abweichung vom aktuellen Preis (wird auch serverseitig geprüft!)
+- Löschung von Abfahrten (remove_departure)
+NICHT gefährlich (kein Passwort nötig): cancel_booking (einzelne Buchung), partial_refund (einzelne Teilerstattung), get_revenue, get_bookings, get_tour_details, get_discount_codes, search_bookings, get_cancellation_stats, create_announcement, create_discount_code, add_departure, update_departure, update_capacity
 
 Wenn eine gefährliche Aktion angefragt wird:
 1. Erkläre was du tun wirst und welche Auswirkungen es hat (z.B. "X Buchungen werden storniert, Y € werden erstattet")
@@ -222,15 +295,22 @@ Wenn eine gefährliche Aktion angefragt wird:
 5. Wenn das Passwort falsch ist: "Falsches Sicherheitspasswort. Aktion abgebrochen."
 
 Du hast Zugriff auf folgende Funktionen:
-- Tourpreise ändern (update_tour_price)
+- Tourpreise ändern (update_tour_price) — >20% Änderung wird serverseitig blockiert
+- Tourdetails & Preise anzeigen (get_tour_details)
 - Buchungen stornieren und erstatten (cancel_departures) ⚠️ GEFÄHRLICH
+- Einzelbuchung stornieren (cancel_booking)
 - Website-Ankündigungen erstellen (create_announcement)
-- Abfahrtszeiten hinzufügen (add_departure) oder entfernen (remove_departure) ⚠️ GEFÄHRLICH
+- Abfahrtszeiten hinzufügen (add_departure), ändern (update_departure) oder entfernen (remove_departure) ⚠️ GEFÄHRLICH
 - Kapazität ändern (update_capacity)
 - Umsatz abfragen (get_revenue)
 - Buchungen anzeigen (get_bookings)
-- Rabattcodes erstellen (create_discount_code)
-- Teilerstattungen (partial_refund) ⚠️ GEFÄHRLICH
+- Buchungen suchen nach Name/E-Mail/Status (search_bookings)
+- Stornierungsstatistiken (get_cancellation_stats)
+- Rabattcodes erstellen (create_discount_code) — max. 50% Rabatt, serverseitig geprüft
+- Rabattcodes anzeigen (get_discount_codes)
+- Teilerstattungen (partial_refund) — Betrag darf Buchungssumme nicht übersteigen
+
+WICHTIG: Bei Fragen zu aktuellen Preisen IMMER get_tour_details aufrufen, NICHT aus dem Gedächtnis antworten!
 
 UNSERE TOUREN (aktuell in der Datenbank):
 - Tour-Slug "unterland" = Unterland-Tour (~45 Min, max. 42 Pers. + 1 Rollstuhl, 1 Fahrzeug)

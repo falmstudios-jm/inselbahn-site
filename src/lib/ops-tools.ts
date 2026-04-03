@@ -46,6 +46,26 @@ export async function update_tour_price(args: {
     return `Keine Preisänderung angegeben für ${tour.name}.`;
   }
 
+  // Validate: no negative or zero prices
+  for (const [key, val] of Object.entries(updates)) {
+    if (val < 0) return `Fehler: ${key === 'price_adult' ? 'Erwachsenenpreis' : 'Kinderpreis'} darf nicht negativ sein.`;
+    if (val === 0) return `Fehler: Preis darf nicht 0€ sein. Falls gewünscht, bitte mit Sicherheitspasswort bestätigen.`;
+  }
+
+  // Validate: >20% price change requires confirmation (server-side guard)
+  if (args.price_adult !== undefined && tour.price_adult > 0) {
+    const changePercent = Math.abs(args.price_adult - tour.price_adult) / tour.price_adult;
+    if (changePercent > 0.2) {
+      return `SICHERHEITSSPERRE: Erwachsenenpreis-Änderung von ${tour.price_adult}€ auf ${args.price_adult}€ entspricht ${(changePercent * 100).toFixed(0)}% Abweichung (> 20%). Bitte bestätigen Sie mit dem Sicherheitspasswort und rufen Sie die Funktion erneut auf.`;
+    }
+  }
+  if (args.price_child !== undefined && tour.price_child > 0) {
+    const changePercent = Math.abs(args.price_child - tour.price_child) / tour.price_child;
+    if (changePercent > 0.2) {
+      return `SICHERHEITSSPERRE: Kinderpreis-Änderung von ${tour.price_child}€ auf ${args.price_child}€ entspricht ${(changePercent * 100).toFixed(0)}% Abweichung (> 20%). Bitte bestätigen Sie mit dem Sicherheitspasswort und rufen Sie die Funktion erneut auf.`;
+    }
+  }
+
   const { error } = await supabase
     .from('tours')
     .update(updates)
@@ -412,6 +432,14 @@ export async function create_discount_code(args: {
 }): Promise<string> {
   const supabase = getSupabaseAdmin();
 
+  // Validate discount value
+  if (args.value <= 0) {
+    return `Fehler: Rabattwert muss positiv sein.`;
+  }
+  if (args.type === 'percentage' && args.value > 50) {
+    return `SICHERHEITSSPERRE: Rabattcodes über 50% (${args.value}%) sind nicht erlaubt. Maximaler Rabatt: 50%. Falls gewünscht, bitte manuell in der Datenbank erstellen.`;
+  }
+
   const { error } = await supabase.from('discount_codes').insert({
     code: args.code.toUpperCase(),
     type: args.type,
@@ -450,6 +478,15 @@ export async function partial_refund(args: {
 
   if (!booking.stripe_payment_intent_id) {
     throw new Error(`Buchung ${args.booking_reference} hat keine Stripe-Zahlung — Teilerstattung nicht möglich.`);
+  }
+
+  // Validate: refund amount cannot exceed booking total
+  if (args.amount > Number(booking.total_amount)) {
+    return `Fehler: Erstattungsbetrag (${args.amount.toFixed(2)}€) übersteigt den Buchungsbetrag (${Number(booking.total_amount).toFixed(2)}€). Maximale Erstattung: ${Number(booking.total_amount).toFixed(2)}€.`;
+  }
+
+  if (args.amount <= 0) {
+    return `Fehler: Erstattungsbetrag muss positiv sein.`;
   }
 
   await stripe.refunds.create({
@@ -595,6 +632,187 @@ export async function cancel_booking(args: {
   return `Buchung ${args.booking_reference} (${booking.customer_name}) ${isPartial ? 'teilweise' : 'vollständig'} storniert. ${booking.stripe_payment_intent_id ? `${amountStr} € erstattet.` : booking.gift_card_id ? 'Gutscheinbetrag zurückgebucht.' : 'Keine Online-Zahlung, Erstattung vor Ort.'} Storno-E-Mail an ${booking.customer_email} gesendet.`;
 }
 
+// ── Tool: get_tour_details ──
+
+export async function get_tour_details(args: {
+  tour_slug?: string;
+}): Promise<string> {
+  const supabase = getSupabaseAdmin();
+
+  let query = supabase.from('tours').select('*, departures(departure_time, is_active, bookable_online, notes)');
+  if (args.tour_slug) {
+    const tour = await getTourBySlug(args.tour_slug);
+    query = supabase
+      .from('tours')
+      .select('*, departures(departure_time, is_active, bookable_online, notes)')
+      .eq('id', tour.id);
+  }
+
+  const { data: tours, error } = await query;
+  if (error) throw new Error(`Fehler beim Laden: ${error.message}`);
+  if (!tours || tours.length === 0) return 'Keine Touren gefunden.';
+
+  const lines = tours.map((t) => {
+    const deps = ((t.departures || []) as Array<{ departure_time: string; is_active: boolean; bookable_online: boolean; notes: string | null }>)
+      .filter((d) => d.is_active)
+      .map((d) => {
+        const time = d.departure_time?.slice(0, 5) || '??:??';
+        return `${time}${d.bookable_online ? '' : ' (nicht online)'}${d.notes ? ` [${d.notes}]` : ''}`;
+      })
+      .join(', ');
+
+    return `${t.name} (${t.slug}):\n  Erwachsene: ${t.price_adult}€ | Kinder: ${t.price_child}€\n  Kapazität: ${t.max_capacity} Personen\n  Abfahrten: ${deps || 'keine aktiven'}`;
+  });
+
+  return lines.join('\n\n');
+}
+
+// ── Tool: update_departure ──
+
+export async function update_departure(args: {
+  tour_slug: string;
+  time: string;
+  bookable_online?: boolean;
+  notes?: string;
+}): Promise<string> {
+  const supabase = getSupabaseAdmin();
+  const tour = await getTourBySlug(args.tour_slug);
+
+  const timeFormatted = args.time.length === 5 ? args.time + ':00' : args.time;
+
+  const updates: Record<string, unknown> = {};
+  if (args.bookable_online !== undefined) updates.bookable_online = args.bookable_online;
+  if (args.notes !== undefined) updates.notes = args.notes || null;
+
+  if (Object.keys(updates).length === 0) {
+    return 'Keine Änderung angegeben.';
+  }
+
+  const { data, error } = await supabase
+    .from('departures')
+    .update(updates)
+    .eq('tour_id', tour.id)
+    .eq('departure_time', timeFormatted)
+    .eq('is_active', true)
+    .select();
+
+  if (error) throw new Error(`Fehler beim Aktualisieren: ${error.message}`);
+  if (!data || data.length === 0) {
+    return `Keine aktive Abfahrt um ${args.time} Uhr für ${tour.name} gefunden.`;
+  }
+
+  const changes: string[] = [];
+  if (args.bookable_online !== undefined) changes.push(`Online-Buchbar: ${args.bookable_online ? 'ja' : 'nein'}`);
+  if (args.notes !== undefined) changes.push(`Notiz: ${args.notes || '(entfernt)'}`);
+
+  return `Abfahrt ${args.time} Uhr (${tour.name}) aktualisiert: ${changes.join(', ')}.`;
+}
+
+// ── Tool: get_discount_codes ──
+
+export async function get_discount_codes(): Promise<string> {
+  const supabase = getSupabaseAdmin();
+
+  const { data: codes, error } = await supabase
+    .from('discount_codes')
+    .select('*')
+    .order('created_at', { ascending: false });
+
+  if (error) throw new Error(`Fehler beim Laden: ${error.message}`);
+  if (!codes || codes.length === 0) return 'Keine Rabattcodes vorhanden.';
+
+  const lines = codes.map((c) => {
+    const valueStr = c.type === 'percentage' ? `${c.value}%` : `${c.value}€`;
+    const usageStr = c.max_uses ? `${c.current_uses || 0}/${c.max_uses} genutzt` : `${c.current_uses || 0}x genutzt`;
+    const validStr = c.valid_until ? `bis ${c.valid_until}` : 'unbegrenzt';
+    const statusStr = c.is_active ? 'aktiv' : 'inaktiv';
+    return `  ${c.code}: ${valueStr} | ${usageStr} | ${validStr} | ${statusStr}${c.description ? ` | ${c.description}` : ''}`;
+  });
+
+  return `Rabattcodes (${codes.length}):\n${lines.join('\n')}`;
+}
+
+// ── Tool: search_bookings ──
+
+export async function search_bookings(args: {
+  customer_name?: string;
+  customer_email?: string;
+  status?: string;
+  start_date?: string;
+  end_date?: string;
+}): Promise<string> {
+  const supabase = getSupabaseAdmin();
+
+  let query = supabase
+    .from('bookings')
+    .select('*, departures:departure_id(departure_time, tours:tour_id(name))')
+    .order('booking_date', { ascending: false })
+    .limit(50);
+
+  if (args.customer_name) {
+    query = query.ilike('customer_name', `%${args.customer_name}%`);
+  }
+  if (args.customer_email) {
+    query = query.ilike('customer_email', `%${args.customer_email}%`);
+  }
+  if (args.status) {
+    query = query.eq('status', args.status);
+  }
+  if (args.start_date) {
+    query = query.gte('booking_date', args.start_date);
+  }
+  if (args.end_date) {
+    query = query.lte('booking_date', args.end_date);
+  }
+
+  const { data: bookings, error } = await query;
+  if (error) throw new Error(`Fehler beim Suchen: ${error.message}`);
+  if (!bookings || bookings.length === 0) return 'Keine Buchungen gefunden.';
+
+  const lines = bookings.map((b) => {
+    const dep = b.departures as unknown as { departure_time: string; tours: { name: string } };
+    const time = dep?.departure_time?.slice(0, 5) || '??:??';
+    const tour = dep?.tours?.name || 'Unbekannt';
+    return `  ${b.booking_date} ${time} | ${tour} | ${b.booking_reference} | ${b.customer_name} | ${b.adults}E+${b.children}K | ${Number(b.total_amount).toFixed(2)}€ | ${b.status}`;
+  });
+
+  return `Gefunden: ${bookings.length} Buchung(en)${bookings.length === 50 ? ' (max. 50 angezeigt)' : ''}\n${lines.join('\n')}`;
+}
+
+// ── Tool: get_cancellation_stats ──
+
+export async function get_cancellation_stats(args: {
+  start_date: string;
+  end_date: string;
+}): Promise<string> {
+  const supabase = getSupabaseAdmin();
+
+  const { data: bookings, error } = await supabase
+    .from('bookings')
+    .select('status, total_amount, booking_date')
+    .gte('booking_date', args.start_date)
+    .lte('booking_date', args.end_date)
+    .in('status', ['cancelled', 'refunded', 'our_cancellation', 'partial_refund']);
+
+  if (error) throw new Error(`Fehler beim Laden: ${error.message}`);
+  if (!bookings || bookings.length === 0) {
+    return `Keine Stornierungen im Zeitraum ${args.start_date} bis ${args.end_date}.`;
+  }
+
+  const byStatus: Record<string, { count: number; total: number }> = {};
+  for (const b of bookings) {
+    if (!byStatus[b.status]) byStatus[b.status] = { count: 0, total: 0 };
+    byStatus[b.status].count++;
+    byStatus[b.status].total += Number(b.total_amount);
+  }
+
+  const lines = Object.entries(byStatus).map(([status, { count, total }]) =>
+    `  ${status}: ${count} Buchung(en), ${total.toFixed(2)}€`
+  );
+
+  return `Stornierungen ${args.start_date} bis ${args.end_date}:\nGesamt: ${bookings.length} Stornierung(en)\n${lines.join('\n')}`;
+}
+
 // ── Tool dispatcher ──
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -605,11 +823,16 @@ const TOOL_MAP: Record<string, (args: any) => Promise<string>> = {
   create_announcement,
   add_departure,
   remove_departure,
+  update_departure,
   update_capacity,
   get_revenue,
   get_bookings,
   create_discount_code,
   partial_refund,
+  get_tour_details,
+  get_discount_codes,
+  search_bookings,
+  get_cancellation_stats,
 };
 
 export async function executeTool(
