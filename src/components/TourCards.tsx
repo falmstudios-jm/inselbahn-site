@@ -26,11 +26,23 @@ const galleryRow2 = [
 
 /** Map tour slugs to their illustration and photo assets */
 const TOUR_ASSETS: Record<string, { illustration: string; illustrationAlt: string; photo: string; photoAlt: string }> = {
+  "unterland": {
+    illustration: "/images/inselbahn-illustration-unterland.svg",
+    illustrationAlt: "Unterland-Tour",
+    photo: "/images/666b81a83e5b0865626a34fe_helgolandbahn-1-2.jpg",
+    photoAlt: "Unterland-Tour auf Helgoland",
+  },
   "unterland-tour": {
     illustration: "/images/inselbahn-illustration-unterland.svg",
     illustrationAlt: "Unterland-Tour",
     photo: "/images/666b81a83e5b0865626a34fe_helgolandbahn-1-2.jpg",
     photoAlt: "Unterland-Tour auf Helgoland",
+  },
+  "premium": {
+    illustration: "/images/inselbahn-illustration-premium.svg",
+    illustrationAlt: "Premium-Tour",
+    photo: "/images/666b822370124a550fa96b11_helgolandbahn-4.jpg",
+    photoAlt: "Premium-Tour auf Helgoland",
   },
   "premium-tour": {
     illustration: "/images/inselbahn-illustration-premium.svg",
@@ -41,8 +53,8 @@ const TOUR_ASSETS: Record<string, { illustration: string; illustrationAlt: strin
 };
 
 const DEFAULT_ASSETS = {
-  illustration: "/images/inselbahn-illustration-unterland.svg",
-  illustrationAlt: "Illustration der Tour",
+  illustration: "/images/inselbahn-illustration-premium.svg",
+  illustrationAlt: "Inselbahn Tour",
   photo: "/images/helgolandbahn-photo-1.jpg",
   photoAlt: "Inselbahn Tour",
 };
