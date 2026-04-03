@@ -145,13 +145,13 @@ export function LoginScreen() {
                   type="password"
                   inputMode="numeric"
                   pattern="[0-9]*"
-                  maxLength={8}
+                  maxLength={6}
                   value={pin}
                   onChange={(e) => setPin(e.target.value.replace(/\D/g, ''))}
                   onKeyDown={(e) => {
                     if (e.key === 'Enter') handleLogin();
                   }}
-                  placeholder="8-stelliger PIN"
+                  placeholder="6-stelliger PIN"
                   className="w-full text-center text-2xl tracking-[0.5em] p-4 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary/50 focus:border-primary"
                   autoFocus
                 />

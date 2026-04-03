@@ -99,6 +99,8 @@ export async function cancel_departures(args: {
   let refundedAmount = 0;
   let emailsSent = 0;
 
+  let giftCardsRestored = 0;
+
   for (const booking of bookings) {
     // Issue Stripe refund if payment exists
     if (booking.stripe_payment_intent_id) {
@@ -112,12 +114,40 @@ export async function cancel_departures(args: {
       }
     }
 
+    // Restore gift card balance if booking used a gift card
+    if (booking.gift_card_id) {
+      try {
+        const { data: usages } = await supabase
+          .from('gift_card_usage')
+          .select('id, amount_used, gift_card_id')
+          .eq('booking_id', booking.id);
+
+        for (const usage of usages || []) {
+          // Add back the used amount to the gift card
+          const { data: card } = await supabase
+            .from('gift_cards')
+            .select('remaining_value')
+            .eq('id', usage.gift_card_id)
+            .single();
+
+          if (card) {
+            await supabase
+              .from('gift_cards')
+              .update({ remaining_value: Number(card.remaining_value) + Number(usage.amount_used) })
+              .eq('id', usage.gift_card_id);
+          }
+        }
+        giftCardsRestored++;
+      } catch (e) {
+        console.error(`Gift card restore failed for ${booking.booking_reference}:`, e);
+      }
+    }
+
     // Update booking status
     await supabase
       .from('bookings')
       .update({
         status: 'our_cancellation',
-        cancelled_at: new Date().toISOString(),
         notes: args.reason || 'Stornierung durch Betreiber',
       })
       .eq('id', booking.id);
@@ -175,7 +205,7 @@ export async function cancel_departures(args: {
     }
   }
 
-  return `${refundedCount} Buchung(en) für ${args.date} storniert. ${refundedAmount.toFixed(2)}€ erstattet. ${emailsSent} Stornierungsmail(s) gesendet.`;
+  return `${refundedCount} Buchung(en) für ${args.date} storniert. ${refundedAmount.toFixed(2)}€ erstattet. ${emailsSent} Stornierungsmail(s) gesendet.${giftCardsRestored > 0 ? ` ${giftCardsRestored} Gutschein(e) wiederhergestellt.` : ''}`;
 }
 
 // ── Tool: create_announcement ──
@@ -214,6 +244,7 @@ export async function add_departure(args: {
     tour_id: tour.id,
     departure_time: args.time + ':00',
     is_active: true,
+    bookable_online: args.bookable_online !== false,
     notes: args.notes || null,
   });
 

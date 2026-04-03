@@ -265,7 +265,7 @@ export async function POST(req: Request) {
       assistantMessage.tool_calls.length === 0
     ) {
       // Log to operations_log
-      await logOperation(command, assistantMessage.content, session.name, []);
+      await logOperation(command, assistantMessage.content, session.staff_id, []);
 
       return NextResponse.json({
         summary: assistantMessage.content,
@@ -322,7 +322,7 @@ export async function POST(req: Request) {
     }
 
     // Step 5: Log everything
-    await logOperation(command, summary, session.name, actions);
+    await logOperation(command, summary, session.staff_id, actions);
 
     // Step 6: Return summary
     return NextResponse.json({
@@ -341,16 +341,17 @@ export async function POST(req: Request) {
 async function logOperation(
   command: string,
   result: string,
-  executedBy: string,
+  staffId: string,
   actions: string[]
 ) {
   try {
     const supabase = getSupabaseAdmin();
     await supabase.from('operations_log').insert({
+      staff_id: staffId,
       command,
       result,
-      executed_by: executedBy,
       actions_taken: actions,
+      status: 'completed',
     });
   } catch (e) {
     console.error('Failed to log operation:', e);

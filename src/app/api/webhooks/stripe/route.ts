@@ -220,6 +220,10 @@ async function confirmGiftCardAndSendEmail(paymentIntent: any) {
   const amount = parseFloat(meta.amount);
   const code = generateGiftCardCode();
 
+  // §199 BGB: Verjährung beginnt am Ende des Kaufjahres + 3 Kalenderjahre
+  const purchaseYear = new Date().getFullYear();
+  const expiresAt = new Date(purchaseYear + 3, 11, 31).toISOString().slice(0, 10);
+
   const { error: insertError } = await supabase.from('gift_cards').insert({
     code,
     initial_value: amount,
@@ -227,8 +231,9 @@ async function confirmGiftCardAndSendEmail(paymentIntent: any) {
     purchaser_email: meta.purchaser_email || null,
     purchaser_name: meta.purchaser_name || null,
     recipient_name: meta.recipient_name || null,
-    recipient_message: meta.recipient_message || null,
+    recipient_email: meta.recipient_email || null,
     stripe_payment_intent_id: paymentIntent.id,
+    expires_at: expiresAt,
   });
 
   if (insertError) {
