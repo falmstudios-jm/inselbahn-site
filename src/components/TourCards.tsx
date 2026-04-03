@@ -68,7 +68,7 @@ function TourCard({ tour, onBook }: { tour: Tour; onBook: (tourSlug: string) => 
 
   const capacityLabel = tour.wheelchair_accessible
     ? `${tour.max_capacity} Personen + 1 Rollstuhl`
-    : `${tour.max_capacity} Personen`;
+    : `Kleingruppe (max. ${tour.max_capacity} Pers.)`;
 
   return (
     <div>
@@ -94,8 +94,8 @@ function TourCard({ tour, onBook }: { tour: Tour; onBook: (tourSlug: string) => 
           className="h-[40px] w-auto flex-shrink-0"
         />
       </div>
-      {tour.notes && (
-        <p className="text-dark font-semibold text-sm mb-3">
+      {tour.notes && !/Fahrzeug/i.test(tour.notes) && (
+        <p className="text-dark/50 text-sm mb-3">
           {tour.notes}
         </p>
       )}
@@ -129,11 +129,11 @@ function TourCard({ tour, onBook }: { tour: Tour; onBook: (tourSlug: string) => 
       </ul>
 
       <div className="flex items-baseline gap-2 mb-1">
-        <span className="text-2xl font-bold text-dark">ab {tour.price_adult}&euro;</span>
+        <span className="text-2xl font-bold text-dark">ab {Number(tour.price_adult).toFixed(2).replace('.', ',')}&nbsp;&euro;</span>
         <span className="text-dark/50 text-sm">Erwachsene</span>
       </div>
       <p className="text-dark/50 text-sm mb-5">
-        {tour.price_child}&euro; Kinder (unter {tour.child_age_limit})
+        {Number(tour.price_child).toFixed(2).replace('.', ',')}&nbsp;&euro; Kinder (unter {tour.child_age_limit})
       </p>
 
       {/* Buchen button */}

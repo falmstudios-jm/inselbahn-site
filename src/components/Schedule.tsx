@@ -89,8 +89,8 @@ export default function Schedule({ tours, departures }: ScheduleProps) {
                 </div>
                 <div className="border-t border-dark/10 pt-4">
                   <p className="text-dark/60 text-sm">
-                    Erwachsene: <span className="font-semibold text-dark">{tour.price_adult}&euro;</span> &middot;
-                    Kinder (unter {tour.child_age_limit}): <span className="font-semibold text-dark">{tour.price_child}&euro;</span>
+                    Erwachsene: <span className="font-semibold text-dark">{Number(tour.price_adult).toFixed(2).replace('.', ',')}&nbsp;&euro;</span> &middot;
+                    Kinder (unter {tour.child_age_limit}): <span className="font-semibold text-dark">{Number(tour.price_child).toFixed(2).replace('.', ',')}&nbsp;&euro;</span>
                   </p>
                 </div>
               </div>

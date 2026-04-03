@@ -1,5 +1,7 @@
 import type { Metadata } from "next";
 import Link from "next/link";
+import Header from "@/components/Header";
+import Footer from "@/components/Footer";
 
 export const metadata: Metadata = {
   title: "AGB — Inselbahn Helgoland",
@@ -9,6 +11,8 @@ export const metadata: Metadata = {
 
 export default function AGBPage() {
   return (
+    <>
+      <Header />
     <main className="min-h-screen bg-white px-5 md:px-10 lg:px-20 py-16 md:py-24">
       <div className="max-w-3xl mx-auto">
         <Link
@@ -316,5 +320,7 @@ export default function AGBPage() {
         </div>
       </div>
     </main>
+      <Footer />
+    </>
   );
 }

@@ -1,5 +1,7 @@
 import type { Metadata } from "next";
 import Link from "next/link";
+import Header from "@/components/Header";
+import Footer from "@/components/Footer";
 
 export const metadata: Metadata = {
   title: "Helgoland Tagesausflug — So nutzen Sie Ihre Zeit optimal",
@@ -81,6 +83,8 @@ const tips = [
 
 export default function TagesausflugPage() {
   return (
+    <>
+      <Header />
     <main className="min-h-screen bg-white">
       {/* Back link */}
       <div className="px-5 md:px-10 lg:px-20 pt-16 md:pt-24">
@@ -185,5 +189,7 @@ export default function TagesausflugPage() {
         </div>
       </div>
     </main>
+      <Footer />
+    </>
   );
 }

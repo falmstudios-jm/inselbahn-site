@@ -3,6 +3,8 @@
 import Link from 'next/link';
 import { useState, useCallback } from 'react';
 import { loadStripe } from '@stripe/stripe-js';
+import Header from '@/components/Header';
+import Footer from '@/components/Footer';
 import {
   Elements,
   PaymentElement,
@@ -14,13 +16,9 @@ const stripePromise = loadStripe(
   process.env.NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY!
 );
 
-const TOUR_PRESETS = [
-  { label: '1× Unterland-Tour', amount: 11 },
-  { label: '1× Premium-Tour', amount: 22 },
-  { label: '2× Unterland-Tour', amount: 22 },
-  { label: '2× Premium-Tour', amount: 44 },
-  { label: 'Familie Unterland (2+2)', amount: 34 },
-  { label: 'Familie Premium (2+2)', amount: 74 },
+const GIFT_PRESETS = [
+  { id: 'unterland', label: 'Unterland-Tour', basePrice: 11 },
+  { id: 'premium', label: 'Premium-Tour', basePrice: 22 },
 ];
 
 const COUNTRY_OPTIONS = [
@@ -30,7 +28,7 @@ const COUNTRY_OPTIONS = [
 ];
 
 export default function GutscheinPage() {
-  const [selectedAmount, setSelectedAmount] = useState<number>(22);
+  const [presetQuantities, setPresetQuantities] = useState<Record<string, number>>({ unterland: 0, premium: 1 });
   const [customAmount, setCustomAmount] = useState<string>('');
   const [isCustom, setIsCustom] = useState(false);
 
@@ -53,10 +51,19 @@ export default function GutscheinPage() {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
-  const amount = isCustom ? parseFloat(customAmount) || 0 : selectedAmount;
+  const presetTotal = GIFT_PRESETS.reduce(
+    (sum, p) => sum + p.basePrice * (presetQuantities[p.id] || 0),
+    0
+  );
+  const hasPresets = presetTotal > 0;
+  const amount = isCustom ? parseFloat(customAmount) || 0 : presetTotal;
 
-  const handlePresetClick = (value: number) => {
-    setSelectedAmount(value);
+  const handlePresetQty = (id: string, delta: number) => {
+    setPresetQuantities((prev) => {
+      const current = prev[id] || 0;
+      const next = Math.max(0, Math.min(20, current + delta));
+      return { ...prev, [id]: next };
+    });
     setIsCustom(false);
     setCustomAmount('');
   };
@@ -77,7 +84,7 @@ export default function GutscheinPage() {
       return;
     }
     if (amount < 5 || amount > 500) {
-      setError('Bitte wählen Sie einen Betrag zwischen 5\u20AC und 500\u20AC.');
+      setError('Bitte w\u00E4hlen Sie einen Betrag zwischen 5\u00A0\u20AC und 500\u00A0\u20AC.');
       return;
     }
     if (!purchaserName.trim() || !purchaserEmail.trim()) {
@@ -135,6 +142,8 @@ export default function GutscheinPage() {
     'w-full py-3 px-4 rounded-lg border-2 border-gray-200 text-dark placeholder-dark/40 outline-none focus:border-primary transition-all';
 
   return (
+    <>
+      <Header />
     <main className="min-h-screen bg-white px-5 md:px-10 lg:px-20 py-16 md:py-24">
       <div className="max-w-2xl mx-auto">
         <Link
@@ -181,70 +190,85 @@ export default function GutscheinPage() {
               <label className="block text-sm font-semibold text-dark mb-3">
                 Betrag w&auml;hlen
               </label>
-              <div className="grid grid-cols-2 sm:grid-cols-3 gap-3 mb-3">
-                {TOUR_PRESETS.map((preset) => (
-                  <button
-                    key={preset.label}
-                    type="button"
-                    onClick={() => handlePresetClick(preset.amount)}
-                    className={`py-3 px-4 rounded-xl border-2 text-center transition-all ${
-                      !isCustom && selectedAmount === preset.amount
-                        ? 'border-primary bg-primary/5'
-                        : 'border-gray-200 hover:border-gray-300'
-                    }`}
-                  >
-                    <span className="block text-sm font-medium text-dark/70">{preset.label}</span>
-                    <span className={`block text-lg font-bold mt-1 ${
-                      !isCustom && selectedAmount === preset.amount ? 'text-primary' : 'text-dark'
-                    }`}>
-                      {preset.amount.toFixed(2).replace('.', ',')}&nbsp;&euro;
-                    </span>
-                  </button>
-                ))}
+
+              {/* Preset tour quantities */}
+              <div className="space-y-3 mb-4">
+                {GIFT_PRESETS.map((preset) => {
+                  const qty = presetQuantities[preset.id] || 0;
+                  const lineTotal = preset.basePrice * qty;
+                  return (
+                    <div
+                      key={preset.id}
+                      className={`flex items-center justify-between gap-4 py-3 px-4 rounded-xl border-2 transition-all ${
+                        !isCustom && qty > 0
+                          ? 'border-primary bg-primary/5'
+                          : 'border-gray-200'
+                      }`}
+                    >
+                      <div className="flex-1 min-w-0">
+                        <span className="block text-sm font-medium text-dark">
+                          {qty > 0 ? `${qty}\u00D7 ` : ''}{preset.label}
+                        </span>
+                        <span className="block text-xs text-dark/50">
+                          {preset.basePrice.toFixed(2).replace('.', ',')}&nbsp;&euro; pro St&uuml;ck
+                        </span>
+                      </div>
+                      <div className="flex items-center gap-2">
+                        <button
+                          type="button"
+                          onClick={() => handlePresetQty(preset.id, -1)}
+                          disabled={qty <= 0}
+                          className="w-9 h-9 rounded-lg border border-gray-200 hover:border-gray-300 flex items-center justify-center text-dark text-lg font-bold transition-colors disabled:opacity-30 disabled:cursor-not-allowed"
+                        >
+                          &minus;
+                        </button>
+                        <span className="w-8 text-center text-base font-bold text-dark">
+                          {qty}
+                        </span>
+                        <button
+                          type="button"
+                          onClick={() => handlePresetQty(preset.id, 1)}
+                          disabled={qty >= 20}
+                          className="w-9 h-9 rounded-lg border border-gray-200 hover:border-gray-300 flex items-center justify-center text-dark text-lg font-bold transition-colors disabled:opacity-30 disabled:cursor-not-allowed"
+                        >
+                          +
+                        </button>
+                      </div>
+                      {qty > 0 && (
+                        <span className="text-lg font-bold text-primary w-20 text-right">
+                          {lineTotal.toFixed(2).replace('.', ',')}&nbsp;&euro;
+                        </span>
+                      )}
+                    </div>
+                  );
+                })}
               </div>
-              <div className="flex items-center gap-2">
-                <button
-                  type="button"
-                  onClick={() => {
-                    const current = isCustom ? (parseFloat(customAmount) || 5) : selectedAmount;
-                    const newVal = Math.max(5, current - 1);
-                    setCustomAmount(String(newVal));
-                    setIsCustom(true);
-                  }}
-                  className="w-12 h-12 rounded-lg border-2 border-gray-200 hover:border-gray-300 flex items-center justify-center text-dark text-xl font-bold transition-colors"
-                >
-                  &minus;
-                </button>
-                <div className="relative flex-1">
-                  <input
-                    type="text"
-                    inputMode="decimal"
-                    placeholder="Eigener Betrag (5 \u20AC \u2013 500 \u20AC)"
-                    value={customAmount}
-                    onFocus={handleCustomFocus}
-                    onChange={handleCustomChange}
-                    className={`w-full py-3 px-4 pr-10 rounded-lg border-2 text-dark placeholder-dark/40 outline-none transition-all ${
-                      isCustom
-                        ? 'border-primary bg-primary/5'
-                        : 'border-gray-200 hover:border-gray-300'
-                    }`}
-                  />
-                  <span className="absolute right-4 top-1/2 -translate-y-1/2 text-dark/40 font-medium">
-                    &euro;
-                  </span>
-                </div>
-                <button
-                  type="button"
-                  onClick={() => {
-                    const current = isCustom ? (parseFloat(customAmount) || 5) : selectedAmount;
-                    const newVal = Math.min(500, current + 1);
-                    setCustomAmount(String(newVal));
-                    setIsCustom(true);
-                  }}
-                  className="w-12 h-12 rounded-lg border-2 border-gray-200 hover:border-gray-300 flex items-center justify-center text-dark text-xl font-bold transition-colors"
-                >
-                  +
-                </button>
+
+              {/* Divider */}
+              <div className="flex items-center gap-3 mb-4">
+                <div className="flex-1 h-px bg-gray-200" />
+                <span className="text-xs text-dark/40 uppercase tracking-wide">oder</span>
+                <div className="flex-1 h-px bg-gray-200" />
+              </div>
+
+              {/* Custom amount (no +/- buttons) */}
+              <div className="relative">
+                <input
+                  type="text"
+                  inputMode="decimal"
+                  placeholder="Eigener Betrag (5 € – 500 €)"
+                  value={customAmount}
+                  onFocus={handleCustomFocus}
+                  onChange={handleCustomChange}
+                  className={`w-full py-3 px-4 pr-10 rounded-lg border-2 text-dark placeholder-dark/40 outline-none transition-all ${
+                    isCustom
+                      ? 'border-primary bg-primary/5'
+                      : 'border-gray-200 hover:border-gray-300'
+                  }`}
+                />
+                <span className="absolute right-4 top-1/2 -translate-y-1/2 text-dark/40 font-medium">
+                  &euro;
+                </span>
               </div>
             </section>
 
@@ -398,6 +422,8 @@ export default function GutscheinPage() {
         )}
       </div>
     </main>
+      <Footer />
+    </>
   );
 }
 

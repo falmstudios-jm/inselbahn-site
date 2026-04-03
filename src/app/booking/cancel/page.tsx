@@ -3,6 +3,8 @@
 import { useEffect, useState, useCallback, Suspense } from "react";
 import { useSearchParams } from "next/navigation";
 import Link from "next/link";
+import Header from "@/components/Header";
+import Footer from "@/components/Footer";
 
 interface BookingDetails {
   id: string;
@@ -620,6 +622,8 @@ function CancelPageContent() {
 
 export default function CancelPage() {
   return (
+    <>
+    <Header />
     <Suspense
       fallback={
         <main className="min-h-screen flex items-center justify-center bg-surface px-4">
@@ -654,5 +658,7 @@ export default function CancelPage() {
     >
       <CancelPageContent />
     </Suspense>
+    <Footer />
+    </>
   );
 }

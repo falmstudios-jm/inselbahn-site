@@ -2,6 +2,8 @@
 
 import { useState } from "react";
 import Link from "next/link";
+import Header from "@/components/Header";
+import Footer from "@/components/Footer";
 
 export default function InvoicePage() {
   const [bookingReference, setBookingReference] = useState("");
@@ -112,6 +114,8 @@ export default function InvoicePage() {
     "w-full rounded-lg border border-gray-300 bg-white px-4 py-3 text-sm text-gray-900 placeholder-gray-400 focus:border-[#1a3a5c] focus:ring-2 focus:ring-[#1a3a5c]/20 focus:outline-none transition-colors";
 
   return (
+    <>
+    <Header />
     <div className="min-h-screen bg-gray-50 flex flex-col">
       {/* Header */}
       <header className="bg-[#1a3a5c] text-white py-6 px-5">
@@ -321,5 +325,7 @@ export default function InvoicePage() {
         </p>
       </footer>
     </div>
+    <Footer />
+    </>
   );
 }

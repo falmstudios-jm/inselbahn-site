@@ -49,6 +49,7 @@ const tourOptions = [
       "30 Min freie Erkundung an der Langen Anna",
       "Leuchtturm, Kleingärten & Lummenfelsen",
       "Kleine Gruppe (max. 18 Personen)",
+      "Einblicke in den Inselalltag \u2014 Geschichten, die nicht im Reisef\u00FChrer stehen",
     ],
     wheelchair: false,
     dogs: false,

@@ -1,5 +1,7 @@
 import Link from 'next/link';
 import type { Metadata } from 'next';
+import Header from '@/components/Header';
+import Footer from '@/components/Footer';
 
 export const metadata: Metadata = {
   title: 'Gutschein gekauft — Inselbahn Helgoland',
@@ -8,6 +10,8 @@ export const metadata: Metadata = {
 
 export default function GutscheinDankePage() {
   return (
+    <>
+      <Header />
     <main className="min-h-screen bg-white px-5 md:px-10 lg:px-20 py-16 md:py-24">
       <div className="max-w-2xl mx-auto text-center">
         <div className="w-20 h-20 rounded-full bg-success/10 flex items-center justify-center mx-auto mb-6">
@@ -36,5 +40,7 @@ export default function GutscheinDankePage() {
         </Link>
       </div>
     </main>
+      <Footer />
+    </>
   );
 }

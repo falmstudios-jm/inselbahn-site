@@ -1,5 +1,7 @@
 import Link from 'next/link';
 import { getSupabaseAdmin } from '@/lib/supabase-admin';
+import Header from '@/components/Header';
+import Footer from '@/components/Footer';
 
 interface PageProps {
   params: Promise<{ id: string }>;
@@ -58,6 +60,8 @@ export default async function BookingConfirmPage({ params }: PageProps) {
     passengers.push(`${booking.children_free} Kinder (0–5, frei)`);
 
   return (
+    <>
+      <Header />
     <main className="min-h-screen flex items-center justify-center bg-gray-50 px-4 py-12">
       <div className="max-w-lg w-full bg-white rounded-2xl shadow-lg overflow-hidden">
         {/* Success Header */}
@@ -164,5 +168,7 @@ export default async function BookingConfirmPage({ params }: PageProps) {
         </div>
       </div>
     </main>
+      <Footer />
+    </>
   );
 }

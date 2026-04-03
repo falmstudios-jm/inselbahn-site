@@ -1,5 +1,7 @@
 import type { Metadata } from "next";
 import Link from "next/link";
+import Header from "@/components/Header";
+import Footer from "@/components/Footer";
 
 export const metadata: Metadata = {
   title: "Helgoland Sehenswürdigkeiten — Die schönsten Highlights der Insel",
@@ -88,6 +90,8 @@ const highlights = [
 
 export default function SehenswuerdigkeitenPage() {
   return (
+    <>
+      <Header />
     <main className="min-h-screen bg-white">
       {/* Back link */}
       <div className="px-5 md:px-10 lg:px-20 pt-16 md:pt-24">
@@ -162,5 +166,7 @@ export default function SehenswuerdigkeitenPage() {
         </div>
       </div>
     </main>
+      <Footer />
+    </>
   );
 }
