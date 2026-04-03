@@ -231,7 +231,7 @@ async function confirmGiftCardAndSendEmail(paymentIntent: any) {
     purchaser_email: meta.purchaser_email || null,
     purchaser_name: meta.purchaser_name || null,
     recipient_name: meta.recipient_name || null,
-    recipient_email: meta.recipient_email || null,
+    recipient_message: meta.recipient_message || null,
     stripe_payment_intent_id: paymentIntent.id,
     expires_at: expiresAt,
   });
