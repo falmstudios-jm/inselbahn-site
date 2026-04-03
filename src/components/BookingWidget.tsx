@@ -88,7 +88,7 @@ const tourOptions = [
   },
 ];
 
-const MAX_FUTURE_DAYS = 30;
+const MAX_FUTURE_DAYS = parseInt(process.env.NEXT_PUBLIC_MAX_BOOKING_DAYS || '30', 10);
 
 const STEPS = ["Datum", "Tour", "Uhrzeit", "Personen", "Rabatt", "Kontakt", "Zahlung"];
 
@@ -1099,6 +1099,9 @@ export default function BookingWidget({ tours: supabaseTours }: BookingWidgetPro
                       <span className="w-3 h-3 rounded-full ring-1.5 ring-primary" /> Heute
                     </span>
                   </div>
+                  <p className="text-center text-xs text-dark/30 mt-3">
+                    Online-Buchung ist bis zu {MAX_FUTURE_DAYS} Tage im Voraus möglich.
+                  </p>
                 </div>
               </div>
 
