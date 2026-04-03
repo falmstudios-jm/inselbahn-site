@@ -16,8 +16,8 @@ export async function GET(req: Request) {
   try {
     const supabase = getSupabaseAdmin();
 
-    // Delete pending bookings older than 15 minutes
-    const cutoff = new Date(Date.now() - 15 * 60 * 1000).toISOString();
+    // Delete pending bookings older than 10 minutes
+    const cutoff = new Date(Date.now() - 10 * 60 * 1000).toISOString();
 
     const { data: expired, error } = await supabase
       .from('bookings')

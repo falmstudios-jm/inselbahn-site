@@ -61,8 +61,8 @@ export async function POST(req: Request) {
       }
     }
 
-    // Check availability: confirmed + recent pending (< 15 min old)
-    const fifteenMinAgo = new Date(Date.now() - 15 * 60 * 1000).toISOString();
+    // Check availability: confirmed + recent pending (< 10 min old)
+    const tenMinAgo = new Date(Date.now() - 10 * 60 * 1000).toISOString();
 
     const { data: confirmedBookings } = await supabaseAdmin
       .from('bookings')
@@ -77,7 +77,7 @@ export async function POST(req: Request) {
       .eq('departure_id', input.departure_id)
       .eq('booking_date', input.booking_date)
       .eq('status', 'pending')
-      .gte('created_at', fifteenMinAgo);
+      .gte('created_at', tenMinAgo);
 
     const existingBookings = [...(confirmedBookings || []), ...(recentPending || [])];
     const bookingsError = null;

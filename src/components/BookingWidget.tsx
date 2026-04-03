@@ -108,7 +108,7 @@ const COUNTRY_OPTIONS = [
   "Italien",
   "Spanien",
 ];
-const RESERVATION_SECONDS = 15 * 60; // 15 minutes
+const RESERVATION_SECONDS = 10 * 60; // 10 minutes
 
 function generateCalendarDays(year: number, month: number) {
   const firstDay = new Date(year, month, 1).getDay();
