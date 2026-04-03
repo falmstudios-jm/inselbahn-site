@@ -454,9 +454,10 @@ function buildGiftCardEmail(params: GiftCardEmailParams): string {
   const { code, amount, purchaserName, recipientName, recipientMessage } = params;
 
   const validUntil = (() => {
-    const d = new Date();
-    d.setFullYear(d.getFullYear() + 3);
-    return d.toLocaleDateString('de-DE', { year: 'numeric', month: 'long', day: 'numeric' });
+    // §199 BGB: Verjährung beginnt am Ende des Kaufjahres + 3 Kalenderjahre
+    const purchaseYear = new Date().getFullYear();
+    const expiryDate = new Date(purchaseYear + 3, 11, 31); // Dec 31 of purchase year + 3
+    return expiryDate.toLocaleDateString('de-DE', { year: 'numeric', month: 'long', day: 'numeric' });
   })();
 
   const recipientSection = recipientName

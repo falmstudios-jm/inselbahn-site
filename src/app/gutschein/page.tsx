@@ -154,7 +154,7 @@ export default function GutscheinPage() {
           Das perfekte Geschenk f&uuml;r Helgoland-Fans
         </p>
         <p className="text-dark/50 text-sm mb-10">
-          G&uuml;ltig f&uuml;r 3 Jahre ab Kaufdatum. Teileinl&ouml;sung m&ouml;glich, Restwert bleibt erhalten.
+          Gültig bis zum 31.12. des dritten Jahres nach Kauf (§195/§199 BGB). Teileinlösung möglich, Restwert bleibt erhalten.
         </p>
 
         {clientSecret ? (
