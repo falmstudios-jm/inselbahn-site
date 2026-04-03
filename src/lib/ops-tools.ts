@@ -124,7 +124,37 @@ export async function cancel_departures(args: {
   if (error) throw new Error(`Fehler beim Laden der Buchungen: ${error.message}`);
 
   if (!bookings || bookings.length === 0) {
-    return `Keine bestätigten Buchungen für ${args.date}${args.tour_slug ? ` (${args.tour_slug})` : ''} gefunden.`;
+    // Even with no bookings, block the departures so no new bookings can be made
+    let depIdsToBlock: string[] = [];
+    if (args.tour_slug) {
+      const tour = await getTourBySlug(args.tour_slug);
+      let depQuery = supabase.from('departures').select('id, tours:tour_id(max_capacity)').eq('tour_id', tour.id).eq('is_active', true);
+      if (args.time) {
+        const timeStr = args.time.length === 5 ? args.time + ':00' : args.time;
+        depQuery = depQuery.eq('departure_time', timeStr);
+      }
+      const { data: deps } = await depQuery;
+      for (const dep of deps || []) {
+        const maxCap = (dep.tours as unknown as { max_capacity: number })?.max_capacity || 18;
+        await supabase.from('bookings').insert({
+          departure_id: dep.id,
+          booking_date: args.date,
+          adults: maxCap,
+          children: 0,
+          children_free: 0,
+          ghost_seats: 0,
+          customer_name: `GESPERRT - ${args.reason || 'Ausfall'}`,
+          customer_email: 'system@helgolandbahn.de',
+          total_amount: 0,
+          status: 'our_cancellation',
+          payment_method: 'manual_entry',
+          cancel_token: crypto.randomUUID(),
+          booking_reference: `BLOCK-${args.date}-${dep.id.slice(0, 4)}`,
+        });
+        depIdsToBlock.push(dep.id);
+      }
+    }
+    return `Keine bestätigten Buchungen für ${args.date}${args.tour_slug ? ` (${args.tour_slug})` : ''} gefunden.${depIdsToBlock.length > 0 ? ` ${depIdsToBlock.length} Abfahrt(en) gesperrt.` : ''}`;
   }
 
   const stripe = getStripe();
@@ -238,7 +268,38 @@ export async function cancel_departures(args: {
     }
   }
 
-  return `${refundedCount} Buchung(en) für ${args.date} storniert. ${refundedAmount.toFixed(2)}€ erstattet. ${emailsSent} Stornierungsmail(s) gesendet.${giftCardsRestored > 0 ? ` ${giftCardsRestored} Gutschein(e) wiederhergestellt.` : ''}`;
+  // ── Block remaining capacity so no new bookings can be made ──
+  // Collect unique departure IDs that were affected
+  const affectedDepartureIds = [...new Set(bookings.map((b) => b.departure_id as string))];
+
+  for (const depId of affectedDepartureIds) {
+    // Get max capacity from the tour
+    const { data: depWithTour } = await supabase
+      .from('departures')
+      .select('tours:tour_id(max_capacity)')
+      .eq('id', depId)
+      .single();
+    const maxCap = (depWithTour?.tours as unknown as { max_capacity: number })?.max_capacity || 18;
+
+    // Create a blocking booking to fill remaining capacity
+    await supabase.from('bookings').insert({
+      departure_id: depId,
+      booking_date: args.date,
+      adults: maxCap,
+      children: 0,
+      children_free: 0,
+      ghost_seats: 0,
+      customer_name: `GESPERRT - ${args.reason || 'Ausfall'}`,
+      customer_email: 'system@helgolandbahn.de',
+      total_amount: 0,
+      status: 'our_cancellation',
+      payment_method: 'manual_entry',
+      cancel_token: crypto.randomUUID(),
+      booking_reference: `BLOCK-${args.date}-${depId.slice(0, 4)}`,
+    });
+  }
+
+  return `${refundedCount} Buchung(en) für ${args.date} storniert. ${refundedAmount.toFixed(2)}€ erstattet. ${emailsSent} Stornierungsmail(s) gesendet.${giftCardsRestored > 0 ? ` ${giftCardsRestored} Gutschein(e) wiederhergestellt.` : ''} ${affectedDepartureIds.length} Abfahrt(en) gesperrt.`;
 }
 
 // ── Tool: create_announcement ──
@@ -247,6 +308,8 @@ export async function create_announcement(args: {
   message: string;
   type: 'info' | 'warning' | 'cancellation';
   affected_date?: string;
+  active_from?: string;
+  active_until?: string;
 }): Promise<string> {
   const supabase = getSupabaseAdmin();
 
@@ -254,12 +317,19 @@ export async function create_announcement(args: {
     message: args.message,
     type: args.type,
     affected_date: args.affected_date || null,
+    active_from: args.active_from || null,
+    active_until: args.active_until || null,
     is_active: true,
   });
 
   if (error) throw new Error(`Fehler beim Erstellen: ${error.message}`);
 
-  return `Ankündigung erstellt: "${args.message}" (Typ: ${args.type})${args.affected_date ? `, betrifft ${args.affected_date}` : ''}.`;
+  const parts: string[] = [`Ankündigung erstellt: "${args.message}" (Typ: ${args.type})`];
+  if (args.affected_date) parts.push(`betrifft ${args.affected_date}`);
+  if (args.active_from) parts.push(`sichtbar ab ${args.active_from}`);
+  if (args.active_until) parts.push(`sichtbar bis ${args.active_until}`);
+
+  return parts.join(', ') + '.';
 }
 
 // ── Tool: add_departure ──

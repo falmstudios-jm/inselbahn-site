@@ -68,6 +68,14 @@ const TOOLS = [
             type: 'string',
             description: 'YYYY-MM-DD if applicable',
           },
+          active_from: {
+            type: 'string',
+            description: 'ISO date-time when announcement starts showing. Default: now.',
+          },
+          active_until: {
+            type: 'string',
+            description: 'ISO date-time when announcement stops showing. E.g. end of day: 2026-04-04T23:59:59',
+          },
         },
         required: ['message', 'type'],
       },
@@ -267,6 +275,8 @@ DEIN VERHALTEN:
 - Bei Rabattcodes: Frage nach max. Nutzungen, Gültigkeitsdatum, Beschreibung, Prozent oder Festbetrag
 - Bei Preisänderungen: Frage nach ob Kinderpreis auch geändert werden soll
 - Bei Ankündigungen: Frage nach Typ (info/warning/cancellation) und bis wann die Ankündigung gelten soll
+- Bei Stornierungsankündigungen (cancellation): Setze active_until automatisch auf Ende des betroffenen Tages (z.B. "2026-04-04T23:59:59")
+- Bei allgemeinen Info-Ankündigungen: Frage den Nutzer, wie lange die Ankündigung sichtbar sein soll, und setze active_until entsprechend
 - Bei neuen Abfahrten: Frage ob online buchbar
 - Generell: Wenn der Nutzer etwas unklar formuliert, frage ZUERST nach bevor du handelst!
 
