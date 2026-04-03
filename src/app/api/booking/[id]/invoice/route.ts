@@ -54,20 +54,28 @@ export async function GET(
   // Assign sequential invoice number if not yet set
   let invoiceNumber = booking.invoice_number;
   if (!invoiceNumber) {
-    // Get the highest existing invoice number for this year and increment
+    // Get the highest existing invoice number for this year and increment.
+    // We fetch all invoice numbers for the year and find the numeric max,
+    // because lexicographic sorting of variable-length numbers is unreliable
+    // (e.g. "RE-2026-9" sorts after "RE-2026-4201" as a string).
     const year = new Date().getFullYear();
-    const { data: lastInvoice } = await supabase
+    const { data: existingInvoices } = await supabase
       .from('bookings')
       .select('invoice_number')
       .like('invoice_number', `RE-${year}-%`)
-      .order('invoice_number', { ascending: false })
-      .limit(1)
-      .maybeSingle();
+      .not('invoice_number', 'is', null);
 
     let nextNum = 4201; // Start from 4201 (not 0001)
-    if (lastInvoice?.invoice_number) {
-      const lastNum = parseInt(lastInvoice.invoice_number.split('-')[2], 10);
-      if (!isNaN(lastNum)) nextNum = lastNum + 1;
+    if (existingInvoices && existingInvoices.length > 0) {
+      let maxNum = 0;
+      for (const inv of existingInvoices) {
+        const parts = inv.invoice_number?.split('-');
+        if (parts && parts.length === 3) {
+          const num = parseInt(parts[2], 10);
+          if (!isNaN(num) && num > maxNum) maxNum = num;
+        }
+      }
+      if (maxNum >= nextNum) nextNum = maxNum + 1;
     }
     invoiceNumber = `RE-${year}-${nextNum}`;
 
@@ -97,6 +105,7 @@ export async function GET(
     priceChild: tour?.price_child || 0,
     totalAmount: booking.total_amount,
     paidOnline: !!booking.stripe_payment_intent_id,
+    paymentMethod: booking.payment_method || null,
   };
 
   // eslint-disable-next-line @typescript-eslint/no-explicit-any

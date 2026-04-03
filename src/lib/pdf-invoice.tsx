@@ -301,6 +301,7 @@ export interface InvoiceData {
   totalAmount: number;
   // Payment
   paidOnline: boolean;
+  paymentMethod?: string | null;
 }
 
 // ── Helpers ──
@@ -320,7 +321,7 @@ function formatTime(time: string): string {
 }
 
 function formatCurrency(amount: number): string {
-  return amount.toFixed(2).replace('.', ',') + ' \u20AC';
+  return amount.toFixed(2).replace('.', ',') + ' €';
 }
 
 // ── Invoice Number Generator ──
@@ -440,7 +441,15 @@ export function InvoiceDocument({ data }: { data: InvoiceData }) {
           <View style={styles.detailItem}>
             <Text style={styles.detailLabel}>Zahlung</Text>
             <Text style={styles.detailValue}>
-              {data.paidOnline ? 'Online' : 'Vor Ort'}
+              {data.paymentMethod === 'gift_card'
+                ? 'Gutschein'
+                : data.paymentMethod === 'cash'
+                  ? 'Bar'
+                  : data.paymentMethod === 'sumup'
+                    ? 'SumUp'
+                    : data.paidOnline
+                      ? 'Online'
+                      : 'Vor Ort'}
             </Text>
           </View>
         </View>
@@ -500,7 +509,7 @@ export function InvoiceDocument({ data }: { data: InvoiceData }) {
             </View>
             <View style={styles.totalRow}>
               <Text style={styles.totalLabel}>USt 0% (§1 Abs. 2 UStG)</Text>
-              <Text style={styles.totalValue}>0,00 \u20AC</Text>
+              <Text style={styles.totalValue}>{formatCurrency(0)}</Text>
             </View>
             <View style={styles.totalRowFinal}>
               <Text style={styles.totalLabelFinal}>Gesamtbetrag</Text>
@@ -515,9 +524,15 @@ export function InvoiceDocument({ data }: { data: InvoiceData }) {
         <View style={styles.paymentBox}>
           <Text style={styles.paymentTitle}>Zahlungsstatus</Text>
           <Text style={styles.paymentText}>
-            {data.paidOnline
-              ? `Bezahlt am ${paymentDate} via Online-Zahlung`
-              : 'Bezahlt vor Ort (Bar/Karte)'}
+            {data.paymentMethod === 'gift_card'
+              ? 'Bezahlt mit Gutschein'
+              : data.paymentMethod === 'cash'
+                ? 'Bezahlt vor Ort (Bar)'
+                : data.paymentMethod === 'sumup'
+                  ? 'Bezahlt vor Ort (Karte/SumUp)'
+                  : data.paidOnline
+                    ? `Bezahlt am ${paymentDate} via Online-Zahlung`
+                    : 'Bezahlt vor Ort (Bar/Karte)'}
           </Text>
         </View>
 

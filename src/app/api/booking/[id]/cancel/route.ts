@@ -65,20 +65,20 @@ export async function POST(
       );
     }
 
-    // Check cancellation deadline: booking_date - 1 day at midnight Berlin time
-    const bookingDate = new Date(booking.booking_date + 'T00:00:00');
-    // Deadline is midnight of the day before, in Berlin timezone
-    const deadlineUtc = new Date(bookingDate.getTime() - 24 * 60 * 60 * 1000);
-    // Convert current time to Berlin
-    const nowBerlin = new Date(
-      new Date().toLocaleString('en-US', { timeZone: 'Europe/Berlin' })
-    );
-    // Deadline in Berlin: midnight the day before booking
-    const deadlineBerlin = new Date(
-      deadlineUtc.toLocaleString('en-US', { timeZone: 'Europe/Berlin' })
-    );
+    // Check cancellation deadline: midnight Berlin time on the booking date.
+    // If now (Berlin) >= midnight on booking day → too late to cancel.
+    // So for a booking on April 4th, cancellation is allowed until 23:59:59 on April 3rd Berlin time.
 
-    if (nowBerlin >= deadlineBerlin) {
+    // Get current time in Berlin
+    const now = new Date();
+    const berlinNow = new Date(now.toLocaleString('en-US', { timeZone: 'Europe/Berlin' }));
+
+    // Deadline is midnight Berlin time on the booking date
+    // booking.booking_date is "YYYY-MM-DD", so this creates midnight local (server) time,
+    // but we compare against berlinNow which is also converted to Berlin local time.
+    const bookingDate = new Date(booking.booking_date + 'T00:00:00');
+
+    if (berlinNow >= bookingDate) {
       return NextResponse.json(
         {
           error:

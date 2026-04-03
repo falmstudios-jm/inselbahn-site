@@ -159,11 +159,13 @@ function CancelPageContent() {
   const canCancel = useCallback(() => {
     if (!booking) return false;
     if (booking.status !== "confirmed") return false;
-    // Check deadline: midnight the day before booking date, Berlin time
-    const bookingDate = new Date(booking.booking_date + "T00:00:00");
-    const deadline = new Date(bookingDate.getTime() - 24 * 60 * 60 * 1000);
+    // Check deadline: midnight Berlin time on the booking date
     const now = new Date();
-    return now < deadline;
+    const berlinNow = new Date(
+      now.toLocaleString("en-US", { timeZone: "Europe/Berlin" })
+    );
+    const bookingDate = new Date(booking.booking_date + "T00:00:00");
+    return berlinNow < bookingDate;
   }, [booking]);
 
   useEffect(() => {
@@ -374,7 +376,7 @@ function CancelPageContent() {
                 <p className="text-dark/60 text-sm">
                   Der Betrag von{" "}
                   <strong>
-                    {booking?.total_amount?.toFixed(2).replace(".", ",")}&euro;
+                    {booking?.total_amount?.toFixed(2).replace(".", ",")} &euro;
                   </strong>{" "}
                   wird in den n&auml;chsten 5&ndash;10 Werktagen erstattet.
                 </p>
@@ -525,7 +527,7 @@ function CancelPageContent() {
                   Gezahlter Betrag
                 </p>
                 <p className="text-lg font-bold text-dark">
-                  {booking.total_amount?.toFixed(2).replace(".", ",")}&euro;
+                  {booking.total_amount?.toFixed(2).replace(".", ",")} &euro;
                 </p>
               </div>
             </div>
@@ -535,10 +537,12 @@ function CancelPageContent() {
               <p className="font-semibold text-dark text-sm">
                 Stornierungsbedingungen
               </p>
-              <p className="text-dark/60 text-sm">
-                Kostenlose Stornierung bis Mitternacht am Vortag. Bei
-                erfolgreicher Stornierung wird der gesamte Betrag erstattet.
-              </p>
+              <ul className="text-dark/60 text-sm mt-1 space-y-1 list-disc list-inside">
+                <li>Kostenlose Stornierung bis Mitternacht am Vortag (23:59 Uhr).</li>
+                <li>Nach Ablauf der Frist ist keine Stornierung mehr m&ouml;glich.</li>
+                <li>Bei Ausfall durch die Inselbahn (z.B. Wetter) erhalten Sie automatisch eine volle R&uuml;ckerstattung.</li>
+                <li>Es besteht kein Widerrufsrecht gem&auml;&szlig; &sect;312g Abs. 2 Nr. 9 BGB (Freizeitveranstaltungen mit festem Datum).</li>
+              </ul>
             </div>
 
             {/* Cancel error */}
