@@ -67,6 +67,7 @@ export async function update_tour_price(args: {
 export async function cancel_departures(args: {
   tour_slug?: string;
   date: string;
+  time?: string; // Optional: specific departure time like "16:00"
   reason?: string;
 }): Promise<string> {
   const supabase = getSupabaseAdmin();
@@ -82,14 +83,21 @@ export async function cancel_departures(args: {
   // If a specific tour is given, filter by tour slug
   if (args.tour_slug) {
     const tour = await getTourBySlug(args.tour_slug);
-    const { data: departures } = await supabase
+    let depQuery = supabase
       .from('departures')
       .select('id')
       .eq('tour_id', tour.id);
-    const depIds = (departures || []).map((d: { id: string }) => d.id);
-    if (depIds.length > 0) {
-      query = query.in('departure_id', depIds);
+    // If a specific time is given, filter to that departure only
+    if (args.time) {
+      const timeStr = args.time.length === 5 ? args.time + ':00' : args.time;
+      depQuery = depQuery.eq('departure_time', timeStr);
     }
+    const { data: departures } = await depQuery;
+    const depIds = (departures || []).map((d: { id: string }) => d.id);
+    if (depIds.length === 0) {
+      return `Keine Abfahrt gefunden für ${args.tour_slug}${args.time ? ` um ${args.time}` : ''}.`;
+    }
+    query = query.in('departure_id', depIds);
   }
 
   const { data: bookings, error } = await query;

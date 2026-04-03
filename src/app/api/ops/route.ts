@@ -25,12 +25,13 @@ const TOOLS = [
     function: {
       name: 'cancel_departures',
       description:
-        'Cancel all bookings for a specific tour on a specific date. Issues refunds and sends cancellation emails.',
+        'Cancel bookings for a tour on a specific date. Can cancel ALL departures of a tour on that date, or a SINGLE departure if time is specified. Issues refunds and sends cancellation emails.',
       parameters: {
         type: 'object',
         properties: {
           tour_slug: { type: 'string', enum: ['unterland', 'premium'] },
           date: { type: 'string', description: 'YYYY-MM-DD format' },
+          time: { type: 'string', description: 'Optional: specific departure time in HH:MM format (e.g. 16:00). If omitted, ALL departures of the tour on that date are cancelled.' },
           reason: { type: 'string' },
         },
         required: ['date'],
