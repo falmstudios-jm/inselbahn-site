@@ -2,6 +2,7 @@ import { NextResponse } from 'next/server';
 import { getStripe } from '@/lib/stripe';
 import { getSupabaseAdmin } from '@/lib/supabase-admin';
 import { Resend } from 'resend';
+import { Client as QStashClient } from '@upstash/qstash';
 
 const BASE_URL = process.env.NEXT_PUBLIC_BASE_URL || 'https://helgolandbahn.de';
 
@@ -174,6 +175,26 @@ async function confirmBookingAndSendEmail(bookingId: string, paymentIntentId: st
       invoicePageUrl: `${BASE_URL}/booking/invoice`,
     }),
   });
+
+  // Schedule post-tour feedback email via QStash
+  try {
+    if (dep?.departure_time && tour?.duration_minutes) {
+      const departureDateTime = new Date(`${booking.booking_date}T${dep.departure_time}`);
+      const feedbackTime = new Date(departureDateTime.getTime() + (tour.duration_minutes + 20) * 60 * 1000);
+
+      if (feedbackTime > new Date()) {
+        const qstash = new QStashClient({ token: process.env.QSTASH_TOKEN! });
+        await qstash.publishJSON({
+          url: `${process.env.NEXT_PUBLIC_BASE_URL || 'https://inselbahnhelgoland.vercel.app'}/api/feedback`,
+          body: { booking_id: booking.id },
+          notBefore: Math.floor(feedbackTime.getTime() / 1000),
+        });
+      }
+    }
+  } catch (qstashErr) {
+    console.error('Failed to schedule feedback email via QStash:', qstashErr);
+    // Don't break booking confirmation if QStash fails
+  }
 }
 
 interface EmailParams {
