@@ -5,7 +5,7 @@ interface Message {
   content: string;
 }
 
-const INACTIVITY_MS = 3 * 60 * 1000; // 3 minutes
+const INACTIVITY_MS = 1 * 60 * 1000; // 1 minute
 
 export function useChatLogger(messages: Message[]) {
   const loggedRef = useRef(false);

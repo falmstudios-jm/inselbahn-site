@@ -50,7 +50,7 @@ export async function POST(req: NextRequest) {
         'Authorization': `Bearer ${apiKey}`,
       },
       body: JSON.stringify({
-        model: 'gpt-5.4-nano-2026-03-17',
+        model: 'gpt-5.4-mini-2026-03-17',
         messages: [
           { role: 'system', content: SUMMARY_PROMPT },
           ...messages.map((m: { role: string; content: string }) => ({
@@ -106,15 +106,12 @@ export async function POST(req: NextRequest) {
     if (/kind|baby|famil/.test(content)) topics.push('familien');
     if (/ignore|bypass|system|jailbreak|DAN/.test(content)) topics.push('missbrauch');
 
-    // Save
+    // Save — only columns that exist in the table
     const { error: insertError } = await supabase.from('chat_logs').insert({
-      user_questions: userQuestions,
-      ai_answers: aiAnswers,
-      summary: `${userQuestions} → ${aiAnswers}`,
+      summary: `${userQuestions} → ${aiAnswers}`.slice(0, 1000),
       topics,
       status,
       message_count: messages.length,
-      ip_hash: await hashIP(ip),
     });
 
     if (insertError) {

@@ -248,7 +248,7 @@ FAQ:
 - Im Fahrzeug sitzen bleiben (Premium, Lange Anna)? Idealerweise steigt man aus und genießt die Aussicht. Wer nicht gut laufen kann, kann sich auf eine der vielen Bänke dort oben setzen. Wer gar nicht raus möchte: bitte mit dem Fahrer besprechen.
 - Gepäck: Kleine Taschen ja (max. 2). Großes Gepäck/Koffer nein.
 - Kinderwagen: Nein, können nicht mitgenommen werden.
-- Hunde: Unterland-Tour: Ja, bis MITTLERE Größe, angeleint. Große Hunde leider nicht. Premium-Tour: Keine Hunde (steile Wege, enge Pfade im Oberland).
+- Hunde: Unterland-Tour: Wenn Platz ist und es den anderen Gästen im Abteil nichts ausmacht, bis mittlere Größe, angeleint. Hundemitnahme kann nicht garantiert werden. Premium-Tour: Keine Hunde.
 - Snacks & Getränke: Ja, auch Bier ist ok. Aber nichts was kleckert (kein Eis, Ketchup). Fischbrötchen lieber vorher essen — Möwen klauen alles!
 - Alkohol: Ein Bier kein Problem. Stark alkoholisierte Personen dürfen aus Sicherheitsgründen nicht mitfahren.
 - Anschnallen: Nein, es gibt keine Anschnallgurte.
