@@ -11,16 +11,17 @@ const SLUG_TO_BOOKING_ID: Record<string, string> = {
 };
 
 const galleryRow1 = [
-  { src: "/images/tour-photo-1.jpg", alt: "Helgoland Klippen" },
-  { src: "/images/helgolandbahn-photo-1.jpg", alt: "Inselbahn am Hafen" },
-  { src: "/images/abfahrt-inselbahn.jpg", alt: "Abfahrt der Inselbahn" },
+  { src: "/images/666b81a83e5b0865626a34fe_helgolandbahn-1-2.jpg", alt: "Inselbahn Helgoland Rundfahrt" },
+  { src: "/images/666b822370124a550fa96b11_helgolandbahn-4.jpg", alt: "Inselbahn am Hafen" },
+  { src: "/images/666b90144c01c4b5cdca05c0_helgolandbahn-6.jpg", alt: "Helgoland Klippen" },
+  { src: "/images/666b901ff46dc56f280806a9_helgolandbahn-7.jpg", alt: "Inselbahn Fahrgäste" },
 ];
 
 const galleryRow2 = [
-  { src: "/images/helgolandbahn-photo-2.jpg", alt: "Fahrgäste in der Inselbahn" },
-  { src: "/images/tour-photo-2.jpg", alt: "Premium-Tour Aussicht" },
-  { src: "/images/tour-photo-1.jpg", alt: "Helgoland Natur" },
-  { src: "/images/helgolandbahn-photo-1.jpg", alt: "Inselbahn vor Häusern" },
+  { src: "/images/666b902e7760b1efe253a9ef_helgolandbahn-17.jpg", alt: "Helgoland Panorama" },
+  { src: "/images/666b9037f2359d6582524203_helgolandbahn-14.jpg", alt: "Premium-Tour Aussicht" },
+  { src: "/images/666b90643e5b08656276030b_helgolandbahn-12.jpg", alt: "Inselbahn auf Tour" },
+  { src: "/images/666b9090ffbb1554bef8498f_helgolandbahn-9.jpg", alt: "Helgoland Landschaft" },
 ];
 
 /** Map tour slugs to their illustration and photo assets */
