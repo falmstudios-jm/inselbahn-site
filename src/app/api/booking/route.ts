@@ -69,7 +69,7 @@ export async function POST(req: Request) {
       .select('adults, children, children_free, ghost_seats')
       .eq('departure_id', input.departure_id)
       .eq('booking_date', input.booking_date)
-      .eq('status', 'confirmed');
+      .in('status', ['confirmed', 'our_cancellation']);
 
     const { data: recentPending } = await supabaseAdmin
       .from('bookings')

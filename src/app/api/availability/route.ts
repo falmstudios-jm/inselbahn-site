@@ -39,7 +39,7 @@ export async function GET(req: NextRequest) {
       .from('bookings')
       .select('departure_id, adults, children, ghost_seats, children_free, wheelchair_seat')
       .eq('booking_date', date)
-      .eq('status', 'confirmed');
+      .in('status', ['confirmed', 'our_cancellation']);
 
     const { data: pendingBookings, error: pendError } = await supabase
       .from('bookings')
