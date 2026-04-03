@@ -1467,7 +1467,9 @@ export default function BookingWidget({ tours: supabaseTours }: BookingWidgetPro
 
                   {/* Capacity note */}
                   <p className="text-xs text-dark/40 text-center">
-                    {totalPassengers} von {remaining}{" "}Pl&auml;tzen belegt
+                    {remaining - totalPassengers > 0
+                      ? `Noch ${remaining - totalPassengers} ${remaining - totalPassengers === 1 ? 'Platz' : 'Plätze'} verfügbar`
+                      : 'Alle verfügbaren Plätze ausgewählt'}
                   </p>
 
                   {/* Price breakdown */}
