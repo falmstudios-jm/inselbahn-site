@@ -24,10 +24,10 @@ export default function AnnouncementBanner() {
       <div className="max-w-7xl mx-auto px-5 md:px-10 py-3 flex items-center justify-center gap-3 text-sm md:text-base relative">
         <div className="text-center pr-8">
           <p className="font-bold">
-            Nun deutlich mehr Premium-Touren mit bis zu 18 Personen!
+            Jetzt online buchen — Plätze sichern!
           </p>
           <p className="text-white/90 text-sm mt-0.5">
-            Unterland-Tour (13:30 und 14:30) &mdash; Premium-Tour (11:00 - (12:15) - 13:15 - 14:00 - 15:00 - 16:00 Uhr)
+            Aktuelle Abfahrtszeiten und Verfügbarkeiten finden Sie in unserer Online-Buchung.
           </p>
         </div>
         <button
