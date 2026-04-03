@@ -91,7 +91,7 @@ export default function Reviews() {
               </div>
             </div>
             <a
-              href="https://www.google.com/maps/place/Inselbahn+Helgoland"
+              href="https://g.page/r/CeEvXFmlaLMwEBE/review"
               target="_blank"
               rel="noopener noreferrer"
               className="ml-4 bg-primary text-white text-xs font-semibold px-4 py-2 rounded-full hover:bg-primary/90 transition-colors whitespace-nowrap"

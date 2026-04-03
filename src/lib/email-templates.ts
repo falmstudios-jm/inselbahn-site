@@ -123,7 +123,7 @@ export function buildConfirmationEmail(params: {
               <table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="border-left:4px solid #F24444;padding-left:16px;margin-bottom:24px;">
                 <tr>
                   <td>
-                    <p style="margin:0 0 4px;font-size:14px;font-weight:700;color:#333;"><a href="https://www.google.com/maps/place/Inselbahn+Rundfahrten+Helgoland/@54.1810127,7.8906696,17z" style="color:#333;text-decoration:none;">Treffpunkt: Franz-Schensky-Platz \u{1F4CD}</a></p>
+                    <p style="margin:0 0 4px;font-size:14px;font-weight:700;color:#333;"><a href="https://maps.app.goo.gl/NM5cejH96LjhS8n28" style="color:#333;text-decoration:none;">Treffpunkt: Franz-Schensky-Platz \u{1F4CD}</a></p>
                     <p style="margin:0;font-size:13px;color:#555;line-height:1.6;">
                       Halunder Jet / Katamarane: ca. 5 Min. \u00B7 MS Helgoland: ca. 15 Min.<br>
                       Landungsbr\u00FCcke (B\u00F6rteboot/D\u00FCne): ca. 2\u20133 Min.
