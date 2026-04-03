@@ -28,6 +28,7 @@ export function DashboardShell({ name, role, staffId, children }: DashboardShell
   const router = useRouter();
 
   const baseTabs = [
+    { href: '/dashboard/prepare', label: 'Tour', icon: TabIconTour },
     { href: '/dashboard', label: 'Fahrten', icon: TabIconFahrten },
     { href: '/dashboard/sell', label: 'Verkauf', icon: TabIconVerkauf },
     { href: '/dashboard/revenue', label: 'Umsatz', icon: TabIconUmsatz },
@@ -104,6 +105,15 @@ export function DashboardShell({ name, role, staffId, children }: DashboardShell
         </nav>
       </div>
     </DashboardCtx.Provider>
+  );
+}
+
+function TabIconTour({ active }: { active: boolean }) {
+  return (
+    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke={active ? '#F24444' : '#9CA3AF'} strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+      <circle cx="12" cy="12" r="10" />
+      <polyline points="12 6 12 12 16 14" />
+    </svg>
   );
 }
 

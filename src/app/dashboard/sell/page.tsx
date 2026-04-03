@@ -224,6 +224,9 @@ export default function SellPage() {
             </div>
           )}
 
+          {/* Invoice email option */}
+          {!confirmation.isBulk && <InvoiceEmailSection bookingReference={confirmation.reference} />}
+
           <button
             onClick={resetForm}
             className="w-full bg-primary text-white font-semibold py-4 rounded-lg text-lg active:scale-[0.98] transition-transform"
@@ -614,6 +617,73 @@ function CounterRow({
           </button>
         </div>
       </div>
+    </div>
+  );
+}
+
+function InvoiceEmailSection({ bookingReference }: { bookingReference: string }) {
+  const [expanded, setExpanded] = useState(false);
+  const [email, setEmail] = useState('');
+  const [sending, setSending] = useState(false);
+  const [sent, setSent] = useState(false);
+
+  const handleSend = async () => {
+    if (!email.trim() || !email.includes('@')) return;
+    setSending(true);
+    try {
+      // Update the booking with the customer email, then send invoice link
+      const res = await fetch('/api/dashboard/send-invoice-link', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ booking_reference: bookingReference, email: email.trim() }),
+      });
+      if (res.ok) {
+        setSent(true);
+      }
+    } catch {
+      // Silently fail — not critical
+    } finally {
+      setSending(false);
+    }
+  };
+
+  if (sent) {
+    return (
+      <div className="bg-green-50 border border-green-200 rounded-lg p-3 mb-4 text-center">
+        <p className="text-green-700 text-sm font-medium">✓ Rechnungslink an {email} gesendet</p>
+      </div>
+    );
+  }
+
+  if (!expanded) {
+    return (
+      <button
+        onClick={() => setExpanded(true)}
+        className="w-full text-sm text-dark/50 py-3 mb-2 hover:text-dark transition-colors"
+      >
+        🧾 Rechnung benötigt?
+      </button>
+    );
+  }
+
+  return (
+    <div className="bg-gray-50 rounded-lg p-4 mb-4 space-y-3">
+      <p className="text-sm text-dark/60">E-Mail für Rechnungslink:</p>
+      <input
+        type="email"
+        value={email}
+        onChange={(e) => setEmail(e.target.value)}
+        placeholder="kunde@email.de"
+        className="w-full p-3 border border-gray-300 rounded-lg text-base focus:outline-none focus:ring-2 focus:ring-primary/50"
+        autoFocus
+      />
+      <button
+        onClick={handleSend}
+        disabled={sending || !email.includes('@')}
+        className="w-full bg-dark text-white font-semibold py-3 rounded-lg text-sm disabled:opacity-50 active:scale-[0.98] transition-transform"
+      >
+        {sending ? 'Sende...' : 'Rechnungslink senden'}
+      </button>
     </div>
   );
 }

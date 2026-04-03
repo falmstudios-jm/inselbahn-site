@@ -119,6 +119,28 @@ async function handleIndividualSale(
 
   const bookingReference = generateBookingReference();
 
+  // Re-check capacity right before insert to prevent race conditions
+  const { data: recheck } = await supabase
+    .from('bookings')
+    .select('adults, children, children_free, ghost_seats')
+    .eq('departure_id', departure_id)
+    .eq('booking_date', booking_date)
+    .eq('status', 'confirmed');
+
+  const recheckSeats = (recheck || []).reduce((sum: number, b: { adults: number; children: number; children_free: number; ghost_seats: number | null }) => {
+    return sum + b.adults + b.children + (b.children_free || 0) + (b.ghost_seats || 0);
+  }, 0);
+
+  if (seatsNeeded > capacity - recheckSeats) {
+    return NextResponse.json(
+      {
+        error: 'Nicht genügend Plätze verfügbar (Kapazität hat sich geändert)',
+        available: Math.max(0, capacity - recheckSeats),
+      },
+      { status: 409 }
+    );
+  }
+
   const { data: booking, error: insertError } = await supabase
     .from('bookings')
     .insert({
