@@ -18,7 +18,7 @@ export async function GET(req: NextRequest) {
       .from('departures')
       .select(`
         id, departure_time, is_active, notes, bookable_online,
-        tours (id, slug, name, max_capacity, price_adult, price_child, child_age_limit)
+        tours (id, slug, name, max_capacity, online_capacity, price_adult, price_child, child_age_limit)
       `)
       .eq('is_active', true)
       .order('departure_time');
@@ -88,6 +88,7 @@ export async function GET(req: NextRequest) {
           slug: string;
           name: string;
           max_capacity: number;
+          online_capacity: number | null;
           price_adult: number;
           price_child: number;
           child_age_limit: number;
@@ -104,7 +105,11 @@ export async function GET(req: NextRequest) {
         }
 
         const totalBooked = bookingCounts.get(dep.id) || 0;
-        const remaining = tour.max_capacity - totalBooked;
+        // Online capacity = soft cap for online sales (reserve seats for walk-ups)
+        // Physical capacity = hard cap for dashboard/walk-up sales
+        const onlineCap = tour.online_capacity ?? tour.max_capacity;
+        const onlineRemaining = onlineCap - totalBooked;
+        const physicalRemaining = tour.max_capacity - totalBooked;
 
         return {
           departure_id: dep.id,
@@ -113,10 +118,13 @@ export async function GET(req: NextRequest) {
           tour_id: tour.id,
           tour_slug: tour.slug,
           tour_name: tour.name,
-          max_capacity: tour.max_capacity,
+          max_capacity: tour.max_capacity, // Shown on website as marketing
+          online_capacity: onlineCap, // Actual online sellable
           booked: totalBooked,
-          remaining: Math.max(0, remaining),
-          available: remaining > 0,
+          remaining: Math.max(0, onlineRemaining), // For online customers
+          physical_remaining: Math.max(0, physicalRemaining), // For dashboard
+          available: onlineRemaining > 0,
+          online_sold_out: onlineRemaining <= 0 && physicalRemaining > 0, // Online full but walk-up possible
           bookable_online: dep.bookable_online !== false,
           past: isPast,
           price_adult: tour.price_adult,

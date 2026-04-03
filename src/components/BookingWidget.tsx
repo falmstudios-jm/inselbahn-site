@@ -19,9 +19,12 @@ interface AvailabilitySlot {
   tour_slug: string;
   tour_name: string;
   max_capacity: number;
+  online_capacity?: number;
   booked: number;
   remaining: number;
+  physical_remaining?: number;
   available: boolean;
+  online_sold_out?: boolean;
   bookable_online: boolean;
   past?: boolean;
   price_adult: number;
@@ -1299,8 +1302,11 @@ export default function BookingWidget({ tours: supabaseTours }: BookingWidgetPro
                             <div className="flex items-center justify-between mb-1.5">
                               <div className="flex items-center gap-2">
                                 <span className={isPast || notBookableOnline ? "text-dark/30" : ""}>{time} Uhr</span>
-                                {soldOut && slot.bookable_online && (
+                                {soldOut && slot.bookable_online && !slot.online_sold_out && (
                                   <span className="text-[10px] font-bold uppercase bg-red-100 text-red-600 px-2 py-0.5 rounded-full">ausgebucht</span>
+                                )}
+                                {slot.online_sold_out && (
+                                  <span className="text-[10px] font-bold uppercase bg-amber-100 text-amber-700 px-2 py-0.5 rounded-full">online ausgebucht</span>
                                 )}
                               </div>
                               <span className={`text-sm ${remainColor}`}>
@@ -1337,10 +1343,17 @@ export default function BookingWidget({ tours: supabaseTours }: BookingWidgetPro
                               </p>
                             )}
 
-                            {/* Non-bookable notice */}
+                            {/* Non-bookable notice (ab Schiff) */}
                             {!isPast && notBookableOnline && (
                               <p className="text-xs text-dark/35 mt-1">
-                                Nur vor Ort buchbar — Tickets bei Tomek (11:30–14:30) oder beim Fahrer
+                                Abfahrt nach Schiffsankunft ab Hafen — Uhrzeit nur Schätzung, Tickets nur beim Fahrer
+                              </p>
+                            )}
+
+                            {/* Online sold out but walk-up possible */}
+                            {slot.online_sold_out && !isPast && slot.bookable_online && (
+                              <p className="text-xs text-amber-600 mt-1">
+                                Online ausgebucht — Restplätze ggf. vor Ort bei Tomek (11:30–14:30) oder beim Fahrer
                               </p>
                             )}
 

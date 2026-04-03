@@ -42,7 +42,8 @@ export async function POST(req: Request) {
     }
 
     const tour = departure.tours;
-    const capacity: number = tour.max_capacity;
+    // Use online_capacity for online bookings (reserve seats for walk-ups)
+    const capacity: number = tour.online_capacity ?? tour.max_capacity;
 
     // Check 2-hour cutoff for today's departures
     const nowBerlin = new Date().toLocaleString('en-US', { timeZone: 'Europe/Berlin' });
