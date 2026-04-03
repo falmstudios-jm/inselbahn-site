@@ -197,10 +197,21 @@ export default function AGBPage() {
               oder grob fahrl&auml;ssigen Pflichtverletzung beruhen.
             </p>
             <p className="mt-2">
-              Bei leichter Fahrl&auml;ssigkeit haftet der Anbieter nur bei
+              Bei leichter Fahrlässigkeit haftet der Anbieter nur bei
               Verletzung wesentlicher Vertragspflichten (Kardinalpflichten). In
               diesem Fall ist die Haftung auf den vertragstypischen,
-              vorhersehbaren Schaden begrenzt.
+              vorhersehbaren Schaden begrenzt, maximal jedoch auf das
+              Dreifache des gezahlten Ticketpreises pro betroffenem Fahrgast.
+            </p>
+            <p className="mt-2">
+              <strong>Hinweis zu den letzten Touren des Tages:</strong>{" "}
+              Die letzte Tour des Tages kann nach Abfahrt der letzten
+              Fährverbindung zum Festland enden. Fahrgästen wird empfohlen,
+              einen ausreichenden Zeitpuffer zwischen dem Ende der Tour
+              und der geplanten Schiffsabfahrt einzuplanen. Der Anbieter
+              übernimmt keine Haftung für verpasste Fährverbindungen,
+              wenn der Fahrgast eine Tour gebucht hat, deren planmäßiges
+              Ende weniger als 30 Minuten vor der Schiffsabfahrt liegt.
             </p>
             <p className="mt-2">
               Der Anbieter haftet nicht für Ausfälle, Verspätungen
