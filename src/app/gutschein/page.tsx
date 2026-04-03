@@ -83,8 +83,8 @@ export default function GutscheinPage() {
       setError('Bitte akzeptieren Sie die AGB und Datenschutzbestimmungen.');
       return;
     }
-    if (amount < 5 || amount > 500) {
-      setError('Bitte w\u00E4hlen Sie einen Betrag zwischen 5\u00A0\u20AC und 500\u00A0\u20AC.');
+    if (amount < 10 || amount > 500) {
+      setError('Bitte w\u00E4hlen Sie einen Betrag zwischen 10\u00A0\u20AC und 500\u00A0\u20AC.');
       return;
     }
     if (!purchaserName.trim() || !purchaserEmail.trim()) {
@@ -256,7 +256,7 @@ export default function GutscheinPage() {
                 <input
                   type="text"
                   inputMode="decimal"
-                  placeholder="Eigener Betrag (5 € – 500 €)"
+                  placeholder="Eigener Betrag (10 € – 500 €)"
                   value={customAmount}
                   onFocus={handleCustomFocus}
                   onChange={handleCustomChange}
@@ -411,7 +411,7 @@ export default function GutscheinPage() {
             <button
               type="button"
               onClick={handleSubmit}
-              disabled={loading || amount < 5}
+              disabled={loading || amount < 10}
               className="w-full py-4 rounded-xl bg-primary text-white font-bold text-lg hover:bg-primary/90 disabled:opacity-50 disabled:cursor-not-allowed transition-all"
             >
               {loading

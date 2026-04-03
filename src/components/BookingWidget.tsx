@@ -23,6 +23,7 @@ interface AvailabilitySlot {
   remaining: number;
   available: boolean;
   bookable_online: boolean;
+  past?: boolean;
   price_adult: number;
   price_child: number;
 }
@@ -316,9 +317,9 @@ export default function BookingWidget({ tours: supabaseTours }: BookingWidgetPro
     [slots, selectedTour],
   );
 
-  // Check if ALL bookable departures for selected tour are sold out
+  // Check if ALL bookable departures for selected tour are sold out (excluding past ones)
   const allSoldOut = useMemo(() => {
-    const bookableSlots = filteredSlots.filter((s) => s.bookable_online);
+    const bookableSlots = filteredSlots.filter((s) => s.bookable_online && !s.past);
     return bookableSlots.length > 0 && bookableSlots.every((s) => s.remaining <= 0);
   }, [filteredSlots]);
 
@@ -625,7 +626,7 @@ export default function BookingWidget({ tours: supabaseTours }: BookingWidgetPro
               Buchung bestätigt!
             </h2>
             <p className="text-dark/50 text-lg">
-              Wir freuen uns auf Sie auf deät Lun! 🎉
+              Wir freuen uns auf Sie auf Helgoland! 🎉
             </p>
           </div>
 
@@ -671,7 +672,7 @@ export default function BookingWidget({ tours: supabaseTours }: BookingWidgetPro
 
           {/* Meeting point reminder */}
           <div className="bg-gray-50 border border-gray-200 rounded-xl px-5 py-4 mt-4 text-sm text-dark/60 space-y-1.5">
-            <p className="font-medium text-dark/70">📍 Treffpunkt: Franz-Schensky-Platz</p>
+            <p className="font-medium text-dark/70"><a href="https://maps.app.goo.gl/wmp2NOgQJrpGNgmFx" target="_blank" rel="noopener noreferrer" className="hover:underline">📍 Treffpunkt: Franz-Schensky-Platz</a></p>
             <p>Bitte seien Sie <strong>15 Minuten vor Abfahrt</strong> am Treffpunkt.</p>
             <p>🚻 Toilette im Gebäude der Landungsbrücke (kostenlos)</p>
           </div>
@@ -1126,8 +1127,8 @@ export default function BookingWidget({ tours: supabaseTours }: BookingWidgetPro
                               src={t.illustration}
                               alt={`${t.name} Illustration`}
                               width={80}
-                              height={40}
-                              className="h-[40px] w-auto flex-shrink-0"
+                              height={32}
+                              className="h-[32px] w-auto flex-shrink-0"
                             />
                           </div>
                           <p className="text-sm text-dark/50 mb-3">
@@ -1243,7 +1244,8 @@ export default function BookingWidget({ tours: supabaseTours }: BookingWidgetPro
                         const isSlotSelected = selectedSlot?.departure_id === slot.departure_id;
                         const soldOut = slot.remaining <= 0;
                         const notBookableOnline = !slot.bookable_online;
-                        const isDisabledSlot = soldOut || notBookableOnline;
+                        const isPast = !!slot.past;
+                        const isDisabledSlot = soldOut || notBookableOnline || isPast;
                         const tourOpt = mergedTourOptions.find(t => t.id === selectedTour);
                         const isAmber = tourOpt?.accent === "amber";
 
@@ -1251,7 +1253,7 @@ export default function BookingWidget({ tours: supabaseTours }: BookingWidgetPro
                         const capacityPercent = slot.max_capacity > 0 ? (slot.booked / slot.max_capacity) * 100 : 0;
                         const remainingPercent = 100 - capacityPercent;
                         // Color for remaining text
-                        const remainColor = !slot.bookable_online
+                        const remainColor = isPast || !slot.bookable_online
                           ? "text-dark/30"
                           : soldOut
                             ? "text-red-400"
@@ -1270,26 +1272,28 @@ export default function BookingWidget({ tours: supabaseTours }: BookingWidgetPro
                               setSelectedSlot(slot);
                             }}
                             className={`w-full text-left px-5 py-4 rounded-2xl text-base font-medium transition-all border-2 ${
-                              notBookableOnline
+                              isPast
                                 ? "bg-gray-50 text-dark/30 border-gray-100 cursor-not-allowed"
-                                : soldOut
+                                : notBookableOnline
                                   ? "bg-gray-50 text-dark/30 border-gray-100 cursor-not-allowed"
-                                  : isSlotSelected
-                                    ? "bg-white text-dark border-primary shadow-md"
-                                    : `bg-white text-dark shadow-sm hover:shadow-md ${
-                                        isAmber ? "border-amber-200 hover:border-amber-300" : "border-[#c5d4e3] hover:border-[#1a3a5c]"
-                                      }`
+                                  : soldOut
+                                    ? "bg-gray-50 text-dark/30 border-gray-100 cursor-not-allowed"
+                                    : isSlotSelected
+                                      ? "bg-white text-dark border-primary shadow-md"
+                                      : `bg-white text-dark shadow-sm hover:shadow-md ${
+                                          isAmber ? "border-amber-200 hover:border-amber-300" : "border-[#c5d4e3] hover:border-[#1a3a5c]"
+                                        }`
                             }`}
                           >
                             <div className="flex items-center justify-between mb-1.5">
                               <div className="flex items-center gap-2">
-                                <span className={notBookableOnline ? "text-dark/30" : ""}>{time} Uhr</span>
+                                <span className={isPast || notBookableOnline ? "text-dark/30" : ""}>{time} Uhr</span>
                                 {soldOut && slot.bookable_online && (
                                   <span className="text-[10px] font-bold uppercase bg-red-100 text-red-600 px-2 py-0.5 rounded-full">ausgebucht</span>
                                 )}
                               </div>
                               <span className={`text-sm ${remainColor}`}>
-                                {notBookableOnline
+                                {isPast || notBookableOnline
                                   ? ""
                                   : soldOut
                                     ? ""
@@ -1298,7 +1302,7 @@ export default function BookingWidget({ tours: supabaseTours }: BookingWidgetPro
                             </div>
 
                             {/* Capacity progress bar */}
-                            {slot.bookable_online && (
+                            {slot.bookable_online && !isPast && (
                               <div className="w-full h-1.5 bg-dark/5 rounded-full overflow-hidden mb-1.5">
                                 <div
                                   className={`h-full rounded-full transition-all ${
@@ -1315,8 +1319,15 @@ export default function BookingWidget({ tours: supabaseTours }: BookingWidgetPro
                               </div>
                             )}
 
+                            {/* Past departure notice */}
+                            {isPast && (
+                              <p className="text-xs text-dark/35 mt-1">
+                                Nicht mehr online buchbar — {slot.booked} von {slot.max_capacity} Pl&auml;tze gebucht
+                              </p>
+                            )}
+
                             {/* Non-bookable notice */}
-                            {notBookableOnline && (
+                            {!isPast && notBookableOnline && (
                               <p className="text-xs text-dark/35 mt-1">
                                 Nur vor Ort buchbar — Tickets bei Tomek (11:30–14:30) oder beim Fahrer
                               </p>
@@ -1386,7 +1397,7 @@ export default function BookingWidget({ tours: supabaseTours }: BookingWidgetPro
 
                   {/* Capacity note */}
                   <p className="text-xs text-dark/40 text-center">
-                    {totalPassengers} von {remaining} Pl&auml;tzen belegt
+                    {totalPassengers} von {remaining}{" "}Pl&auml;tzen belegt
                   </p>
 
                   {/* Price breakdown */}
@@ -1451,6 +1462,12 @@ export default function BookingWidget({ tours: supabaseTours }: BookingWidgetPro
                       {giftCardCoversAll && (
                         <p className="text-green-700 text-xs mt-1">
                           Der Gutschein deckt den gesamten Betrag. Es ist keine Zahlung erforderlich.
+                        </p>
+                      )}
+                      {giftCardCoversAll && appliedGiftCard && (appliedGiftCard.remaining_value - giftCardDeduction) > 0 && (
+                        <p className="text-dark/50 text-xs mt-1">
+                          Restguthaben von {(appliedGiftCard.remaining_value - giftCardDeduction).toFixed(2).replace(".", ",")}&nbsp;&euro; bleibt auf Ihrem Gutschein erhalten
+                          {appliedGiftCard.expires_at ? ` und ist bis ${new Date(appliedGiftCard.expires_at).toLocaleDateString("de-DE")} g\u00FCltig` : ""}.
                         </p>
                       )}
                     </div>

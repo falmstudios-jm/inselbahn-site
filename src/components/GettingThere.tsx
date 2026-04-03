@@ -88,7 +88,7 @@ export default function GettingThere() {
         {/* Google Maps button */}
         <div className="text-center">
           <a
-            href="https://www.google.com/maps/place/Inselbahn+Helgoland"
+            href="https://maps.app.goo.gl/wmp2NOgQJrpGNgmFx"
             target="_blank"
             rel="noopener noreferrer"
             className="inline-flex items-center gap-2.5 border border-dark/20 text-dark rounded-full px-6 py-2.5 font-semibold text-sm hover:bg-dark/5 transition-colors"

@@ -15,10 +15,10 @@ const giftCards = [
     alt: "Premium-Tour",
   },
   {
-    title: "Familien-Gutschein",
-    price: "ab 34,00",
+    title: "Alle weiteren Gutscheine",
+    price: "ab 10,00",
     photo: "/images/tour-photo-1.jpg",
-    alt: "Familien-Gutschein",
+    alt: "Alle weiteren Gutscheine",
   },
 ];
 

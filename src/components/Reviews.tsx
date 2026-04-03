@@ -117,23 +117,6 @@ export default function Reviews() {
           ))}
         </div>
 
-        {/* TripAdvisor badge */}
-        <div className="flex items-center justify-center gap-4 mt-10">
-          <Image
-            src="/images/tripadvisor-logo.svg"
-            alt="TripAdvisor"
-            width={120}
-            height={30}
-          />
-          <a
-            href="https://www.tripadvisor.de/Attraction_Review-g187410-d27144771-Reviews-Inselbahn_Helgoland-Helgoland_Schleswig_Holstein.html"
-            target="_blank"
-            rel="noopener noreferrer"
-            className="text-sm text-dark/50 hover:text-dark transition-colors"
-          >
-            Alle Bewertungen lesen &rarr;
-          </a>
-        </div>
       </div>
     </section>
   );

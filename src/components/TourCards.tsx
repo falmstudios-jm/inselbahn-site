@@ -219,7 +219,7 @@ export default function TourCards({ tours }: TourCardsProps) {
           <div
             className="flex gap-2"
             style={{
-              animation: "marquee-left 40s linear infinite",
+              animation: "marquee-left 80s linear infinite",
               width: "fit-content",
             }}
           >
@@ -244,7 +244,7 @@ export default function TourCards({ tours }: TourCardsProps) {
           <div
             className="flex gap-2"
             style={{
-              animation: "marquee-right 40s linear infinite",
+              animation: "marquee-right 80s linear infinite",
               width: "fit-content",
             }}
           >
@@ -277,24 +277,26 @@ export default function TourCards({ tours }: TourCardsProps) {
             </p>
           </div>
 
-          <div className="grid md:grid-cols-2 gap-10 lg:gap-14">
+          <div className="grid md:grid-cols-2 gap-10 lg:gap-14 items-stretch">
             {[...tours].sort((a, b) => b.price_adult - a.price_adult).map((tour) => (
               <TourCard key={tour.id} tour={tour} onBook={handleBook} />
             ))}
           </div>
+        </div>
+      </div>
 
-          {/* Group booking */}
-          <div className="mt-16 text-center">
-            <p className="text-dark/60 text-sm md:text-base">
-              Gruppenrabatte f&uuml;r Reiseanbieter? Kontaktieren Sie uns f&uuml;r einen Rabattcode:{" "}
-              <a
-                href="mailto:info@helgolandbahn.de"
-                className="text-primary hover:underline font-semibold"
-              >
-                info@helgolandbahn.de
-              </a>
-            </p>
-          </div>
+      {/* Group booking */}
+      <div className="px-5 md:px-10 lg:px-20 pb-20 md:pb-28">
+        <div className="max-w-7xl mx-auto text-center">
+          <p className="text-dark/60 text-sm md:text-base">
+            Gruppenrabatte f&uuml;r Reiseanbieter? Kontaktieren Sie uns f&uuml;r einen Rabattcode:{" "}
+            <a
+              href="mailto:anbieter@helgolandbahn.de"
+              className="text-primary hover:underline font-semibold"
+            >
+              anbieter@helgolandbahn.de
+            </a>
+          </p>
         </div>
       </div>
     </section>

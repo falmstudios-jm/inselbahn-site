@@ -27,6 +27,7 @@ export interface AppliedDiscount {
 export interface AppliedGiftCard {
   code: string;
   remaining_value: number;
+  expires_at?: string;
 }
 
 interface DiscountGiftSectionProps {
@@ -62,6 +63,7 @@ export default function DiscountGiftSection({
         const card: AppliedGiftCard = {
           code: giftCardCode.trim().toUpperCase(),
           remaining_value: data.remaining_value,
+          expires_at: data.expires_at,
         };
         setAppliedGiftCard(card);
         onGiftCardApplied?.(card);

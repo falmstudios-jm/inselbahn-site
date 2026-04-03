@@ -9,6 +9,8 @@ import {
   generateCancelToken,
 } from '@/lib/booking-utils';
 
+const BASE_URL = process.env.NEXT_PUBLIC_BASE_URL || 'https://inselbahnhelgoland.vercel.app';
+
 export async function POST(req: Request) {
   try {
     const body = await req.json();
@@ -145,6 +147,47 @@ export async function POST(req: Request) {
         { error: 'Buchung konnte nicht erstellt werden' },
         { status: 500 }
       );
+    }
+
+    // Check if payment is skipped (gift card covers full amount)
+    if (input.skip_payment || totalPrice <= 0) {
+      // Confirm booking immediately — no Stripe needed
+      await supabaseAdmin
+        .from('bookings')
+        .update({ status: 'confirmed', payment_method: 'gift_card' })
+        .eq('id', booking.id);
+
+      // Send confirmation email (reuse webhook logic)
+      try {
+        const resend = new (await import('resend')).Resend(process.env.RESEND_API_KEY);
+        const { data: confirmedBooking } = await supabaseAdmin
+          .from('bookings')
+          .select('*, departure:departures(*, tour:tours(*))')
+          .eq('id', booking.id)
+          .single();
+
+        if (confirmedBooking) {
+          const tour = confirmedBooking.departure?.tour;
+          const dep = confirmedBooking.departure;
+          const ticketUrl = `${BASE_URL}/api/booking/${booking.id}/ticket?token=${cancelToken}`;
+          const cancelUrl = `${BASE_URL}/booking/cancel?id=${booking.id}&token=${cancelToken}`;
+
+          await resend.emails.send({
+            from: 'Inselbahn Helgoland <buchung@helgolandbahn.de>',
+            to: input.customer_email,
+            subject: `Buchungsbestätigung ${bookingReference} — ${tour?.name || 'Inselbahn Tour'}`,
+            html: `<p>Hallo ${input.customer_name},</p><p>Ihre Buchung <strong>${bookingReference}</strong> wurde bestätigt (bezahlt via Gutschein).</p><p>Tour: ${tour?.name}<br/>Datum: ${input.booking_date}<br/>Uhrzeit: ${dep?.departure_time?.slice(0, 5)} Uhr</p><p><a href="${ticketUrl}">Fahrkarte herunterladen</a> · <a href="${cancelUrl}">Stornieren</a></p>`,
+          });
+        }
+      } catch (emailErr) {
+        console.error('Gift card booking email error:', emailErr);
+      }
+
+      return NextResponse.json({
+        skip_payment: true,
+        booking_id: booking.id,
+        booking_reference: bookingReference,
+      });
     }
 
     // Create Stripe PaymentIntent for embedded payment

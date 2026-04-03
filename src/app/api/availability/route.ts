@@ -76,7 +76,7 @@ export async function GET(req: NextRequest) {
     const nowMinutes = nowDate.getMinutes();
     const nowTotalMinutes = nowHours * 60 + nowMinutes;
 
-    // Build response slots, filtering out past/too-late departures
+    // Build response slots, including past departures with a flag
     const slots = (departures || [])
       .map((dep) => {
         const tour = dep.tours as unknown as {
@@ -89,12 +89,13 @@ export async function GET(req: NextRequest) {
           child_age_limit: number;
         };
 
-        // For today: hide departures less than 2 hours from now
+        // For today: flag departures less than 2 hours from now as past
+        let isPast = false;
         if (date === today) {
           const [depH, depM] = dep.departure_time.split(':').map(Number);
           const depTotalMinutes = depH * 60 + depM;
           if (depTotalMinutes < nowTotalMinutes + 120) {
-            return null; // Too late to book — less than 2h before departure
+            isPast = true;
           }
         }
 
@@ -113,12 +114,12 @@ export async function GET(req: NextRequest) {
           remaining: Math.max(0, remaining),
           available: remaining > 0,
           bookable_online: dep.bookable_online !== false,
+          past: isPast,
           price_adult: tour.price_adult,
           price_child: tour.price_child,
           child_age_limit: tour.child_age_limit,
         };
-      })
-      .filter(Boolean); // Remove null entries (past departures)
+      });
 
     return NextResponse.json({ date, slots });
   } catch (error) {

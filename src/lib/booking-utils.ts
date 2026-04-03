@@ -19,6 +19,7 @@ export const bookingSchema = z.object({
     city: z.string().min(2),
     vat_id: z.string().optional(),
   }).optional(),
+  skip_payment: z.boolean().optional(),
 });
 
 export type BookingInput = z.infer<typeof bookingSchema>;
