@@ -88,8 +88,9 @@ export async function POST(
       );
     }
 
-    // Issue Stripe refund
+    // Handle refund based on payment method
     if (booking.stripe_payment_intent_id) {
+      // Stripe payment — issue Stripe refund
       try {
         await getStripe().refunds.create({
           payment_intent: booking.stripe_payment_intent_id,
@@ -103,11 +104,46 @@ export async function POST(
       }
     }
 
+    // Restore gift card balance if one was used
+    if (booking.gift_card_id) {
+      try {
+        // Find how much was used from the gift card for this booking
+        const { data: usage } = await supabase
+          .from('gift_card_usage')
+          .select('amount_used')
+          .eq('booking_id', id)
+          .eq('gift_card_id', booking.gift_card_id)
+          .single();
+
+        if (usage) {
+          // Restore the amount to the gift card
+          const { data: card } = await supabase
+            .from('gift_cards')
+            .select('remaining_value')
+            .eq('id', booking.gift_card_id)
+            .single();
+
+          if (card) {
+            await supabase
+              .from('gift_cards')
+              .update({
+                remaining_value: Number(card.remaining_value) + Number(usage.amount_used),
+              })
+              .eq('id', booking.gift_card_id);
+          }
+        }
+      } catch (gcErr) {
+        console.error('Gift card restore error:', gcErr);
+        // Don't fail the cancellation — log and continue
+      }
+    }
+
     // Update booking status
+    const refundStatus = booking.stripe_payment_intent_id ? 'refunded' : 'cancelled';
     const { error: updateError } = await supabase
       .from('bookings')
       .update({
-        status: 'refunded',
+        status: refundStatus,
         cancelled_at: new Date().toISOString(),
       })
       .eq('id', id);
