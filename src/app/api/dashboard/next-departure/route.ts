@@ -53,6 +53,34 @@ export async function GET() {
       if (tomorrowDeps && tomorrowDeps.length > 0) {
         const tDep = tomorrowDeps[0];
         const tTour = tDep.tours as unknown as { id: string; slug: string; name: string; max_capacity: number; online_capacity: number | null; price_adult: number; price_child: number };
+
+        // Fetch bookings for tomorrow's departure
+        const { data: tBookings } = await supabase
+          .from('bookings')
+          .select('id, booking_reference, customer_name, adults, children, children_free, payment_method, status, total_amount, ghost_seats, wheelchair_seat, stripe_payment_intent_id, gift_card_id, notes')
+          .eq('departure_id', tDep.id)
+          .eq('booking_date', tomorrowStr)
+          .in('status', ['confirmed', 'our_cancellation']);
+
+        const passengers = (tBookings || [])
+          .sort((a, b) => {
+            if (a.customer_name === 'BLOCKIERT' || a.customer_name?.startsWith('GESPERRT')) return 1;
+            if (b.customer_name === 'BLOCKIERT' || b.customer_name?.startsWith('GESPERRT')) return -1;
+            const aOnline = !a.payment_method || a.payment_method === 'online';
+            const bOnline = !b.payment_method || b.payment_method === 'online';
+            if (aOnline && !bOnline) return -1;
+            if (!aOnline && bOnline) return 1;
+            return 0;
+          });
+
+        let tAdults = 0, tChildren = 0, tChildrenFree = 0, tSeats = 0;
+        for (const b of tBookings || []) {
+          tAdults += b.adults || 0;
+          tChildren += b.children || 0;
+          tChildrenFree += b.children_free || 0;
+          tSeats += (b.adults || 0) + (b.children || 0) + (b.children_free || 0) + (b.ghost_seats || 0);
+        }
+
         return NextResponse.json({
           date: tomorrowStr,
           current_time: now.toISOString(),
@@ -66,12 +94,12 @@ export async function GET() {
             online_capacity: tTour.online_capacity,
             price_adult: tTour.price_adult,
             price_child: tTour.price_child,
-            passengers: [],
-            total_adults: 0,
-            total_children: 0,
-            total_children_free: 0,
-            total_seats: 0,
-            remaining: tTour.max_capacity,
+            passengers,
+            total_adults: tAdults,
+            total_children: tChildren,
+            total_children_free: tChildrenFree,
+            total_seats: tSeats,
+            remaining: tTour.max_capacity - tSeats,
           },
         });
       }
