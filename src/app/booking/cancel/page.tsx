@@ -99,7 +99,7 @@ function CancelLookupForm() {
                 type="text"
                 value={reference}
                 onChange={(e) => setReference(e.target.value)}
-                placeholder="z.B. IB-123456"
+                placeholder="z.B. IB-2026-XXXX"
                 required
                 className="w-full px-4 py-3 rounded-xl border border-gray-200 focus:border-dark focus:outline-none transition-colors bg-white"
               />
@@ -130,6 +130,19 @@ function CancelLookupForm() {
               {lookupLoading ? "Wird gesucht..." : "Buchung suchen"}
             </button>
           </form>
+          {/* Stornierungsbedingungen — always visible */}
+          <div className="px-6 pb-4">
+            <div className="bg-gray-50 rounded-xl p-4 text-sm text-dark/60 space-y-2">
+              <p className="font-medium text-dark/70">Stornierungsbedingungen</p>
+              <ul className="space-y-1.5 list-disc list-inside text-xs leading-relaxed">
+                <li>Kostenlose Stornierung bis Mitternacht am Vortag (23:59 Uhr).</li>
+                <li>Nach Ablauf der Frist ist keine Stornierung mehr möglich.</li>
+                <li>Bei Ausfall durch die Inselbahn (z.B. Wetter) erhalten Sie automatisch eine volle Rückerstattung.</li>
+                <li>Bei Gutschein-Buchungen wird der Betrag zurück auf den Gutschein gebucht.</li>
+                <li>Es besteht kein Widerrufsrecht gemäß §312g Abs. 2 Nr. 9 BGB (Freizeitveranstaltungen mit festem Datum).</li>
+              </ul>
+            </div>
+          </div>
           <div className="px-6 pb-6 text-center">
             <Link
               href="/"
