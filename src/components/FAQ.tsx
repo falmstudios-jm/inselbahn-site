@@ -7,52 +7,82 @@ const faqs = [
   {
     question: "Was ist die Inselbahn für ein Fahrzeug?",
     answer:
-      "Unsere Inselbahn besteht aus drei Sonderanfertigungen aus dem Jahr 2025, die speziell für Helgoland gebaut wurden: zwei Premium-Tour-Fahrzeuge (je max. 18 Personen) und ein großes Unterland-Tour-Fahrzeug (max. 42 Personen + 1 Rollstuhlplatz). Die Fahrzeuge fahren maximal 6 km/h in der Stadt und 10 km/h außerhalb. Fußgänger haben auf Helgoland immer Vorrang — hupen ist verboten!",
+      "Unsere Inselbahn besteht aus drei Sonderanfertigungen aus dem Jahr 2025, gebaut vom weltweit bekannten Achterbahnhersteller Intamin — perfekt für die Bedingungen auf Helgoland abgestimmt, mega stark und robust. Zwei Premium-Tour-Fahrzeuge (je max. 18 Personen) und ein großes Unterland-Tour-Fahrzeug (max. 42 Personen + 1 Rollstuhlplatz). Auf Helgoland dürfen alle Fahrzeuge max. 10 km/h fahren, innerorts 6 km/h.",
   },
   {
     question: "Darf ich mir aussuchen, wo ich sitzen möchte?",
     answer:
-      "Ja, grundsätzlich dürfen Sie. Unsere Mitarbeiter bemühen sich, die Sitzplätze so zu organisieren, dass jeder mit seinen Bekannten zusammensitzen kann. Wenn die Tour nicht voll ausgelastet ist, dürfen Sie Ihren Platz natürlich selbst aussuchen. Generell gilt bei uns: first come, first serve.",
+      "Ja, Sie dürfen sich Ihren Platz aussuchen. Es gilt: first come, first serve — also am besten 15 Minuten vor Abfahrt da sein!",
   },
   {
     question: "Darf ich Snacks und Getränke mitbringen?",
     answer:
-      "Gerne dürfen Sie sich Snacks und Getränke mitbringen. Allerdings bitten wir darum, Speisen zu vermeiden, die leicht kleckern oder verschütten können. Wasser, Gummibärchen und ähnliches sind in Ordnung. Eis, Nutella, Fischbrötchen oder Ketchup sind leider verboten.",
+      "Grundsätzlich ja, allerdings bitten wir darum, Speisen zu vermeiden, die leicht kleckern. Wasser, Gummibärchen und ähnliches sind kein Problem. Eis, Fischbrötchen oder Ketchup bitte nicht. Ein Bier ist auch okay — stark alkoholisierte Personen dürfen aus Sicherheitsgründen nicht mitfahren.",
   },
   {
     question: "Kann ich mein Gepäck mitnehmen?",
     answer:
-      "Leider können wir weder Gepäcktransport, noch Gepäckmitnahme anbieten. Wir bitten Sie, nur das mitzubringen, was Sie während der Fahrt benötigen.",
+      "Leider nein. Wir bitten Sie, nur das mitzubringen, was Sie während der Fahrt benötigen. Unser Ticketverkäufer Tomek kann zwischen 11:30 und 14:30 Uhr ein Auge auf Ihre Sachen werfen — allerdings ohne Haftung. Auf Helgoland klaut aber keiner!",
   },
   {
     question: "Wie sieht es mit Rollatoren oder Rollstühlen aus?",
     answer:
-      "Mobilität ist uns sehr wichtig und wir geben unser Bestes, um jeden Gast auf unserer malerischen Inselreise willkommen zu heißen. Die Unterland-Tour bietet einen Rollstuhlplatz und Rollatoren können beim Ticketverkäufer deponiert oder mitgenommen werden. Zum Oberland gibt es einen Fahrstuhl (alternativ 182-260 Stufen). Die Premium-Tour empfehlen wir hingegen eher für die \u2018Bergziegen\u2019 unter unseren Gästen, da die Wege im Oberland nicht vollständig barrierefrei sind.",
+      "Die Unterland-Tour bietet einen Rollstuhlplatz (kein E-Rollstuhl — zu schwer). Rollatoren können bei Tomek geparkt werden — auf Helgoland klaut keiner, schon gar nicht Rollatoren! Bei der Premium-Tour kann ein zusammenklappbarer Rollator bei nicht voller Belegung mitgenommen werden, ist aber nicht garantiert. Beide Touren empfehlen wir für Gehbehinderte — an der Langen Anna gibt es Bänke und der Weg wurde erneuert.",
   },
   {
     question: "Kann ich meinen Hund mitnehmen?",
     answer:
-      "Kleinere Hunde, die auf dem Schoß mitfahren könnten, sind in der Regel erlaubt. Größere Hunde können im hinteren Teil der Inselbahn Platz finden, aber dies hängt von der aktuellen Kapazität ab. Bei der Premium-Tour müssen wir aus Platzgründen und zum Wohl aller Passagiere leider grundsätzlich auf alle Hunde verzichten.",
+      "Bei der Unterland-Tour ja — Hunde bis mittlerer Größe, angeleint bitte. Bei der Premium-Tour leider nein, wegen der steilen Wege und engen Pfade im Oberland.",
   },
   {
-    question: "Wie komme ich zur Düne und was kostet die Fähre?",
+    question: "Darf man während der Fahrt stehen oder telefonieren?",
     answer:
-      "Die Dünenfähre \u201eWitte Kliff\u201c fährt alle 30 Minuten vom Helgoländer Hafen zur Nachbarinsel Düne. Erwachsene zahlen 6 \u20AC, Kinder den halben Preis. Auf der Düne erwarten Sie ca. 130.000 m\u00B2 Sandstrand, neugierige Kegelrobben und Seehunde und den weltweit einzigartigen Roten Flint — einen roten Feuerstein, den es nur hier gibt.",
+      "Nein, beides ist aus Sicherheitsgründen nicht erlaubt. Bitte bleiben Sie während der gesamten Fahrt auf Ihrem Platz sitzen.",
   },
   {
-    question: "Wann ist die beste Zeit für Vogelbeobachtung?",
+    question: "Können Babys und Kleinkinder mitfahren?",
     answer:
-      "Die Brutkolonie am Lummenfelsen ist von Mai bis August am aktivsten, mit Trottellummen, Basstölpeln, Dreizehenmöwen und Tordalken. Das absolute Highlight ist der Lummensprung im Juni, wenn die flugunfähigen Küken von den Klippen ins Meer springen. Die Vogelwarte auf dem Oberland beringt jährlich bis zu 15.000 Vögel. Auf der Düne können Sie ganzjährig Robben beobachten, besonders im Winter gibt es Robbenbabys.",
+      "Ja, Babys und Kleinkinder sind willkommen! Kinder unter 6 Jahren fahren kostenlos und bekommen einen eigenen Sitzplatz. Baby-Tragen sind kein Problem.",
+  },
+  {
+    question: "Sind die Fahrzeuge überdacht?",
+    answer:
+      "Ja, unsere Fahrzeuge sind von oben überdacht. Bei Kälte oder Regen haben wir zusätzlich Seitenabdeckungen — Sie bleiben also trocken!",
   },
   {
     question: "Gibt es Toiletten in der Nähe?",
     answer:
-      "Ja, es gibt kostenpflichtige Toiletten an der Landungsbrücke. Am Hafen gibt es auch welche, aber zwischen Schiffsausstieg und Bahnabfahrt haben Sie wahrscheinlich keine Zeit, diese zu erreichen. Daher empfehlen wir Ihnen, vor der Abfahrt das stille Örtchen auf dem Schiff aufzusuchen.",
+      "Ja, direkt am Abfahrtsort an der Landungsbrücke gibt es kostenlose öffentliche Toiletten. Wichtig: Während der Premium-Tour gibt es keine Toilettenmöglichkeit — auch nicht an der Langen Anna!",
+  },
+  {
+    question: "Wie komme ich zur Düne und was kostet die Fähre?",
+    answer:
+      "Die D\u00FCnenf\u00E4hre \u201EWitte Kliff\u201C f\u00E4hrt alle 30 Minuten vom Helgol\u00E4nder Hafen. Erwachsene zahlen 6\u00A0\u20AC, Kinder den halben Preis. Auf der D\u00FCne erwarten Sie Sandstrand, neugierige Kegelrobben und Seehunde und den weltweit einzigartigen Roten Flint.",
+  },
+  {
+    question: "Wann ist die beste Jahreszeit für eine Tour?",
+    answer:
+      "Die beste Helgoland-Saison ist Juni bis August, aber unsere Tour ist immer gut. Bei Regen bleibt man trocken, bei Sonne ist es wunderbar, und der Fahrtwind ist klasse. Unsere Saison läuft von Anfang April bis Ende Oktober.",
+  },
+  {
+    question: "Wie lange im Voraus sollte ich buchen?",
+    answer:
+      "Idealerweise sobald Sie sich entschieden haben. Unsere Touren, insbesondere die Premium-Tour, sind sehr beliebt und können schnell ausgebucht sein.",
   },
   {
     question: "Was passiert bei schlechtem Wetter?",
     answer:
-      "Wir Helgoländer sind hart im Nehmen, aber wenn selbst die Schafe sich an Masten festklammern, um nicht wegzufliegen, dann ist es Zeit, die Fahrten abzusagen. Wir tun unser Bestes, um Sie rechtzeitig zu informieren. Bei Online-Buchungen gibt es eine Rückerstattung.",
+      "Bei Regen fahren wir ganz normal — unsere Fahrzeuge sind überdacht. Bei Sturm, Gewitter oder extremem Wetter können Fahrten ausfallen. In dem Fall erhalten Sie automatisch eine volle Rückerstattung.",
+  },
+  {
+    question: "Kann ich meine Buchung stornieren?",
+    answer:
+      "Ja, kostenlose Stornierung bis Mitternacht am Vortag — für alle gleich. Nutzen Sie den Stornierungslink in Ihrer Bestätigungs-E-Mail oder unseren Self-Service-Bereich.",
+  },
+  {
+    question: "Fährt die Bahn auch an Feiertagen?",
+    answer:
+      "Wir fahren während der gesamten Saison (April bis Oktober). Im Winter findet kein Betrieb statt.",
   },
 ];
 
