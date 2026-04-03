@@ -100,24 +100,37 @@ export async function cancel_departures(args: {
     .eq('booking_date', args.date)
     .eq('status', 'confirmed');
 
-  // If a specific tour is given, filter by tour slug
+  // Build departure filter: either specific tour or ALL active departures
+  let depIdsForQuery: string[] | null = null;
   if (args.tour_slug) {
     const tour = await getTourBySlug(args.tour_slug);
     let depQuery = supabase
       .from('departures')
       .select('id')
       .eq('tour_id', tour.id);
-    // If a specific time is given, filter to that departure only
     if (args.time) {
       const timeStr = args.time.length === 5 ? args.time + ':00' : args.time;
       depQuery = depQuery.eq('departure_time', timeStr);
     }
     const { data: departures } = await depQuery;
-    const depIds = (departures || []).map((d: { id: string }) => d.id);
-    if (depIds.length === 0) {
+    depIdsForQuery = (departures || []).map((d: { id: string }) => d.id);
+    if (depIdsForQuery.length === 0) {
       return `Keine Abfahrt gefunden für ${args.tour_slug}${args.time ? ` um ${args.time}` : ''}.`;
     }
-    query = query.in('departure_id', depIds);
+    query = query.in('departure_id', depIdsForQuery);
+  } else {
+    // No tour_slug: get ALL active departures to cancel everything on that date
+    let depQuery = supabase.from('departures').select('id').eq('is_active', true);
+    if (args.time) {
+      const timeStr = args.time.length === 5 ? args.time + ':00' : args.time;
+      depQuery = depQuery.eq('departure_time', timeStr);
+    }
+    const { data: allDeps } = await depQuery;
+    depIdsForQuery = (allDeps || []).map((d: { id: string }) => d.id);
+    if (depIdsForQuery.length === 0) {
+      return `Keine aktiven Abfahrten gefunden.`;
+    }
+    query = query.in('departure_id', depIdsForQuery);
   }
 
   const { data: bookings, error } = await query;
@@ -125,36 +138,41 @@ export async function cancel_departures(args: {
 
   if (!bookings || bookings.length === 0) {
     // Even with no bookings, block the departures so no new bookings can be made
-    let depIdsToBlock: string[] = [];
+    const depIdsToBlock: string[] = [];
+
+    // Get all departures that need blocking (with capacity info)
+    let blockDepQuery = supabase.from('departures').select('id, tours:tour_id(max_capacity)').eq('is_active', true);
     if (args.tour_slug) {
       const tour = await getTourBySlug(args.tour_slug);
-      let depQuery = supabase.from('departures').select('id, tours:tour_id(max_capacity)').eq('tour_id', tour.id).eq('is_active', true);
-      if (args.time) {
-        const timeStr = args.time.length === 5 ? args.time + ':00' : args.time;
-        depQuery = depQuery.eq('departure_time', timeStr);
-      }
-      const { data: deps } = await depQuery;
-      for (const dep of deps || []) {
-        const maxCap = (dep.tours as unknown as { max_capacity: number })?.max_capacity || 18;
-        await supabase.from('bookings').insert({
-          departure_id: dep.id,
-          booking_date: args.date,
-          adults: maxCap,
-          children: 0,
-          children_free: 0,
-          ghost_seats: 0,
-          customer_name: `GESPERRT - ${args.reason || 'Ausfall'}`,
-          customer_email: 'system@helgolandbahn.de',
-          total_amount: 0,
-          status: 'our_cancellation',
-          payment_method: 'manual_entry',
-          cancel_token: crypto.randomUUID(),
-          booking_reference: `BLOCK-${args.date}-${dep.id.slice(0, 4)}`,
-        });
-        depIdsToBlock.push(dep.id);
-      }
+      blockDepQuery = blockDepQuery.eq('tour_id', tour.id);
     }
-    return `Keine bestätigten Buchungen für ${args.date}${args.tour_slug ? ` (${args.tour_slug})` : ''} gefunden.${depIdsToBlock.length > 0 ? ` ${depIdsToBlock.length} Abfahrt(en) gesperrt.` : ''}`;
+    if (args.time) {
+      const timeStr = args.time.length === 5 ? args.time + ':00' : args.time;
+      blockDepQuery = blockDepQuery.eq('departure_time', timeStr);
+    }
+    const { data: deps } = await blockDepQuery;
+
+    for (const dep of deps || []) {
+      const maxCap = (dep.tours as unknown as { max_capacity: number })?.max_capacity || 18;
+      await supabase.from('bookings').insert({
+        departure_id: dep.id,
+        booking_date: args.date,
+        adults: maxCap,
+        children: 0,
+        children_free: 0,
+        ghost_seats: 0,
+        customer_name: `GESPERRT - ${args.reason || 'Ausfall'}`,
+        customer_email: 'system@helgolandbahn.de',
+        total_amount: 0,
+        status: 'our_cancellation',
+        payment_method: 'manual_entry',
+        cancel_token: crypto.randomUUID(),
+        booking_reference: `BLOCK-${args.date}-${dep.id.slice(0, 4)}`,
+      });
+      depIdsToBlock.push(dep.id);
+    }
+
+    return `Keine bestätigten Buchungen für ${args.date}${args.tour_slug ? ` (${args.tour_slug})` : ' (alle Touren)'} gefunden.${depIdsToBlock.length > 0 ? ` ${depIdsToBlock.length} Abfahrt(en) gesperrt.` : ''}`;
   }
 
   const stripe = getStripe();
@@ -178,7 +196,8 @@ export async function cancel_departures(args: {
     }
 
     // Restore gift card balance if booking used a gift card
-    if (booking.gift_card_id) {
+    // Check both gift_card_id and payment_method, and always look up gift_card_usage
+    if (booking.gift_card_id || booking.payment_method === 'gift_card') {
       try {
         const { data: usages } = await supabase
           .from('gift_card_usage')
@@ -186,6 +205,7 @@ export async function cancel_departures(args: {
           .eq('booking_id', booking.id);
 
         for (const usage of usages || []) {
+          if (!usage.amount_used || Number(usage.amount_used) <= 0) continue;
           // Add back the used amount to the gift card
           const { data: card } = await supabase
             .from('gift_cards')
@@ -198,9 +218,10 @@ export async function cancel_departures(args: {
               .from('gift_cards')
               .update({ remaining_value: Number(card.remaining_value) + Number(usage.amount_used) })
               .eq('id', usage.gift_card_id);
+            refundedAmount += Number(usage.amount_used);
           }
         }
-        giftCardsRestored++;
+        if ((usages || []).length > 0) giftCardsRestored++;
       } catch (e) {
         console.error(`Gift card restore failed for ${booking.booking_reference}:`, e);
       }
@@ -294,11 +315,20 @@ export async function cancel_departures(args: {
     }
   }
 
-  // ── Block remaining capacity so no new bookings can be made ──
-  // Collect unique departure IDs that were affected
-  const affectedDepartureIds = [...new Set(bookings.map((b) => b.departure_id as string))];
+  // ── Block ALL targeted departures so no new bookings can be made ──
+  // Use depIdsForQuery (ALL departures matching the tour/time filter), not just ones with bookings
+  const allTargetedDepIds = depIdsForQuery || [...new Set(bookings.map((b) => b.departure_id as string))];
+  // Filter out departures that already have a GESPERRT booking for this date
+  const { data: existingBlocks } = await supabase
+    .from('bookings')
+    .select('departure_id')
+    .eq('booking_date', args.date)
+    .eq('status', 'our_cancellation')
+    .like('customer_name', 'GESPERRT%');
+  const alreadyBlocked = new Set((existingBlocks || []).map((b) => b.departure_id));
 
-  for (const depId of affectedDepartureIds) {
+  for (const depId of allTargetedDepIds) {
+    if (alreadyBlocked.has(depId)) continue; // Already blocked
     // Get max capacity from the tour
     const { data: depWithTour } = await supabase
       .from('departures')
@@ -325,7 +355,8 @@ export async function cancel_departures(args: {
     });
   }
 
-  return `${refundedCount} Buchung(en) für ${args.date} storniert. ${refundedAmount.toFixed(2)}€ erstattet. ${emailsSent} Stornierungsmail(s) gesendet.${giftCardsRestored > 0 ? ` ${giftCardsRestored} Gutschein(e) wiederhergestellt.` : ''} ${affectedDepartureIds.length} Abfahrt(en) gesperrt.`;
+  const newlyBlocked = allTargetedDepIds.filter(id => !alreadyBlocked.has(id)).length;
+  return `${refundedCount} Buchung(en) für ${args.date}${args.tour_slug ? ` (${args.tour_slug})` : ''} storniert. ${refundedAmount.toFixed(2)}€ erstattet. ${emailsSent} Stornierungsmail(s) gesendet.${giftCardsRestored > 0 ? ` ${giftCardsRestored} Gutschein(e) wiederhergestellt.` : ''} ${newlyBlocked} Abfahrt(en) gesperrt.`;
 }
 
 // ── Tool: create_announcement ──

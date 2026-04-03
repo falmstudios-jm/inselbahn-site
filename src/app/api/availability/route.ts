@@ -37,7 +37,7 @@ export async function GET(req: NextRequest) {
 
     const { data: confirmedBookings, error: confError } = await supabase
       .from('bookings')
-      .select('departure_id, adults, children, ghost_seats, children_free, wheelchair_seat')
+      .select('departure_id, adults, children, ghost_seats, children_free, wheelchair_seat, customer_name, status')
       .eq('booking_date', date)
       .in('status', ['confirmed', 'our_cancellation']);
 
@@ -62,12 +62,17 @@ export async function GET(req: NextRequest) {
     // Build booking counts per departure
     const bookingCounts = new Map<string, number>();
     const wheelchairBooked = new Map<string, boolean>();
+    const cancelledDepartures = new Set<string>();
     if (bookings) {
       for (const b of bookings) {
         const current = bookingCounts.get(b.departure_id) || 0;
         bookingCounts.set(b.departure_id, current + b.adults + b.children + (b.ghost_seats || 0) + (b.children_free || 0));
         if (b.wheelchair_seat) {
           wheelchairBooked.set(b.departure_id, true);
+        }
+        // Detect GESPERRT/our_cancellation bookings = departure is cancelled by operator
+        if (b.status === 'our_cancellation' && b.customer_name?.startsWith('GESPERRT')) {
+          cancelledDepartures.add(b.departure_id);
         }
       }
     }
@@ -131,6 +136,7 @@ export async function GET(req: NextRequest) {
           price_child: tour.price_child,
           child_age_limit: tour.child_age_limit,
           wheelchair_available: !wheelchairBooked.get(dep.id),
+          cancelled: cancelledDepartures.has(dep.id),
         };
       });
 

@@ -27,6 +27,7 @@ interface AvailabilitySlot {
   online_sold_out?: boolean;
   bookable_online: boolean;
   past?: boolean;
+  cancelled?: boolean;
   price_adult: number;
   price_child: number;
   wheelchair_available?: boolean;
@@ -325,9 +326,9 @@ export default function BookingWidget({ tours: supabaseTours }: BookingWidgetPro
     [slots, selectedTour],
   );
 
-  // Check if ALL bookable departures for selected tour are sold out (excluding past ones)
+  // Check if ALL bookable departures for selected tour are sold out (excluding past and cancelled ones)
   const allSoldOut = useMemo(() => {
-    const bookableSlots = filteredSlots.filter((s) => s.bookable_online && !s.past);
+    const bookableSlots = filteredSlots.filter((s) => s.bookable_online && !s.past && !s.cancelled);
     return bookableSlots.length > 0 && bookableSlots.every((s) => s.remaining <= 0);
   }, [filteredSlots]);
 
