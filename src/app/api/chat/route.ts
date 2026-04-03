@@ -384,7 +384,12 @@ function buildDynamicPrompt(
   // Current time in Germany (CET/CEST)
   const nowDE = new Date().toLocaleString('de-DE', { timeZone: 'Europe/Berlin' });
   const nowTime = new Date().toLocaleTimeString('de-DE', { timeZone: 'Europe/Berlin', hour: '2-digit', minute: '2-digit', hour12: false });
+  const hourNow = parseInt(nowTime.split(':')[0]);
+  const isAfterHours = hourNow >= 17 || hourNow < 8;
   let dynamic = `\n\nHEUTIGES DATUM: ${today}\nAKTUELLE UHRZEIT (Helgoland): ${nowTime} Uhr\nWICHTIG: Nenne NUR Abfahrtszeiten die NACH der aktuellen Uhrzeit liegen! Vergangene Touren NICHT mehr anbieten.\n`;
+  if (isAfterHours) {
+    dynamic += `\n⚠️ ES IST ${nowTime} UHR — AUSSERHALB DER BETRIEBSZEITEN!\n- Tomek ist NICHT am Platz (nur 11:30-14:30)\n- Es fahren KEINE Touren mehr heute\n- Empfehle IMMER die Online-Buchung für morgen oder einen anderen Tag\n- Sage NICHT "geh zum Platz" oder "frag den Fahrer" — da ist niemand!\n- Sage stattdessen: "Wir haben heute bereits Feierabend. Buchen Sie gerne online für Ihren nächsten Besuch!"\n`;
+  }
 
   // Announcements
   if (announcements && announcements.length > 0) {
