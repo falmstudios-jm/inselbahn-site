@@ -88,7 +88,7 @@ const tourOptions = [
   },
 ];
 
-const MAX_FUTURE_DAYS = parseInt(process.env.NEXT_PUBLIC_MAX_BOOKING_DAYS || '30', 10);
+const DEFAULT_MAX_FUTURE_DAYS = 30;
 
 const STEPS = ["Datum", "Tour", "Uhrzeit", "Personen", "Rabatt", "Kontakt", "Zahlung"];
 
@@ -267,6 +267,16 @@ export default function BookingWidget({ tours: supabaseTours }: BookingWidgetPro
     }
     return opt;
   });
+  const [maxFutureDays, setMaxFutureDays] = useState(DEFAULT_MAX_FUTURE_DAYS);
+
+  // Fetch max booking days from Supabase settings
+  useEffect(() => {
+    fetch('/api/settings?key=max_booking_days')
+      .then(r => r.ok ? r.json() : null)
+      .then(d => { if (d?.value) setMaxFutureDays(parseInt(d.value, 10)); })
+      .catch(() => {});
+  }, []);
+
   const [step, setStep] = useState(0);
   const [selectedDate, setSelectedDate] = useState<string>("");
   const [selectedTour, setSelectedTour] = useState<string>("");
@@ -594,8 +604,8 @@ export default function BookingWidget({ tours: supabaseTours }: BookingWidgetPro
   }
 
   function nextMonth() {
-    // Don't go beyond MAX_FUTURE_DAYS from today
-    const maxDate = new Date(now.getFullYear(), now.getMonth(), now.getDate() + MAX_FUTURE_DAYS);
+    // Don't go beyond maxFutureDays from today
+    const maxDate = new Date(now.getFullYear(), now.getMonth(), now.getDate() + maxFutureDays);
     const nextM = calMonth === 11 ? 0 : calMonth + 1;
     const nextY = calMonth === 11 ? calYear + 1 : calYear;
     if (new Date(nextY, nextM, 1) > maxDate) return;
@@ -1059,7 +1069,7 @@ export default function BookingWidget({ tours: supabaseTours }: BookingWidgetPro
                       const todayObj = new Date(now.getFullYear(), now.getMonth(), now.getDate());
                       const isPast = dateObj < todayObj;
                       const isToday = dateObj.getTime() === todayObj.getTime();
-                      const isTooFar = dateObj.getTime() > todayObj.getTime() + MAX_FUTURE_DAYS * 86400000;
+                      const isTooFar = dateObj.getTime() > todayObj.getTime() + maxFutureDays * 86400000;
                       const isDisabled = isPast || isTooFar;
                       const isSelected = dateStr === selectedDate;
                       const isFuture = !isPast && !isTooFar;
@@ -1100,7 +1110,7 @@ export default function BookingWidget({ tours: supabaseTours }: BookingWidgetPro
                     </span>
                   </div>
                   <p className="text-center text-xs text-dark/30 mt-3">
-                    Online-Buchung ist bis zu {MAX_FUTURE_DAYS} Tage im Voraus möglich.
+                    Online-Buchung ist bis zu {maxFutureDays} Tage im Voraus möglich.
                   </p>
                 </div>
               </div>
