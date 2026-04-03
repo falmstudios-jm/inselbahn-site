@@ -135,6 +135,7 @@ export default function InlineChat() {
                   Welkoam iip Lun! Ich bin der Inselbahn-Assistent und helfe Ihnen gerne bei
                   Fragen zu unseren Touren, Abfahrtszeiten, Tickets und allem rund um Helgoland.
                 </p>
+                <p className="text-[11px] text-gray-400 mt-1">KI-generierte Antwort</p>
               </div>
             </div>
 
@@ -174,6 +175,9 @@ export default function InlineChat() {
                   }`}
                 >
                   <p className="text-[15px] leading-relaxed whitespace-pre-wrap">{formatMessage(msg.content)}</p>
+                  {msg.role === "assistant" && (
+                    <p className="text-[11px] text-gray-400 mt-1">KI-generierte Antwort</p>
+                  )}
                 </div>
               </div>
             ))}
@@ -197,8 +201,14 @@ export default function InlineChat() {
             )}
           </div>
 
-          {/* Input */}
-          <div className="border-t border-gray-100 p-4 md:px-8 flex gap-3">
+          {/* Privacy banner + Input */}
+          <div className="border-t border-gray-100 px-4 md:px-8 pt-2 pb-1">
+            <p className="text-[10px] text-gray-400 text-center">
+              Ihre Eingaben werden an OpenAI zur Verarbeitung übermittelt.{" "}
+              <a href="/datenschutz" className="underline hover:text-gray-500">Mehr erfahren</a>
+            </p>
+          </div>
+          <div className="px-4 md:px-8 pb-4 flex gap-3">
             <input
               ref={inputRef}
               type="text"
