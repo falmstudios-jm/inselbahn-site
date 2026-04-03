@@ -190,7 +190,7 @@ function CheckoutForm({
     const { error } = await stripe.confirmPayment({
       elements,
       confirmParams: {
-        return_url: window.location.href, // fallback, not normally used
+        return_url: window.location.origin + '/', // clean URL without hash fragment
       },
       redirect: "if_required",
     });
