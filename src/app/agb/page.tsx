@@ -203,11 +203,27 @@ export default function AGBPage() {
               vorhersehbaren Schaden begrenzt.
             </p>
             <p className="mt-2">
-              Der Anbieter haftet nicht f&uuml;r Ausf&auml;lle, Versp&auml;tungen
-              oder Einschr&auml;nkungen, die auf h&ouml;here Gewalt,
-              au&szlig;ergew&ouml;hnliche Wetterbedingungen, beh&ouml;rdliche
-              Anordnungen oder sonstige Umst&auml;nde zur&uuml;ckzuf&uuml;hren
-              sind, die au&szlig;erhalb seines Einflussbereichs liegen.
+              Der Anbieter haftet nicht für Ausfälle, Verspätungen
+              oder Einschränkungen, die auf höhere Gewalt,
+              außergewöhnliche Wetterbedingungen, technische Defekte,
+              behördliche Anordnungen oder sonstige Umstände zurückzuführen
+              sind, die außerhalb seines Einflussbereichs liegen.
+            </p>
+            <p className="mt-2">
+              Für mitgebrachte Gegenstände, Gepäck und Wertgegenstände
+              wird keine Haftung übernommen. Dies gilt auch für die
+              vorübergehende Aufbewahrung durch Mitarbeiter am Abfahrtsort.
+            </p>
+            <p className="mt-2">
+              Der Anbieter haftet nicht für Folgeschäden, die durch den
+              Ausfall einer Tour entstehen (z.&nbsp;B. verpasste Fährverbindungen,
+              Hotelkosten, entgangene Urlaubsfreude). Die Haftung beschränkt
+              sich auf die Erstattung des Ticketpreises.
+            </p>
+            <p className="mt-2">
+              Für das Verhalten anderer Fahrgäste und mitgeführter Tiere
+              übernimmt der Anbieter keine Haftung. Tierhalter haften für
+              ihre Tiere gemäß §833 BGB.
             </p>
           </section>
 
