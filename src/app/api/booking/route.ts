@@ -152,6 +152,27 @@ export async function POST(req: Request) {
       }
     }
 
+    // Validate and increment discount code usage
+    let discountCodeId: string | null = null;
+    if (input.discount_code) {
+      const { data: dc } = await supabaseAdmin
+        .from('discount_codes')
+        .select('id, current_uses, max_uses, is_active')
+        .eq('code', input.discount_code)
+        .eq('is_active', true)
+        .single();
+      if (dc) {
+        if (dc.max_uses && dc.current_uses >= dc.max_uses) {
+          return NextResponse.json({ error: 'Rabattcode wurde bereits zu oft verwendet.' }, { status: 409 });
+        }
+        discountCodeId = dc.id;
+        await supabaseAdmin
+          .from('discount_codes')
+          .update({ current_uses: (dc.current_uses || 0) + 1 })
+          .eq('id', dc.id);
+      }
+    }
+
     const amountToCharge = Math.max(0, totalPrice - giftCardDeduction);
 
     // Insert booking as 'pending'
@@ -173,6 +194,10 @@ export async function POST(req: Request) {
         status: 'pending',
         invoice_data: input.invoice || null,
         wheelchair_seat: input.wheelchair_seat || false,
+        gift_card_id: giftCardId || null,
+        discount_code_id: discountCodeId || null,
+        discount_amount: giftCardDeduction > 0 ? giftCardDeduction : 0,
+        payment_method: amountToCharge <= 0 ? 'gift_card' : 'online',
       })
       .select()
       .single();
