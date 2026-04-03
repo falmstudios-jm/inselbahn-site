@@ -59,13 +59,35 @@ export async function POST(req: Request) {
 
     const tourName = booking.departures?.tours?.name || 'Inselbahn Tour';
 
+    // Generate personal discount code for next booking
+    const year = new Date().getFullYear();
+    const discountCode = `DANKE_${year}_${booking.booking_reference}`;
+    const validUntil = `${year + 1}-12-31T23:59:59+01:00`;
+
+    // Insert discount code (ignore if already exists)
+    await supabase
+      .from('discount_codes')
+      .upsert({
+        code: discountCode,
+        type: 'percentage',
+        value: 10,
+        description: `10% Rabatt für ${booking.customer_name}`,
+        max_uses: 1,
+        current_uses: 0,
+        valid_from: new Date().toISOString(),
+        valid_until: validUntil,
+        is_active: true,
+      }, { onConflict: 'code' });
+
     await getResend().emails.send({
       from: 'Inselbahn Helgoland <buchung@helgolandbahn.de>',
       to: booking.customer_email,
-      subject: 'Wie war Ihre Tour? \uD83C\uDF0A',
+      subject: 'Wie war Ihre Tour? 🌊',
       html: buildFeedbackEmail({
         customerName: booking.customer_name,
         tourName,
+        discountCode,
+        validUntil: `31.12.${year + 1}`,
       }),
     });
 
@@ -85,10 +107,12 @@ export async function POST(req: Request) {
 interface FeedbackEmailParams {
   customerName: string;
   tourName: string;
+  discountCode: string;
+  validUntil: string;
 }
 
 function buildFeedbackEmail(params: FeedbackEmailParams): string {
-  const { customerName, tourName } = params;
+  const { customerName, tourName, discountCode, validUntil } = params;
 
   return `
 <!DOCTYPE html>
@@ -127,7 +151,7 @@ function buildFeedbackEmail(params: FeedbackEmailParams): string {
                   <td style="padding:20px;text-align:center;">
                     <p style="margin:0 0 12px;font-size:14px;font-weight:700;color:#333;">\u2B50 Hat es Ihnen gefallen?</p>
                     <p style="margin:0 0 16px;font-size:13px;color:#555;">Eine Google-Bewertung hilft anderen Besuchern, uns zu finden \u2014 und uns, noch besser zu werden.</p>
-                    <a href="https://maps.app.goo.gl/wmp2NOgQJrpGNgmFx" style="display:inline-block;background-color:#F24444;color:#ffffff;font-size:14px;font-weight:700;text-decoration:none;padding:12px 24px;border-radius:6px;">
+                    <a href="https://www.google.com/maps/place/Inselbahn+Rundfahrten+Helgoland/@54.1810127,7.8906696,17z" style="display:inline-block;background-color:#F24444;color:#ffffff;font-size:14px;font-weight:700;text-decoration:none;padding:12px 24px;border-radius:6px;">
                       Jetzt bewerten
                     </a>
                   </td>
@@ -146,9 +170,20 @@ function buildFeedbackEmail(params: FeedbackEmailParams): string {
                 </tr>
               </table>
 
+              <!-- Discount Code -->
+              <table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="background-color:#F0FFF0;border:2px dashed #4B8B3B;border-radius:8px;margin-bottom:24px;">
+                <tr>
+                  <td style="padding:20px;text-align:center;">
+                    <p style="margin:0 0 8px;font-size:14px;font-weight:700;color:#333;">🎁 10% Rabatt auf Ihre nächste Buchung!</p>
+                    <p style="margin:0 0 12px;font-size:22px;font-weight:700;color:#4B8B3B;font-family:monospace;letter-spacing:1px;">${discountCode}</p>
+                    <p style="margin:0;font-size:12px;color:#888;">Gültig bis ${validUntil} · Einmalig einlösbar · Auch an Freunde weitergeben!</p>
+                  </td>
+                </tr>
+              </table>
+
               <!-- Feedback -->
               <p style="font-size:13px;color:#888;line-height:1.5;margin:0;">
-                Anregungen oder Kritik? Schreiben Sie uns gerne an <a href="mailto:info@helgolandbahn.de" style="color:#F24444;text-decoration:none;">info@helgolandbahn.de</a> \u2014 wir freuen uns \u00FCber Ihr Feedback!
+                Anregungen oder Kritik? Schreiben Sie uns gerne an <a href="mailto:info@helgolandbahn.de" style="color:#F24444;text-decoration:none;">info@helgolandbahn.de</a> — wir freuen uns über Ihr Feedback!
               </p>
             </td>
           </tr>

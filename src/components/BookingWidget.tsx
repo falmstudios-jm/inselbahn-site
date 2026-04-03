@@ -672,7 +672,7 @@ export default function BookingWidget({ tours: supabaseTours }: BookingWidgetPro
 
           {/* Meeting point reminder */}
           <div className="bg-gray-50 border border-gray-200 rounded-xl px-5 py-4 mt-4 text-sm text-dark/60 space-y-1.5">
-            <p className="font-medium text-dark/70"><a href="https://maps.app.goo.gl/wmp2NOgQJrpGNgmFx" target="_blank" rel="noopener noreferrer" className="hover:underline">📍 Treffpunkt: Franz-Schensky-Platz</a></p>
+            <p className="font-medium text-dark/70"><a href="https://www.google.com/maps/place/Inselbahn+Rundfahrten+Helgoland/@54.1810127,7.8906696,17z" target="_blank" rel="noopener noreferrer" className="hover:underline">📍 Treffpunkt: Franz-Schensky-Platz</a></p>
             <p>Bitte seien Sie <strong>15 Minuten vor Abfahrt</strong> am Treffpunkt.</p>
             <p>🚻 Toilette im Gebäude der Landungsbrücke (kostenlos)</p>
           </div>

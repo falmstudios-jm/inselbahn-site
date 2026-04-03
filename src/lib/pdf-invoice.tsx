@@ -325,14 +325,11 @@ function formatCurrency(amount: number): string {
 
 // ── Invoice Number Generator ──
 
+// This is now a fallback only — prefer getNextInvoiceNumber() for sequential numbering
 export function generateInvoiceNumber(): string {
   const year = new Date().getFullYear();
-  const chars = '0123456789';
-  let suffix = '';
-  for (let i = 0; i < 4; i++) {
-    suffix += chars[Math.floor(Math.random() * chars.length)];
-  }
-  return `RE-${year}-${suffix}`;
+  const num = 4200 + Math.floor(Math.random() * 100);
+  return `RE-${year}-${num}`;
 }
 
 // ── Document Component ──

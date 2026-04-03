@@ -115,9 +115,40 @@ export async function POST(req: Request) {
       tour.price_child
     );
 
-    // Generate booking reference and cancel token
-    const bookingReference = generateBookingReference();
+    // Generate collision-safe booking reference and cancel token
+    let bookingReference = generateBookingReference();
+    // Check for collision and regenerate if needed (up to 5 attempts)
+    for (let attempt = 0; attempt < 5; attempt++) {
+      const { data: existing } = await supabaseAdmin
+        .from('bookings')
+        .select('id')
+        .eq('booking_reference', bookingReference)
+        .maybeSingle();
+      if (!existing) break;
+      bookingReference = generateBookingReference();
+    }
     const cancelToken = generateCancelToken();
+
+    // Deduct gift card value if used
+    let giftCardDeduction = 0;
+    if (input.gift_card_code) {
+      const { data: gc } = await supabaseAdmin
+        .from('gift_cards')
+        .select('id, remaining_value')
+        .eq('code', input.gift_card_code)
+        .eq('is_active', true)
+        .gt('remaining_value', 0)
+        .single();
+      if (gc) {
+        giftCardDeduction = Math.min(Number(gc.remaining_value), totalPrice);
+        await supabaseAdmin
+          .from('gift_cards')
+          .update({ remaining_value: Number(gc.remaining_value) - giftCardDeduction })
+          .eq('id', gc.id);
+      }
+    }
+
+    const amountToCharge = Math.max(0, totalPrice - giftCardDeduction);
 
     // Insert booking as 'pending'
     const { data: booking, error: insertError } = await supabaseAdmin
@@ -150,7 +181,7 @@ export async function POST(req: Request) {
     }
 
     // Check if payment is skipped (gift card covers full amount)
-    if (input.skip_payment || totalPrice <= 0) {
+    if (input.skip_payment || amountToCharge <= 0) {
       // Confirm booking immediately — no Stripe needed
       await supabaseAdmin
         .from('bookings')
@@ -192,7 +223,7 @@ export async function POST(req: Request) {
 
     // Create Stripe PaymentIntent for embedded payment
     const paymentIntent = await getStripe().paymentIntents.create({
-      amount: Math.round(totalPrice * 100), // cents
+      amount: Math.round(amountToCharge * 100), // cents
       currency: 'eur',
       metadata: {
         type: 'booking',

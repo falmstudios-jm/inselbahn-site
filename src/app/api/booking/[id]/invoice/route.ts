@@ -54,7 +54,23 @@ export async function GET(
   // Assign sequential invoice number if not yet set
   let invoiceNumber = booking.invoice_number;
   if (!invoiceNumber) {
-    invoiceNumber = generateInvoiceNumber();
+    // Get the highest existing invoice number for this year and increment
+    const year = new Date().getFullYear();
+    const { data: lastInvoice } = await supabase
+      .from('bookings')
+      .select('invoice_number')
+      .like('invoice_number', `RE-${year}-%`)
+      .order('invoice_number', { ascending: false })
+      .limit(1)
+      .maybeSingle();
+
+    let nextNum = 4201; // Start from 4201 (not 0001)
+    if (lastInvoice?.invoice_number) {
+      const lastNum = parseInt(lastInvoice.invoice_number.split('-')[2], 10);
+      if (!isNaN(lastNum)) nextNum = lastNum + 1;
+    }
+    invoiceNumber = `RE-${year}-${nextNum}`;
+
     await supabase
       .from('bookings')
       .update({ invoice_number: invoiceNumber })
