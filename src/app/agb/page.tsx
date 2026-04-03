@@ -119,17 +119,18 @@ export default function AGBPage() {
               durchgef&uuml;hrt.
             </p>
             <p className="mt-2">
-              Die Durchf&uuml;hrung der Touren ist wetterabh&auml;ngig. Bei
-              ung&uuml;nstigen Wetterbedingungen (Sturm, Gewitter, extreme
-              Witterung) oder h&ouml;herer Gewalt beh&auml;lt sich der Anbieter
-              das Recht vor, Abfahrten zu verschieben oder abzusagen. In diesem
-              Fall wird dem Fahrgast der volle Ticketpreis erstattet oder ein
-              Ersatztermin angeboten.
+              Die Durchführung der Touren ist wetterabhängig. Bei
+              ungünstigen Wetterbedingungen (Sturm, Gewitter, extreme
+              Witterung), technischen Defekten am Fahrzeug, Ausfall des
+              Fahrpersonals, behördlichen Anordnungen oder höherer Gewalt
+              behält sich der Anbieter das Recht vor, Abfahrten zu
+              verschieben oder abzusagen. In diesem Fall wird dem Fahrgast
+              der volle Ticketpreis erstattet.
             </p>
             <p className="mt-2">
               Geringf&uuml;gige Abweichungen von der beschriebenen Route
               (z.&nbsp;B. aufgrund von Baustellen oder Sperrungen) berechtigen
-              nicht zu Preisminderung.
+              nicht zur Preisminderung.
             </p>
           </section>
 
