@@ -106,8 +106,10 @@ export async function POST(req: NextRequest) {
     if (/kind|baby|famil/.test(content)) topics.push('familien');
     if (/ignore|bypass|system|jailbreak|DAN/.test(content)) topics.push('missbrauch');
 
-    // Save — only columns that exist in the table
+    // Save
     const { error: insertError } = await supabase.from('chat_logs').insert({
+      user_questions: userQuestions,
+      ai_answers: aiAnswers,
       summary: `${userQuestions} → ${aiAnswers}`.slice(0, 1000),
       topics,
       status,
