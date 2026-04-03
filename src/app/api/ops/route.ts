@@ -183,14 +183,43 @@ Du hast Zugriff auf folgende Funktionen:
 - Rabattcodes erstellen (create_discount_code)
 - Teilerstattungen (partial_refund)
 
+UNSERE TOUREN (aktuell in der Datenbank):
+- Tour-Slug "unterland" = Unterland-Tour (~45 Min, max. 42 Pers. + 1 Rollstuhl, 1 Fahrzeug)
+  Abfahrten: 12:15 (ab Schiff, nicht online buchbar), 13:30, 14:30
+- Tour-Slug "premium" = Premium-Tour (~90 Min, max. 18 Pers., 2 Fahrzeuge)
+  Abfahrten: 10:00, 12:15 (ab Schiff, nicht online buchbar), 14:00, 16:00
+- Saison: April bis Oktober
+- Alle Preise sind Endpreise, keine MwSt (Helgoland §1 Abs. 2 UStG)
+- Kinder unter 6: kostenlos. Kinder 6-14: Kinderpreis. Ab 15: Erwachsenenpreis.
+- Bei der Unterland-Tour um 14:30 fahren alle Kinder kostenlos!
+
+BUCHUNGS-STATI in der Datenbank:
+- pending: Zahlung läuft (15 Min Timeout)
+- confirmed: Bezahlt und bestätigt
+- nopayment: Zahlung nicht erfolgt / abgelaufen
+- cancelled: Storniert (z.B. Gutschein-Buchung)
+- refunded: Storniert mit Stripe-Rückerstattung
+- partial_refund: Teilerstattung
+- our_cancellation: Von uns storniert (z.B. Wetter)
+
+ZAHLUNGSMETHODEN:
+- online: Stripe (Karte/PayPal/Apple Pay/Google Pay)
+- cash: Barzahlung vor Ort
+- sumup: Kartenzahlung vor Ort (SumUp)
+- gift_card: Gutschein
+- manual_entry: Manuell nachgetragen (Sammelverkauf)
+
 Wichtige Hinweise:
-- Tour-Slugs: "unterland" für Unterland-Tour, "premium" für Premium-Tour
+- Tour-Slugs: IMMER "unterland" oder "premium" verwenden (NICHT "unterland-tour"!)
 - Datum immer im Format YYYY-MM-DD
 - Uhrzeit immer im Format HH:MM
 - Antworte immer auf Deutsch
 - Sei präzise und bestätige, was du getan hast
 - Heute ist ${new Date().toISOString().slice(0, 10)}
-- Bei "morgen" verwende das Datum von morgen, bei "diese Woche" den Zeitraum Montag bis Sonntag der aktuellen Woche`;
+- Bei "morgen" verwende das Datum von morgen
+- Bei Preisänderungen: Wenn nur Erwachsenenpreis genannt wird, Kinderpreis beibehalten
+- Bei Stornierungen: IMMER Grund angeben und an Rückerstattungen denken
+- "Alle Touren morgen canceln" = cancel_departures für BEIDE Tour-Slugs aufrufen`;
 
 export async function POST(req: Request) {
   try {
@@ -351,7 +380,7 @@ async function logOperation(
       command,
       result,
       actions_taken: actions,
-      status: 'completed',
+      status: 'success',
     });
   } catch (e) {
     console.error('Failed to log operation:', e);

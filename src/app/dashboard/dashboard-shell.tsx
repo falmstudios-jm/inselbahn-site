@@ -2,14 +2,28 @@
 
 import Link from 'next/link';
 import { usePathname, useRouter } from 'next/navigation';
+import { createContext, useContext } from 'react';
+
+interface DashboardContext {
+  name: string;
+  role: string;
+  staffId: string;
+}
+
+const DashboardCtx = createContext<DashboardContext>({ name: '', role: '', staffId: '' });
+
+export function useDashboard() {
+  return useContext(DashboardCtx);
+}
 
 interface DashboardShellProps {
   name: string;
   role: string;
+  staffId: string;
   children: React.ReactNode;
 }
 
-export function DashboardShell({ name, role, children }: DashboardShellProps) {
+export function DashboardShell({ name, role, staffId, children }: DashboardShellProps) {
   const pathname = usePathname();
   const router = useRouter();
 
@@ -34,53 +48,55 @@ export function DashboardShell({ name, role, children }: DashboardShellProps) {
   };
 
   return (
-    <div className="min-h-screen bg-gray-50 flex flex-col">
-      {/* Top bar */}
-      <header className="bg-white border-b border-gray-200 px-4 py-3 flex items-center justify-between shrink-0">
-        <div>
-          <span className="font-semibold text-dark">{name}</span>
-          <span className="text-sm text-gray-500 ml-2">({roleLabel(role)})</span>
-        </div>
-        <button
-          onClick={handleLogout}
-          className="text-sm text-gray-500 hover:text-primary px-3 py-1.5 rounded-lg border border-gray-200"
-        >
-          Abmelden
-        </button>
-      </header>
+    <DashboardCtx.Provider value={{ name, role, staffId }}>
+      <div className="min-h-screen bg-gray-50 flex flex-col">
+        {/* Top bar */}
+        <header className="bg-white border-b border-gray-200 px-4 py-3 flex items-center justify-between shrink-0">
+          <div>
+            <span className="font-semibold text-dark">{name}</span>
+            <span className="text-sm text-gray-500 ml-2">({roleLabel(role)})</span>
+          </div>
+          <button
+            onClick={handleLogout}
+            className="text-sm text-gray-500 hover:text-primary px-3 py-1.5 rounded-lg border border-gray-200"
+          >
+            Abmelden
+          </button>
+        </header>
 
-      {/* Content */}
-      <main className="flex-1 overflow-y-auto pb-20">
-        {children}
-      </main>
+        {/* Content */}
+        <main className="flex-1 overflow-y-auto pb-20">
+          {children}
+        </main>
 
-      {/* Bottom navigation */}
-      <nav className="fixed bottom-0 left-0 right-0 bg-white border-t border-gray-200 flex z-50">
-        {tabs.map((tab) => {
-          const isActive =
-            tab.href === '/dashboard'
-              ? pathname === '/dashboard'
-              : pathname.startsWith(tab.href);
+        {/* Bottom navigation */}
+        <nav className="fixed bottom-0 left-0 right-0 bg-white border-t border-gray-200 flex z-50">
+          {tabs.map((tab) => {
+            const isActive =
+              tab.href === '/dashboard'
+                ? pathname === '/dashboard'
+                : pathname.startsWith(tab.href);
 
-          return (
-            <Link
-              key={tab.href}
-              href={tab.href}
-              className={`flex-1 flex flex-col items-center justify-center py-3 min-h-[56px] transition-colors ${
-                isActive
-                  ? 'text-primary'
-                  : 'text-gray-400'
-              }`}
-            >
-              <tab.icon active={isActive} />
-              <span className={`text-xs mt-1 font-medium ${isActive ? 'text-primary' : 'text-gray-400'}`}>
-                {tab.label}
-              </span>
-            </Link>
-          );
-        })}
-      </nav>
-    </div>
+            return (
+              <Link
+                key={tab.href}
+                href={tab.href}
+                className={`flex-1 flex flex-col items-center justify-center py-3 min-h-[56px] transition-colors ${
+                  isActive
+                    ? 'text-primary'
+                    : 'text-gray-400'
+                }`}
+              >
+                <tab.icon active={isActive} />
+                <span className={`text-xs mt-1 font-medium ${isActive ? 'text-primary' : 'text-gray-400'}`}>
+                  {tab.label}
+                </span>
+              </Link>
+            );
+          })}
+        </nav>
+      </div>
+    </DashboardCtx.Provider>
   );
 }
 

@@ -19,7 +19,7 @@ export default async function DashboardLayout({
   }
 
   return (
-    <DashboardShell name={session.name} role={session.role}>
+    <DashboardShell name={session.name} role={session.role} staffId={session.staff_id}>
       {children}
     </DashboardShell>
   );

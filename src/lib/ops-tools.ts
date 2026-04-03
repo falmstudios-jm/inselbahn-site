@@ -11,16 +11,21 @@ function getResend() {
 // ── Helper: resolve tour slug to tour row ──
 
 async function getTourBySlug(slug: string) {
-  // Normalize: accept "unterland" or "premium" or full slug
-  const normalizedSlug = slug.includes('-tour') ? slug : `${slug}-tour`;
   const supabase = getSupabaseAdmin();
-  const { data, error } = await supabase
-    .from('tours')
-    .select('*')
-    .eq('slug', normalizedSlug)
-    .single();
-  if (error || !data) throw new Error(`Tour "${slug}" nicht gefunden`);
-  return data;
+  // Try exact match first
+  const { data } = await supabase.from('tours').select('*').eq('slug', slug).single();
+  if (data) return data;
+  // Try with -tour suffix
+  const { data: d2 } = await supabase.from('tours').select('*').eq('slug', `${slug}-tour`).single();
+  if (d2) return d2;
+  // Try without -tour suffix
+  const bare = slug.replace(/-tour$/, '');
+  const { data: d3 } = await supabase.from('tours').select('*').eq('slug', bare).single();
+  if (d3) return d3;
+  // Try by name (case-insensitive via ilike)
+  const { data: d4 } = await supabase.from('tours').select('*').ilike('name', `%${slug}%`).single();
+  if (d4) return d4;
+  throw new Error(`Tour "${slug}" nicht gefunden`);
 }
 
 // ── Tool: update_tour_price ──
