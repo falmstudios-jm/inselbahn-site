@@ -40,6 +40,7 @@ export default function OpsPage() {
   const [loading, setLoading] = useState(false);
   const [result, setResult] = useState<OpsResult | null>(null);
   const [history, setHistory] = useState<LogEntry[]>([]);
+  const [conversation, setConversation] = useState<{ role: string; content: string }[]>([]);
 
   // Check existing session on mount
   useEffect(() => {
@@ -124,7 +125,7 @@ export default function OpsPage() {
       const res = await fetch('/api/ops', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ command }),
+        body: JSON.stringify({ command, messages: conversation }),
       });
       const data = await res.json();
 
@@ -132,6 +133,12 @@ export default function OpsPage() {
         setResult({ summary: '', actions: [], error: data.error });
       } else {
         setResult(data);
+        // Add to conversation history for context
+        setConversation(prev => [
+          ...prev,
+          { role: 'user', content: command },
+          { role: 'assistant', content: data.summary || '' },
+        ]);
         setCommand('');
         loadHistory();
       }

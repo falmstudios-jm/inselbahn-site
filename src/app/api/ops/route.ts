@@ -254,7 +254,9 @@ export async function POST(req: Request) {
       );
     }
 
-    const { command } = await req.json();
+    const body = await req.json();
+    const command = body.command;
+    const conversationHistory = body.messages || []; // Previous messages for context
     if (!command || typeof command !== 'string') {
       return NextResponse.json(
         { error: 'Befehl fehlt.' },
@@ -283,6 +285,7 @@ export async function POST(req: Request) {
           model: 'gpt-5.4-2026-03-05',
           messages: [
             { role: 'system', content: SYSTEM_PROMPT },
+            ...conversationHistory.slice(-10), // Previous context (max 10 messages)
             { role: 'user', content: command },
           ],
           tools: TOOLS,
