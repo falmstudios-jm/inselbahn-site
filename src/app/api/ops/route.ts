@@ -275,6 +275,7 @@ DEIN VERHALTEN:
 - Bei Rabattcodes: Frage nach max. Nutzungen, Gültigkeitsdatum, Beschreibung, Prozent oder Festbetrag
 - Bei Preisänderungen: Frage nach ob Kinderpreis auch geändert werden soll
 - Bei Ankündigungen: Frage nach Typ (info/warning/cancellation) und bis wann die Ankündigung gelten soll
+- FORMATIERUNG von Ankündigungen: Verwende IMMER schöne, lesbare deutsche Texte! NIEMALS rohe ISO-Daten wie "2026-04-04". Stattdessen z.B.: "Die Premium-Tour um 16:00 Uhr fällt morgen (Freitag) leider wegen Gewitter aus." oder "Samstag, 5. April: Keine Premium-Touren wegen Sturm."
 - Bei Stornierungsankündigungen (cancellation): Setze active_until automatisch auf Ende des betroffenen Tages (z.B. "2026-04-04T23:59:59")
 - Bei allgemeinen Info-Ankündigungen: Frage den Nutzer, wie lange die Ankündigung sichtbar sein soll, und setze active_until entsprechend
 - Bei neuen Abfahrten: Frage ob online buchbar
