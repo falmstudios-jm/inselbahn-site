@@ -1,7 +1,21 @@
 "use client";
 
-import { useState, useRef, useEffect } from "react";
+import { useState, useRef, useEffect, ReactNode } from "react";
 import Link from "next/link";
+
+function formatChatMessage(text: string): ReactNode[] {
+  const parts = text.split(/(https?:\/\/[^\s)]+|\*\*[^*]+\*\*)/g);
+  return parts.map((part, i) => {
+    if (part.startsWith("**") && part.endsWith("**")) {
+      return <strong key={i} className="font-semibold">{part.slice(2, -2)}</strong>;
+    }
+    if (part.match(/^https?:\/\//)) {
+      const label = part.replace(/^https?:\/\/(www\.)?/, '').replace(/\/$/, '').split('/').slice(0, 2).join('/');
+      return <a key={i} href={part} target="_blank" rel="noopener noreferrer" className="underline underline-offset-2">{label}</a>;
+    }
+    return part;
+  });
+}
 
 interface Message {
   role: "user" | "assistant";
@@ -283,7 +297,7 @@ export default function ChatWidget() {
                       }`}
                     >
                       <p className="text-sm leading-relaxed whitespace-pre-wrap">
-                        {msg.content}
+                        {formatChatMessage(msg.content)}
                       </p>
                       {/* KI-Kennzeichnung for bot responses */}
                       {msg.role === "assistant" && (

@@ -9,11 +9,16 @@ interface Message {
 }
 
 function formatMessage(text: string) {
-  // Parse **bold** → <strong>
-  const parts = text.split(/(\*\*[^*]+\*\*)/g);
+  // Split by URLs and **bold** markers
+  const parts = text.split(/(https?:\/\/[^\s)]+|\*\*[^*]+\*\*)/g);
   return parts.map((part, i) => {
     if (part.startsWith("**") && part.endsWith("**")) {
       return <strong key={i} className="font-semibold">{part.slice(2, -2)}</strong>;
+    }
+    if (part.match(/^https?:\/\//)) {
+      // Make URLs clickable
+      const label = part.replace(/^https?:\/\/(www\.)?/, '').replace(/\/$/, '').split('/').slice(0, 2).join('/');
+      return <a key={i} href={part} target="_blank" rel="noopener noreferrer" className="text-primary underline underline-offset-2 hover:text-primary/80">{label}</a>;
     }
     return part;
   });
