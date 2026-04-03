@@ -38,7 +38,7 @@ const tourOptions = [
     id: "premium",
     slug: "premium-tour",
     name: "Premium-Tour",
-    subtitle: "Kleine Gruppe mit Langer Anna",
+    subtitle: "Kleine Gruppe mit der Langen Anna",
     adultPrice: 22,
     childPrice: 15,
     capacity: 18,
@@ -225,7 +225,42 @@ function CheckoutForm({
 }
 
 /* ─── Main Component ─── */
-export default function BookingWidget() {
+interface BookingWidgetProps {
+  tours?: Array<{
+    slug: string;
+    name: string;
+    description: string;
+    duration_minutes: number;
+    max_capacity: number;
+    price_adult: number;
+    price_child: number;
+    highlights: string[];
+    wheelchair_accessible: boolean;
+    dogs_allowed: boolean;
+    notes: string | null;
+  }>;
+}
+
+export default function BookingWidget({ tours: supabaseTours }: BookingWidgetProps) {
+  // Merge Supabase tour data with hardcoded UI config (illustrations, accents, etc.)
+  const mergedTourOptions = tourOptions.map((opt) => {
+    const dbTour = supabaseTours?.find(
+      (t) => t.slug === opt.id || t.slug === opt.slug || t.name === opt.name
+    );
+    if (dbTour) {
+      return {
+        ...opt,
+        adultPrice: Number(dbTour.price_adult),
+        childPrice: Number(dbTour.price_child),
+        capacity: dbTour.max_capacity,
+        duration: `ca. ${dbTour.duration_minutes} Minuten`,
+        highlights: dbTour.highlights?.length > 0 ? dbTour.highlights : opt.highlights,
+        wheelchair: dbTour.wheelchair_accessible,
+        dogs: dbTour.dogs_allowed,
+      };
+    }
+    return opt;
+  });
   const [step, setStep] = useState(0);
   const [selectedDate, setSelectedDate] = useState<string>("");
   const [selectedTour, setSelectedTour] = useState<string>("");
@@ -288,8 +323,8 @@ export default function BookingWidget() {
   }, [filteredSlots]);
 
   // Prices from the selected slot (API-driven)
-  const adultPrice = selectedSlot?.price_adult ?? tourOptions.find((t) => t.id === selectedTour)?.adultPrice ?? 0;
-  const childPrice = selectedSlot?.price_child ?? tourOptions.find((t) => t.id === selectedTour)?.childPrice ?? 0;
+  const adultPrice = selectedSlot?.price_adult ?? mergedTourOptions.find((t) => t.id === selectedTour)?.adultPrice ?? 0;
+  const childPrice = selectedSlot?.price_child ?? mergedTourOptions.find((t) => t.id === selectedTour)?.childPrice ?? 0;
   const remaining = selectedSlot?.remaining ?? 20;
 
   const subtotalPrice = adultPrice * adults + childPrice * children;
@@ -1049,8 +1084,8 @@ export default function BookingWidget() {
 
               {/* Step 2: Tour — larger cards with SVG illustrations */}
               <div className={`w-full px-1 ${step === 1 ? '' : 'hidden'}`}>
-                <div className="max-w-lg mx-auto space-y-6">
-                  {tourOptions.map((t) => {
+                <div className="max-w-3xl mx-auto grid md:grid-cols-2 gap-4">
+                  {mergedTourOptions.map((t) => {
                     const isSelected = selectedTour === t.id;
                     return (
                       <button
@@ -1189,7 +1224,7 @@ export default function BookingWidget() {
                       </div>
                       <h3 className="text-lg font-bold text-dark mb-2">Leider ausgebucht f&uuml;r dieses Datum</h3>
                       <p className="text-sm text-dark/50 mb-6">
-                        Alle Online-Abfahrten f&uuml;r die {tourOptions.find(t => t.id === selectedTour)?.name || "Tour"} sind an diesem Tag leider vergeben.
+                        Alle Online-Abfahrten f&uuml;r die {mergedTourOptions.find(t => t.id === selectedTour)?.name || "Tour"} sind an diesem Tag leider vergeben.
                       </p>
                       <button
                         onClick={() => setStep(0)}
@@ -1209,7 +1244,7 @@ export default function BookingWidget() {
                         const soldOut = slot.remaining <= 0;
                         const notBookableOnline = !slot.bookable_online;
                         const isDisabledSlot = soldOut || notBookableOnline;
-                        const tourOpt = tourOptions.find(t => t.id === selectedTour);
+                        const tourOpt = mergedTourOptions.find(t => t.id === selectedTour);
                         const isAmber = tourOpt?.accent === "amber";
 
                         // Capacity percentage

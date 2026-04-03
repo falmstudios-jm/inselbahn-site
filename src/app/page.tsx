@@ -31,7 +31,7 @@ export default async function Home() {
         <GettingThere />
         <FAQ />
         <InlineChat />
-        <BookingWidget />
+        <BookingWidget tours={tours} />
       </main>
       <Footer />
       <AnnouncementBanner />
