@@ -1472,10 +1472,12 @@ export default function BookingWidget({ tours: supabaseTours }: BookingWidgetPro
 
                   {/* Price breakdown */}
                   <div className="border-t border-gray-100 pt-4 space-y-2">
-                    <div className="flex items-center justify-between text-sm">
-                      <span className="text-dark/60">{adults} &times; Erwachsene</span>
-                      <span className="text-dark">{(adults * adultPrice).toFixed(2).replace(".", ",")}&nbsp;&euro;</span>
-                    </div>
+                    {adults > 0 && (
+                      <div className="flex items-center justify-between text-sm">
+                        <span className="text-dark/60">{adults} &times; Erwachsene</span>
+                        <span className="text-dark">{(adults * adultPrice).toFixed(2).replace(".", ",")}&nbsp;&euro;</span>
+                      </div>
+                    )}
                     {children > 0 && (
                       <div className="flex items-center justify-between text-sm">
                         <span className="text-dark/60">{children} &times; Kinder (6–14)</span>
@@ -1486,6 +1488,18 @@ export default function BookingWidget({ tours: supabaseTours }: BookingWidgetPro
                       <div className="flex items-center justify-between text-sm">
                         <span className="text-dark/60">{childrenFree} &times; Kinder (0–5)</span>
                         <span className="text-dark">kostenlos</span>
+                      </div>
+                    )}
+                    {wheelchairAdult > 0 && (
+                      <div className="flex items-center justify-between text-sm">
+                        <span className="text-dark/60">♿ {wheelchairAdult} &times; Rollstuhl Erw.</span>
+                        <span className="text-dark">{(wheelchairAdult * adultPrice).toFixed(2).replace(".", ",")}&nbsp;&euro;</span>
+                      </div>
+                    )}
+                    {wheelchairChild > 0 && (
+                      <div className="flex items-center justify-between text-sm">
+                        <span className="text-dark/60">♿ {wheelchairChild} &times; Rollstuhl Kind</span>
+                        <span className="text-dark">{(wheelchairChild * childPrice).toFixed(2).replace(".", ",")}&nbsp;&euro;</span>
                       </div>
                     )}
                     <div className="flex items-center justify-between pt-2">
