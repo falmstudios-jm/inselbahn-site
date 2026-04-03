@@ -190,6 +190,9 @@ export default function GutscheinPage() {
               <label className="block text-sm font-semibold text-dark mb-3">
                 Betrag w&auml;hlen
               </label>
+              <p className="text-dark/50 text-sm mb-4 leading-relaxed">
+                W&auml;hlen Sie einen Betrag f&uuml;r Ihren Geschenkgutschein. Der Empf&auml;nger erh&auml;lt einen Code, der flexibel f&uuml;r alle unsere Touren einl&ouml;sbar ist — auch teilweise. Der Restwert bleibt erhalten.
+              </p>
 
               {/* Preset tour quantities */}
               <div className="space-y-3 mb-4">
@@ -243,6 +246,10 @@ export default function GutscheinPage() {
                   );
                 })}
               </div>
+
+              <p className="text-dark/40 text-xs mb-4 leading-relaxed">
+                Der Gutschein ist ein Geldwert und nicht an bestimmte Touren gebunden. Er kann bei jeder Buchung anteilig oder vollst&auml;ndig eingel&ouml;st werden.
+              </p>
 
               {/* Divider */}
               <div className="flex items-center gap-3 mb-4">

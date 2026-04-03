@@ -116,6 +116,12 @@ STORNIERUNG:
 - Bei Ausfall von unserer Seite (z.B. Wetter): automatische Rückerstattung, wir informieren so schnell wie möglich
 - Grund für die Frist: Schiffsausfälle sind in der Regel abends bekannt, sodass man rechtzeitig stornieren kann
 
+RECHNUNG:
+- Rechnungen können im Self-Service angefordert werden: https://inselbahnhelgoland.vercel.app/booking/invoice
+- Dort Buchungsnummer und E-Mail eingeben → Rechnung als PDF herunterladen
+- Auch nachträglich möglich (wenn bei der Buchung keine Rechnung angefordert wurde)
+- WICHTIG: Wenn jemand nach Rechnung fragt, gib IMMER den Link https://inselbahnhelgoland.vercel.app/booking/invoice mit an!
+
 WETTER:
 - Bei Regen fahren wir trotzdem (überdachte Wagen)
 - Bei extremem Wetter (Sturm) können Fahrten ausfallen → automatische Rückerstattung

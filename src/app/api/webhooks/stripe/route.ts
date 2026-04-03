@@ -367,6 +367,20 @@ function buildGiftCardEmail(params: GiftCardEmailParams): string {
                 </tr>
               </table>
 
+              <!-- Print Gift Card Button -->
+              <table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="margin-bottom:12px;">
+                <tr>
+                  <td>
+                    <a href="${BASE_URL}/gutschein/print?code=${code}" style="display:block;background-color:#333333;color:#ffffff;font-size:14px;font-weight:700;text-decoration:none;padding:14px 24px;border-radius:6px;text-align:center;">
+                      \uD83C\uDFA8 Gutschein ausdrucken
+                    </a>
+                  </td>
+                </tr>
+              </table>
+              <p style="text-align:center;font-size:12px;color:#888;margin:0 0 20px;">
+                Drucken Sie eine sch\u00F6ne Geschenkkarte zum Falten aus!
+              </p>
+
               <!-- Book Now Button -->
               <table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="margin-bottom:16px;">
                 <tr>
