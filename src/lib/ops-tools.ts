@@ -460,12 +460,140 @@ export async function partial_refund(args: {
   return `Teilerstattung von ${args.amount.toFixed(2)}€ für Buchung ${args.booking_reference} (${booking.customer_name}) durchgeführt.`;
 }
 
+// ── Tool: cancel_booking (single booking) ──
+
+export async function cancel_booking(args: {
+  booking_reference: string;
+  reason?: string;
+  partial_amount?: number;
+}) {
+  const supabase = getSupabaseAdmin();
+
+  // Find the booking
+  const { data: booking, error } = await supabase
+    .from('bookings')
+    .select('*, departures(departure_time, tours(name))')
+    .eq('booking_reference', args.booking_reference)
+    .single();
+
+  if (error || !booking) throw new Error(`Buchung "${args.booking_reference}" nicht gefunden`);
+  if (booking.status === 'refunded' || booking.status === 'cancelled') {
+    return `Buchung ${args.booking_reference} ist bereits storniert/erstattet.`;
+  }
+
+  const isPartial = args.partial_amount && args.partial_amount < Number(booking.total_amount);
+  const refundAmount = args.partial_amount ?? Number(booking.total_amount);
+  const reason = args.reason || 'Storniert über Ops-Agent';
+
+  // Handle Stripe refund
+  if (booking.stripe_payment_intent_id) {
+    try {
+      const stripe = getStripe();
+      await stripe.refunds.create({
+        payment_intent: booking.stripe_payment_intent_id,
+        amount: Math.round(refundAmount * 100),
+      });
+    } catch (stripeErr) {
+      throw new Error(`Stripe-Erstattung fehlgeschlagen: ${stripeErr instanceof Error ? stripeErr.message : String(stripeErr)}`);
+    }
+  }
+
+  // Restore gift card if used
+  if (booking.gift_card_id) {
+    try {
+      const { data: usage } = await supabase
+        .from('gift_card_usage')
+        .select('amount_used')
+        .eq('booking_id', booking.id)
+        .eq('gift_card_id', booking.gift_card_id)
+        .single();
+      if (usage) {
+        const restoreAmount = isPartial ? Math.min(refundAmount, Number(usage.amount_used)) : Number(usage.amount_used);
+        const { data: card } = await supabase
+          .from('gift_cards')
+          .select('remaining_value')
+          .eq('id', booking.gift_card_id)
+          .single();
+        if (card) {
+          await supabase
+            .from('gift_cards')
+            .update({ remaining_value: Number(card.remaining_value) + restoreAmount })
+            .eq('id', booking.gift_card_id);
+        }
+      }
+    } catch (gcErr) {
+      console.error('Gift card restore error:', gcErr);
+    }
+  }
+
+  // Update booking status
+  const newStatus = isPartial ? 'partial_refund' : (booking.stripe_payment_intent_id ? 'refunded' : 'cancelled');
+  await supabase
+    .from('bookings')
+    .update({
+      status: newStatus,
+      cancelled_at: new Date().toISOString(),
+      notes: `${booking.notes ? booking.notes + ' | ' : ''}${reason}`,
+    })
+    .eq('id', booking.id);
+
+  // Send cancellation email
+  try {
+    const resend = getResend();
+    const tourName = (booking.departures as { tours: { name: string } })?.tours?.name || 'Tour';
+    const depTime = (booking.departures as { departure_time: string })?.departure_time?.slice(0, 5) || '';
+    const formattedDate = new Date(booking.booking_date + 'T00:00:00').toLocaleDateString('de-DE', {
+      weekday: 'long', day: '2-digit', month: 'long', year: 'numeric'
+    });
+
+    await resend.emails.send({
+      from: 'Inselbahn Helgoland <buchung@helgolandbahn.de>',
+      to: booking.customer_email,
+      subject: `Stornierung ${args.booking_reference} — ${tourName}`,
+      html: `<!DOCTYPE html><html><body style="font-family:sans-serif;max-width:600px;margin:0 auto;padding:20px;color:#333;">
+        <div style="border-top:4px solid #F24444;padding:24px 0;">
+          <h1 style="font-size:20px;margin:0 0 4px;">INSELBAHN HELGOLAND</h1>
+          <div style="background:#FFF0F0;border-radius:8px;padding:16px;margin:20px 0;text-align:center;">
+            <p style="font-size:18px;font-weight:700;color:#dc2626;margin:0;">Buchung storniert</p>
+          </div>
+          <p>Hallo ${booking.customer_name},</p>
+          <p>Ihre Buchung <strong>${args.booking_reference}</strong> wurde storniert.</p>
+          <div style="background:#f9f9f9;border-radius:8px;padding:16px;margin:16px 0;">
+            <p style="margin:4px 0;"><strong>Tour:</strong> ${tourName}</p>
+            <p style="margin:4px 0;"><strong>Datum:</strong> ${formattedDate}, ${depTime} Uhr</p>
+            <p style="margin:4px 0;"><strong>Grund:</strong> ${reason}</p>
+          </div>
+          ${booking.stripe_payment_intent_id ? `
+            <div style="border-left:4px solid #F24444;padding-left:16px;margin:16px 0;">
+              <p><strong>Erstattung:</strong> ${refundAmount.toFixed(2).replace('.', ',')} €</p>
+              <p style="font-size:13px;color:#666;">Die Rückerstattung erfolgt innerhalb von 5–10 Werktagen auf Ihr Zahlungsmittel.</p>
+            </div>
+          ` : booking.gift_card_id ? `
+            <div style="border-left:4px solid #F24444;padding-left:16px;margin:16px 0;">
+              <p>Der Gutscheinbetrag wurde zurück auf Ihren Gutschein gebucht.</p>
+            </div>
+          ` : ''}
+          <p>Möchten Sie eine neue Tour buchen?</p>
+          <a href="${BASE_URL}" style="display:inline-block;background:#F24444;color:white;padding:12px 24px;border-radius:8px;text-decoration:none;font-weight:bold;margin:8px 0;">Neue Tour buchen</a>
+          <p style="font-size:11px;color:#999;margin-top:24px;">Helgoländer Dienstleistungs GmbH · Von-Aschen-Str. 594 · 27498 Helgoland</p>
+        </div>
+      </body></html>`,
+    });
+  } catch (emailErr) {
+    console.error('Cancellation email error:', emailErr);
+  }
+
+  const amountStr = refundAmount.toFixed(2).replace('.', ',');
+  return `Buchung ${args.booking_reference} (${booking.customer_name}) ${isPartial ? 'teilweise' : 'vollständig'} storniert. ${booking.stripe_payment_intent_id ? `${amountStr} € erstattet.` : booking.gift_card_id ? 'Gutscheinbetrag zurückgebucht.' : 'Keine Online-Zahlung, Erstattung vor Ort.'} Storno-E-Mail an ${booking.customer_email} gesendet.`;
+}
+
 // ── Tool dispatcher ──
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 const TOOL_MAP: Record<string, (args: any) => Promise<string>> = {
   update_tour_price,
   cancel_departures,
+  cancel_booking,
   create_announcement,
   add_departure,
   remove_departure,

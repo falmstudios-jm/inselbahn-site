@@ -40,6 +40,22 @@ const TOOLS = [
   {
     type: 'function' as const,
     function: {
+      name: 'cancel_booking',
+      description: 'Cancel a single booking by its booking reference (e.g. IB-2026-XXXX). Issues refund and sends cancellation email. NO password required for individual bookings.',
+      parameters: {
+        type: 'object',
+        properties: {
+          booking_reference: { type: 'string', description: 'e.g. IB-2026-XXXX' },
+          reason: { type: 'string', description: 'Reason for cancellation' },
+          partial_amount: { type: 'number', description: 'If partial refund, the amount in EUR. Omit for full refund.' },
+        },
+        required: ['booking_reference'],
+      },
+    },
+  },
+  {
+    type: 'function' as const,
+    function: {
       name: 'create_announcement',
       description: 'Create a banner announcement on the website',
       parameters: {
@@ -180,12 +196,19 @@ DEIN VERHALTEN:
 - Bei neuen Abfahrten: Frage ob online buchbar
 - Generell: Wenn der Nutzer etwas unklar formuliert, frage ZUERST nach bevor du handelst!
 
+EINZELBUCHUNG STORNIEREN (cancel_booking):
+- KEIN Passwort nötig! Einzelbuchungen können direkt storniert werden.
+- Frage nur: "Soll die gesamte Buchung erstattet werden, oder nur ein Teil?"
+- Wenn der Nutzer eine Buchungsnummer nennt (z.B. IB-2026-XXXX): direkt cancel_booking aufrufen
+- Volle Erstattung ist der Standard. Nur bei explizitem Wunsch Teilerstattung.
+- Umbuchung ist NICHT möglich. Der Gast muss stornieren und neu buchen.
+
 SICHERHEIT — GEFÄHRLICHE AKTIONEN:
 Die folgenden Aktionen sind GEFÄHRLICH und erfordern das Sicherheitspasswort:
-- cancel_departures (Massenstornierung + Rückerstattungen)
-- partial_refund (Geld wird ausgezahlt)
+- cancel_departures (MASSEN-Stornierung + Rückerstattungen für ALLE Buchungen eines Tages)
 - Preisänderungen über 20% Abweichung vom aktuellen Preis
 - Löschung von Abfahrten
+NICHT gefährlich (kein Passwort nötig): cancel_booking (einzelne Buchung), partial_refund (einzelne Teilerstattung), get_revenue, get_bookings, create_announcement, create_discount_code
 
 Wenn eine gefährliche Aktion angefragt wird:
 1. Erkläre was du tun wirst und welche Auswirkungen es hat (z.B. "X Buchungen werden storniert, Y € werden erstattet")
