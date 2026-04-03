@@ -28,15 +28,15 @@ const galleryRow2 = [
 const TOUR_ASSETS: Record<string, { illustration: string; illustrationAlt: string; photo: string; photoAlt: string }> = {
   "unterland-tour": {
     illustration: "/images/inselbahn-illustration-unterland.svg",
-    illustrationAlt: "Illustration der Unterland-Tour",
-    photo: "/images/helgolandbahn-photo-1.jpg",
-    photoAlt: "Inselbahn Unterland-Tour",
+    illustrationAlt: "Unterland-Tour",
+    photo: "/images/666b81a83e5b0865626a34fe_helgolandbahn-1-2.jpg",
+    photoAlt: "Unterland-Tour auf Helgoland",
   },
   "premium-tour": {
     illustration: "/images/inselbahn-illustration-premium.svg",
-    illustrationAlt: "Illustration der Premium-Tour",
-    photo: "/images/helgolandbahn-photo-2.jpg",
-    photoAlt: "Inselbahn Premium-Tour",
+    illustrationAlt: "Premium-Tour",
+    photo: "/images/666b822370124a550fa96b11_helgolandbahn-4.jpg",
+    photoAlt: "Premium-Tour auf Helgoland",
   },
 };
 
@@ -83,16 +83,16 @@ function TourCard({ tour, onBook }: { tour: Tour; onBook: (tourSlug: string) => 
       </div>
 
       {/* Title with inline SVG */}
-      <div className="flex items-center justify-between gap-3 mb-1">
+      <div className="flex items-center gap-3 mb-1">
         <h3 className="text-2xl md:text-[28px] font-bold text-dark">
           {tour.name}
         </h3>
         <Image
           src={assets.illustration}
           alt={assets.illustrationAlt}
-          width={80}
-          height={40}
-          className="h-[40px] w-auto flex-shrink-0"
+          width={120}
+          height={28}
+          className="h-[28px] w-auto flex-shrink-0 opacity-60"
         />
       </div>
       {tour.notes && !/Fahrzeug/i.test(tour.notes) && (
