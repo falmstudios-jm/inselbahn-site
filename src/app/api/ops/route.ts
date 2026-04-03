@@ -229,7 +229,7 @@ export async function POST(req: Request) {
           Authorization: `Bearer ${apiKey}`,
         },
         body: JSON.stringify({
-          model: 'gpt-4o-mini',
+          model: 'gpt-5.4-2026-03-05',
           messages: [
             { role: 'system', content: SYSTEM_PROMPT },
             { role: 'user', content: command },
@@ -299,7 +299,7 @@ export async function POST(req: Request) {
           Authorization: `Bearer ${apiKey}`,
         },
         body: JSON.stringify({
-          model: 'gpt-4o-mini',
+          model: 'gpt-5.4-2026-03-05',
           messages: [
             { role: 'system', content: SYSTEM_PROMPT },
             { role: 'user', content: command },
