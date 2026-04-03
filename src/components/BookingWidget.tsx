@@ -274,6 +274,7 @@ export default function BookingWidget({ tours: supabaseTours }: BookingWidgetPro
   const [contactEmail, setContactEmail] = useState("");
   const [contactPhone, setContactPhone] = useState("");
   const [gdprConsent, setGdprConsent] = useState(false);
+  const [hinweiseAccepted, setHinweiseAccepted] = useState(false);
   const [wantsInvoice, setWantsInvoice] = useState(false);
   const [invoiceCompany, setInvoiceCompany] = useState("");
   const [invoiceStreet, setInvoiceStreet] = useState("");
@@ -441,6 +442,7 @@ export default function BookingWidget({ tours: supabaseTours }: BookingWidgetPro
           contactEmail.trim() !== "" &&
           contactPhone.trim() !== "" &&
           gdprConsent &&
+          hinweiseAccepted &&
           !submitting;
         if (!baseValid) return false;
         if (wantsInvoice) {
@@ -456,7 +458,7 @@ export default function BookingWidget({ tours: supabaseTours }: BookingWidgetPro
       default:
         return false;
     }
-  }, [step, selectedDate, selectedTour, selectedTime, selectedSlot, adults, contactName, contactEmail, contactPhone, gdprConsent, submitting, wantsInvoice, invoiceCompany, invoiceStreet, invoicePostalCode, invoiceCity]);
+  }, [step, selectedDate, selectedTour, selectedTime, selectedSlot, adults, contactName, contactEmail, contactPhone, gdprConsent, hinweiseAccepted, submitting, wantsInvoice, invoiceCompany, invoiceStreet, invoicePostalCode, invoiceCity]);
 
   /* ─── Submit booking → get client_secret → go to payment step ─── */
   async function handleSubmit() {
@@ -1490,6 +1492,25 @@ export default function BookingWidget({ tours: supabaseTours }: BookingWidgetPro
                     <label className="block text-sm font-medium text-dark mb-1.5">Telefon</label>
                     <input type="tel" value={contactPhone} onChange={(e) => setContactPhone(e.target.value)} placeholder="+49 170 1234567" className="w-full px-4 py-3 rounded-xl border border-gray-200 focus:border-dark focus:outline-none transition-colors bg-transparent" />
                   </div>
+                  {/* Wichtige Hinweise */}
+                  <div className="pt-2">
+                    <p className="text-sm font-semibold text-dark mb-2">Wichtige Hinweise</p>
+                    <label className="flex items-start gap-3 cursor-pointer">
+                      <input type="checkbox" checked={hinweiseAccepted} onChange={(e) => setHinweiseAccepted(e.target.checked)} className="mt-1 w-4 h-4 rounded accent-dark" />
+                      <span className="text-sm text-dark/60">
+                        Ich best&auml;tige, dass ich die folgenden Hinweise gelesen habe:
+                      </span>
+                    </label>
+                    <ul className="mt-2 ml-7 space-y-1.5 text-xs text-dark/50 list-disc pl-4">
+                      <li>Bitte 15 Minuten vor Abfahrt am Franz-Schensky-Platz sein</li>
+                      <li>Hunde: Nur bei der Unterland-Tour (bis mittlere Gr&ouml;&szlig;e, angeleint). Keine Hunde bei der Premium-Tour.</li>
+                      <li>Rollst&uuml;hle: 1 Platz bei der Unterland-Tour (kein E-Rollstuhl). Premium-Tour nicht vollst&auml;ndig barrierefrei.</li>
+                      <li>Gep&auml;ck: Kann nicht mitgenommen werden</li>
+                      <li>Bei der letzten Fahrt des Tages ist ein Ausstieg am Schiff auf Anfrage beim Fahrer m&ouml;glich</li>
+                      <li>Stornierung: Kostenlos bis Mitternacht am Vortag</li>
+                    </ul>
+                  </div>
+
                   <div className="pt-2">
                     <label className="flex items-start gap-3 cursor-pointer">
                       <input type="checkbox" checked={gdprConsent} onChange={(e) => setGdprConsent(e.target.checked)} className="mt-1 w-4 h-4 rounded accent-dark" />

@@ -7,6 +7,7 @@ import GutscheinSection from "@/components/GutscheinSection";
 import GettingThere from "@/components/GettingThere";
 import FAQ from "@/components/FAQ";
 import BookingWidget from "@/components/BookingWidget";
+import Familientage from "@/components/Familientage";
 import Footer from "@/components/Footer";
 import AnnouncementBanner from "@/components/AnnouncementBanner";
 import InlineChat from "@/components/InlineChat";
@@ -25,6 +26,7 @@ export default async function Home() {
       <main>
         <Hero />
         <TourCards tours={tours} />
+        <Familientage />
         <Schedule tours={tours} departures={departures} />
         <Reviews />
         <GutscheinSection />

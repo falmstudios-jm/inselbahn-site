@@ -162,10 +162,15 @@ function buildFeedbackEmail(params: FeedbackEmailParams): string {
               <table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="border-left:4px solid #F24444;padding-left:16px;margin-bottom:24px;">
                 <tr>
                   <td>
-                    <p style="margin:0 0 10px;font-size:14px;font-weight:700;color:#333;">Unsere Helgoland-Tipps f\u00FCr Sie</p>
-                    <p style="margin:0 0 8px;font-size:13px;color:#555;line-height:1.5;">\uD83C\uDF66 Bestes Eis: Gelateria Curniciello am Fahrstuhl</p>
-                    <p style="margin:0 0 8px;font-size:13px;color:#555;line-height:1.5;">\uD83C\uDF7D\uFE0F Restaurant-Tipp: Fragen Sie die Einheimischen \u2014 die besten Empfehlungen wechseln mit der Saison!</p>
-                    <p style="margin:0;font-size:13px;color:#555;line-height:1.5;">\uD83D\uDEB6 Zu Fu\u00DF zur Langen Anna: Vom Fahrstuhl aus ca. 20 Min. \u00FCber den Klippenrandweg</p>
+                    <p style="margin:0 0 14px;font-size:14px;font-weight:700;color:#333;">Unsere pers\u00F6nlichen Empfehlungen f\u00FCr Sie</p>
+                    <p style="margin:0 0 4px;font-size:13px;font-weight:700;color:#333;">\uD83C\uDF66 Gelateria Curniciello</p>
+                    <p style="margin:0 0 12px;font-size:13px;color:#555;line-height:1.5;">Unsere pers\u00F6nliche Empfehlung: Das beste Eis der Insel \u2014 direkt am Fahrstuhl. Die freundlichsten Menschen gibt es gratis dazu!</p>
+                    <p style="margin:0 0 4px;font-size:13px;font-weight:700;color:#333;">\uD83C\uDF7D\uFE0F Aquarium Restaurant</p>
+                    <p style="margin:0 0 12px;font-size:13px;color:#555;line-height:1.5;">Edles Restaurant mit frischem Fisch und Steak, extrem beliebt! Unbedingt rechtzeitig reservieren.</p>
+                    <p style="margin:0 0 4px;font-size:13px;font-weight:700;color:#333;">\uD83D\uDCF1 fink \u2014 Die Vogel-App</p>
+                    <p style="margin:0 0 12px;font-size:13px;color:#555;line-height:1.5;">Das Helgol\u00E4nder Start-Up entwickelt eine innovative Birdwatching-App f\u00FCr Helgoland und ganz Europa. Perfekter Begleiter f\u00FCr Vogelbeobachtung auf der Insel! <a href="https://finkapp.eu" style="color:#F24444;text-decoration:none;">finkapp.eu</a></p>
+                    <p style="margin:0 0 4px;font-size:13px;font-weight:700;color:#333;">\uD83D\uDDE3\uFE0F Halunder.ai</p>
+                    <p style="margin:0;font-size:13px;color:#555;line-height:1.5;">M\u00F6chten Sie mehr \u00FCber Halunder erfahren? Europas kleinste Sprache hat jetzt den kleinsten \u00DCbersetzer der Welt \u2014 entwickelt von einem Helgol\u00E4nder. <a href="https://halunder.ai" style="color:#F24444;text-decoration:none;">halunder.ai</a></p>
                   </td>
                 </tr>
               </table>
@@ -177,6 +182,71 @@ function buildFeedbackEmail(params: FeedbackEmailParams): string {
                     <p style="margin:0 0 8px;font-size:14px;font-weight:700;color:#333;">🎁 10% Rabatt auf Ihre nächste Buchung!</p>
                     <p style="margin:0 0 12px;font-size:22px;font-weight:700;color:#4B8B3B;font-family:monospace;letter-spacing:1px;">${discountCode}</p>
                     <p style="margin:0;font-size:12px;color:#888;">Gültig bis ${validUntil} · Einmalig einlösbar · Auch an Freunde weitergeben!</p>
+                  </td>
+                </tr>
+              </table>
+
+              <!-- Unsere Empfehlungen -->
+              <table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="margin-bottom:24px;">
+                <tr>
+                  <td style="padding:0 0 12px;">
+                    <p style="margin:0;font-size:16px;font-weight:700;color:#333;text-align:center;">Unsere Empfehlungen</p>
+                  </td>
+                </tr>
+                <tr>
+                  <td>
+                    <table role="presentation" width="100%" cellpadding="0" cellspacing="0">
+                      <tr>
+                        <td width="50%" style="padding:0 6px 12px 0;vertical-align:top;">
+                          <table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="background-color:#FFF8F0;border-radius:8px;">
+                            <tr>
+                              <td style="padding:16px;text-align:center;">
+                                <p style="margin:0 0 6px;font-size:24px;">\uD83C\uDF66</p>
+                                <p style="margin:0 0 6px;font-size:14px;font-weight:700;color:#333;">Gelateria Curniciello</p>
+                                <p style="margin:0;font-size:12px;color:#555;line-height:1.4;">Bestes Eis der Insel \u2014 direkt am Fahrstuhl. Die freundlichsten Menschen dazu!</p>
+                              </td>
+                            </tr>
+                          </table>
+                        </td>
+                        <td width="50%" style="padding:0 0 12px 6px;vertical-align:top;">
+                          <table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="background-color:#FFF8F0;border-radius:8px;">
+                            <tr>
+                              <td style="padding:16px;text-align:center;">
+                                <p style="margin:0 0 6px;font-size:24px;">\uD83C\uDF7D\uFE0F</p>
+                                <p style="margin:0 0 6px;font-size:14px;font-weight:700;color:#333;">Helgol\u00E4nder K\u00FCche</p>
+                                <p style="margin:0;font-size:12px;color:#555;line-height:1.4;">Probieren Sie fangfrischen Fisch an den Hummerbuden oder im Restaurant am Hafen.</p>
+                              </td>
+                            </tr>
+                          </table>
+                        </td>
+                      </tr>
+                      <tr>
+                        <td width="50%" style="padding:0 6px 0 0;vertical-align:top;">
+                          <table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="background-color:#FFF8F0;border-radius:8px;">
+                            <tr>
+                              <td style="padding:16px;text-align:center;">
+                                <p style="margin:0 0 6px;font-size:24px;">\uD83D\uDCF1</p>
+                                <p style="margin:0 0 6px;font-size:14px;font-weight:700;color:#333;">fink \u2014 Vogel-App</p>
+                                <p style="margin:0 0 10px;font-size:12px;color:#555;line-height:1.4;">894 europ\u00E4ische Vogelarten bestimmen. Perfekt f\u00FCr Helgoland!</p>
+                                <a href="https://finkapp.eu" style="display:inline-block;background-color:#F24444;color:#ffffff;font-size:12px;font-weight:700;text-decoration:none;padding:8px 16px;border-radius:5px;">Zur App</a>
+                              </td>
+                            </tr>
+                          </table>
+                        </td>
+                        <td width="50%" style="padding:0 0 0 6px;vertical-align:top;">
+                          <table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="background-color:#FFF8F0;border-radius:8px;">
+                            <tr>
+                              <td style="padding:16px;text-align:center;">
+                                <p style="margin:0 0 6px;font-size:24px;">\uD83D\uDDE3\uFE0F</p>
+                                <p style="margin:0 0 6px;font-size:14px;font-weight:700;color:#333;">Halunder.ai</p>
+                                <p style="margin:0 0 10px;font-size:12px;color:#555;line-height:1.4;">Der erste \u00DCbersetzer f\u00FCr Helgol\u00E4nder Friesisch. Sprechen Sie wie ein Insulaner!</p>
+                                <a href="https://halunder.ai" style="display:inline-block;background-color:#F24444;color:#ffffff;font-size:12px;font-weight:700;text-decoration:none;padding:8px 16px;border-radius:5px;">Ausprobieren</a>
+                              </td>
+                            </tr>
+                          </table>
+                        </td>
+                      </tr>
+                    </table>
                   </td>
                 </tr>
               </table>

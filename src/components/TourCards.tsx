@@ -12,16 +12,23 @@ const SLUG_TO_BOOKING_ID: Record<string, string> = {
 
 const galleryRow1 = [
   { src: "/images/666b81a83e5b0865626a34fe_helgolandbahn-1-2.jpg", alt: "Inselbahn Helgoland Rundfahrt" },
+  { src: "/images/premium-20250707_103436.jpg", alt: "Premium-Tour Oberland" },
   { src: "/images/666b822370124a550fa96b11_helgolandbahn-4.jpg", alt: "Inselbahn am Hafen" },
+  { src: "/images/premium-20250807_120428.jpg", alt: "Premium-Tour Lange Anna" },
   { src: "/images/666b90144c01c4b5cdca05c0_helgolandbahn-6.jpg", alt: "Helgoland Klippen" },
+  { src: "/images/premium-20250814_123019.jpg", alt: "Premium-Tour Klippenweg" },
   { src: "/images/666b901ff46dc56f280806a9_helgolandbahn-7.jpg", alt: "Inselbahn Fahrgäste" },
 ];
 
 const galleryRow2 = [
   { src: "/images/666b902e7760b1efe253a9ef_helgolandbahn-17.jpg", alt: "Helgoland Panorama" },
+  { src: "/images/premium-20250807_151052.jpg", alt: "Premium-Tour Panoramablick" },
   { src: "/images/666b9037f2359d6582524203_helgolandbahn-14.jpg", alt: "Premium-Tour Aussicht" },
+  { src: "/images/premium-20250814_123023.jpg", alt: "Premium-Tour Lummenfelsen" },
   { src: "/images/666b90643e5b08656276030b_helgolandbahn-12.jpg", alt: "Inselbahn auf Tour" },
+  { src: "/images/premium-20250814_123029.jpg", alt: "Premium-Tour Helgoland von oben" },
   { src: "/images/666b9090ffbb1554bef8498f_helgolandbahn-9.jpg", alt: "Helgoland Landschaft" },
+  { src: "/images/premium-20250814_150116.jpg", alt: "Premium-Tour Sonnenblick" },
 ];
 
 /** Map tour slugs to their illustration and photo assets */
@@ -41,14 +48,14 @@ const TOUR_ASSETS: Record<string, { illustration: string; illustrationAlt: strin
   "premium": {
     illustration: "/images/inselbahn-illustration-premium.svg",
     illustrationAlt: "Premium-Tour",
-    photo: "/images/666b822370124a550fa96b11_helgolandbahn-4.jpg",
-    photoAlt: "Premium-Tour auf Helgoland",
+    photo: "/images/premium-20250707_103436.jpg",
+    photoAlt: "Premium-Tour Oberland auf Helgoland",
   },
   "premium-tour": {
     illustration: "/images/inselbahn-illustration-premium.svg",
     illustrationAlt: "Premium-Tour",
-    photo: "/images/666b822370124a550fa96b11_helgolandbahn-4.jpg",
-    photoAlt: "Premium-Tour auf Helgoland",
+    photo: "/images/premium-20250707_103436.jpg",
+    photoAlt: "Premium-Tour Oberland auf Helgoland",
   },
 };
 
