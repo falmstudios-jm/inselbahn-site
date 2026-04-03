@@ -280,6 +280,8 @@ export default function BookingWidget({ tours: supabaseTours }: BookingWidgetPro
   const [gdprConsent, setGdprConsent] = useState(false);
   const [hinweiseAccepted, setHinweiseAccepted] = useState(false);
   const [wheelchairSeat, setWheelchairSeat] = useState(false);
+  const [wheelchairAdult, setWheelchairAdult] = useState(0);
+  const [wheelchairChild, setWheelchairChild] = useState(0);
   const [wantsInvoice, setWantsInvoice] = useState(false);
   const [invoiceCompany, setInvoiceCompany] = useState("");
   const [invoiceStreet, setInvoiceStreet] = useState("");
@@ -334,7 +336,7 @@ export default function BookingWidget({ tours: supabaseTours }: BookingWidgetPro
   const childPrice = selectedSlot?.price_child ?? mergedTourOptions.find((t) => t.id === selectedTour)?.childPrice ?? 0;
   const remaining = selectedSlot?.remaining ?? 20;
 
-  const subtotalPrice = adultPrice * adults + childPrice * children;
+  const subtotalPrice = adultPrice * (adults + wheelchairAdult) + childPrice * (children + wheelchairChild);
 
   // Apply discount
   const discountAmount = useMemo(() => {
@@ -477,8 +479,8 @@ export default function BookingWidget({ tours: supabaseTours }: BookingWidgetPro
         body: JSON.stringify({
           departure_id: selectedSlot.departure_id,
           booking_date: selectedDate,
-          adults,
-          children,
+          adults: adults + wheelchairAdult,
+          children: children + wheelchairChild,
           children_free: childrenFree,
           customer_name: contactName.trim(),
           customer_email: contactEmail.trim(),
@@ -578,6 +580,8 @@ export default function BookingWidget({ tours: supabaseTours }: BookingWidgetPro
     setInvoiceVatId("");
     setInvoiceCountry("Deutschland");
     setWheelchairSeat(false);
+    setWheelchairAdult(0);
+    setWheelchairChild(0);
     setAppliedGiftCard(null);
     setAppliedDiscount(null);
     setClientSecret(null);
@@ -614,7 +618,7 @@ export default function BookingWidget({ tours: supabaseTours }: BookingWidgetPro
     return t.slice(0, 5);
   }
 
-  const totalPassengers = adults + children + childrenFree;
+  const totalPassengers = adults + children + childrenFree + wheelchairAdult + wheelchairChild;
   const canAddMore = totalPassengers < remaining;
 
   // Wheelchair availability: only for wheelchair-accessible tours (Unterland)
@@ -1381,6 +1385,11 @@ export default function BookingWidget({ tours: supabaseTours }: BookingWidgetPro
               <div className={`w-full px-1 ${step === 3 ? '' : 'hidden'}`}>
                 <div className="max-w-md mx-auto bg-white rounded-2xl p-6 md:p-8 border border-gray-100 shadow-sm space-y-6">
                   {/* Adults */}
+                  {/* Seat width hint */}
+                  <div className="bg-blue-50 border border-blue-100 rounded-lg px-3 py-2 mb-3 text-xs text-blue-700">
+                    💺 Unsere Sitze sind ca. 50 cm breit. Bei Bedarf können zwei Plätze pro Person gebucht werden.
+                  </div>
+
                   <div className="flex items-center justify-between">
                     <div>
                       <p className="font-medium text-dark">Erwachsene</p>
@@ -1419,32 +1428,41 @@ export default function BookingWidget({ tours: supabaseTours }: BookingWidgetPro
                     </div>
                   </div>
 
-                  {/* Wheelchair seat toggle (Unterland only) */}
+                  {/* Wheelchair seats (Unterland only) — max 1 total */}
                   {isWheelchairTour && (
-                    <div className="flex items-center justify-between pt-2 border-t border-gray-100">
-                      <div>
-                        <p className="font-medium text-dark">Rollstuhlplatz</p>
-                        <p className="text-sm text-dark/50">
-                          {wheelchairAvailable
-                            ? '1 verf\u00FCgbar pro Tour'
-                            : 'Rollstuhlplatz bereits vergeben'}
+                    <>
+                      <div className="border-t border-gray-100 pt-3 mt-1">
+                        <p className="text-xs font-semibold text-dark/40 uppercase tracking-wider mb-3">
+                          ♿ Rollstuhlplatz {wheelchairAvailable
+                            ? <span className="text-green-600 normal-case">(1 verfügbar)</span>
+                            : <span className="text-red-500 normal-case">(bereits vergeben)</span>}
                         </p>
                       </div>
-                      <label className="relative inline-flex items-center cursor-pointer">
-                        <input
-                          type="checkbox"
-                          checked={wheelchairSeat}
-                          disabled={!wheelchairAvailable && !wheelchairSeat}
-                          onChange={(e) => setWheelchairSeat(e.target.checked)}
-                          className="sr-only peer"
-                        />
-                        <div className={`w-11 h-6 rounded-full peer transition-colors ${
-                          !wheelchairAvailable && !wheelchairSeat
-                            ? 'bg-dark/10 cursor-not-allowed'
-                            : 'bg-dark/20 peer-checked:bg-primary'
-                        } peer-focus:outline-none after:content-[""] after:absolute after:top-[2px] after:start-[2px] after:bg-white after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:after:translate-x-full`} />
-                      </label>
-                    </div>
+                      {/* Wheelchair Adult */}
+                      <div className="flex items-center justify-between">
+                        <div>
+                          <p className="font-medium text-dark">Rollstuhl Erwachsener</p>
+                          <p className="text-sm text-dark/50">{selectedSlot ? `${Number(selectedSlot.price_adult).toFixed(2).replace('.', ',')} €` : ''}</p>
+                        </div>
+                        <div className="flex items-center gap-4">
+                          <button onClick={() => { setWheelchairAdult(0); setWheelchairSeat(wheelchairChild > 0); }} disabled={wheelchairAdult === 0} className={`w-10 h-10 rounded-full flex items-center justify-center transition-colors text-lg ${wheelchairAdult > 0 ? "bg-dark/5 text-dark hover:bg-dark/10" : "bg-dark/5 text-dark/20 cursor-not-allowed"}`}>&minus;</button>
+                          <span className="text-xl font-bold w-6 text-center">{wheelchairAdult}</span>
+                          <button onClick={() => { if (wheelchairAvailable && wheelchairAdult + wheelchairChild < 1) { setWheelchairAdult(1); setWheelchairChild(0); setWheelchairSeat(true); } }} disabled={!wheelchairAvailable || wheelchairAdult + wheelchairChild >= 1} className={`w-10 h-10 rounded-full flex items-center justify-center transition-colors text-lg ${wheelchairAvailable && wheelchairAdult + wheelchairChild < 1 ? "bg-dark/5 text-dark hover:bg-dark/10" : "bg-dark/5 text-dark/20 cursor-not-allowed"}`}>+</button>
+                        </div>
+                      </div>
+                      {/* Wheelchair Child */}
+                      <div className="flex items-center justify-between">
+                        <div>
+                          <p className="font-medium text-dark">Rollstuhl Kind (6–14)</p>
+                          <p className="text-sm text-dark/50">{selectedSlot ? `${Number(selectedSlot.price_child).toFixed(2).replace('.', ',')} €` : ''}</p>
+                        </div>
+                        <div className="flex items-center gap-4">
+                          <button onClick={() => { setWheelchairChild(0); setWheelchairSeat(wheelchairAdult > 0); }} disabled={wheelchairChild === 0} className={`w-10 h-10 rounded-full flex items-center justify-center transition-colors text-lg ${wheelchairChild > 0 ? "bg-dark/5 text-dark hover:bg-dark/10" : "bg-dark/5 text-dark/20 cursor-not-allowed"}`}>&minus;</button>
+                          <span className="text-xl font-bold w-6 text-center">{wheelchairChild}</span>
+                          <button onClick={() => { if (wheelchairAvailable && wheelchairAdult + wheelchairChild < 1) { setWheelchairChild(1); setWheelchairAdult(0); setWheelchairSeat(true); } }} disabled={!wheelchairAvailable || wheelchairAdult + wheelchairChild >= 1} className={`w-10 h-10 rounded-full flex items-center justify-center transition-colors text-lg ${wheelchairAvailable && wheelchairAdult + wheelchairChild < 1 ? "bg-dark/5 text-dark hover:bg-dark/10" : "bg-dark/5 text-dark/20 cursor-not-allowed"}`}>+</button>
+                        </div>
+                      </div>
+                    </>
                   )}
 
                   {/* Capacity note */}
