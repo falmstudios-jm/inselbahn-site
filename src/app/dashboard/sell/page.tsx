@@ -20,11 +20,17 @@ type SellMode = 'individual' | 'bulk';
 export default function SellPage() {
   const { name: staffName } = useDashboard();
 
-  const [selectedDate, setSelectedDate] = useState(() => {
-    return new Date().toLocaleDateString('en-CA', { timeZone: 'Europe/Berlin' });
-  });
+  // Always today (Berlin timezone), no date selector
   const todayISO = new Date().toLocaleDateString('en-CA', { timeZone: 'Europe/Berlin' });
-  const isToday = selectedDate === todayISO;
+  const selectedDate = todayISO;
+
+  const todayLabel = (() => {
+    const d = new Date(todayISO + 'T12:00:00');
+    const weekday = d.toLocaleDateString('de-DE', { weekday: 'short', timeZone: 'Europe/Berlin' });
+    const day = d.getDate();
+    const month = d.toLocaleDateString('de-DE', { month: 'short', timeZone: 'Europe/Berlin' });
+    return `Heute, ${weekday} ${day}. ${month}`;
+  })();
 
   const [slots, setSlots] = useState<AvailableSlot[]>([]);
   const [loading, setLoading] = useState(true);
@@ -84,21 +90,6 @@ export default function SellPage() {
   const totalPrice = selectedSlot
     ? adults * selectedSlot.price_adult + children * selectedSlot.price_child
     : 0;
-
-  const changeDate = (delta: number) => {
-    const d = new Date(selectedDate + 'T12:00:00');
-    d.setDate(d.getDate() + delta);
-    setSelectedDate(d.toISOString().slice(0, 10));
-  };
-
-  const formatDateLabel = (dateStr: string) => {
-    const d = new Date(dateStr + 'T12:00:00');
-    return d.toLocaleDateString('de-DE', {
-      weekday: 'short',
-      day: 'numeric',
-      month: 'short',
-    });
-  };
 
   const handleSellIndividual = async () => {
     if (!selectedSlot) return;
@@ -248,37 +239,9 @@ export default function SellPage() {
     <div className="p-4 max-w-lg mx-auto">
       <h1 className="text-xl font-bold text-dark mb-3">Ticket verkaufen</h1>
 
-      {/* Date selector */}
-      <div className="flex items-center justify-between mb-4 bg-white rounded-xl p-3 shadow-sm border border-gray-200">
-        <button
-          onClick={() => changeDate(-1)}
-          className="w-10 h-10 flex items-center justify-center rounded-lg bg-gray-50 active:bg-gray-100"
-        >
-          <svg className="w-4 h-4 text-gray-600" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
-            <path strokeLinecap="round" strokeLinejoin="round" d="M15 19l-7-7 7-7" />
-          </svg>
-        </button>
-        <div className="text-center">
-          <div className="font-semibold text-dark">
-            {isToday ? 'Heute' : formatDateLabel(selectedDate)}
-          </div>
-          {!isToday && (
-            <button
-              onClick={() => setSelectedDate(todayISO)}
-              className="text-xs text-primary font-medium"
-            >
-              Heute
-            </button>
-          )}
-        </div>
-        <button
-          onClick={() => changeDate(1)}
-          className="w-10 h-10 flex items-center justify-center rounded-lg bg-gray-50 active:bg-gray-100"
-        >
-          <svg className="w-4 h-4 text-gray-600" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
-            <path strokeLinecap="round" strokeLinejoin="round" d="M9 5l7 7-7 7" />
-          </svg>
-        </button>
+      {/* Static date display (today only) */}
+      <div className="flex items-center justify-center mb-4 bg-white rounded-xl p-3 shadow-sm border border-gray-200">
+        <div className="font-semibold text-dark">{todayLabel}</div>
       </div>
 
       {/* Mode toggle */}
@@ -322,16 +285,13 @@ export default function SellPage() {
               .filter((s) => {
                 // For bulk mode, show all departures (even past ones for today)
                 if (mode === 'bulk') return true;
-                // For individual mode on today, only future departures with capacity
-                if (isToday) {
-                  const nowBerlin = new Date().toLocaleString('en-US', { timeZone: 'Europe/Berlin' });
-                  const now = new Date(nowBerlin);
-                  const [h, m] = s.departure_time.split(':').map(Number);
-                  const depDate = new Date(now);
-                  depDate.setHours(h, m, 0, 0);
-                  return depDate > now && s.remaining > 0;
-                }
-                return s.remaining > 0;
+                // For individual mode, only future departures with capacity
+                const nowBerlin = new Date().toLocaleString('en-US', { timeZone: 'Europe/Berlin' });
+                const now = new Date(nowBerlin);
+                const [h, m] = s.departure_time.split(':').map(Number);
+                const depDate = new Date(now);
+                depDate.setHours(h, m, 0, 0);
+                return depDate > now && s.remaining > 0;
               })
               .map((slot) => {
                 const colors = getTourColor(slot.tour_slug);
@@ -370,15 +330,12 @@ export default function SellPage() {
 
             {slots.filter((s) => {
               if (mode === 'bulk') return true;
-              if (isToday) {
-                const nowBerlin = new Date().toLocaleString('en-US', { timeZone: 'Europe/Berlin' });
-                const now = new Date(nowBerlin);
-                const [h, m] = s.departure_time.split(':').map(Number);
-                const depDate = new Date(now);
-                depDate.setHours(h, m, 0, 0);
-                return depDate > now && s.remaining > 0;
-              }
-              return s.remaining > 0;
+              const nowBerlin = new Date().toLocaleString('en-US', { timeZone: 'Europe/Berlin' });
+              const now = new Date(nowBerlin);
+              const [h, m] = s.departure_time.split(':').map(Number);
+              const depDate = new Date(now);
+              depDate.setHours(h, m, 0, 0);
+              return depDate > now && s.remaining > 0;
             }).length === 0 && (
               <div className="text-center text-gray-400 py-12">
                 Keine verf&uuml;gbaren Abfahrten
@@ -417,7 +374,7 @@ export default function SellPage() {
               type="text"
               value={customerName}
               onChange={(e) => setCustomerName(e.target.value)}
-              placeholder="z.B. Müller"
+              placeholder="z.B. M&uuml;ller"
               className="w-full p-3 border border-gray-300 rounded-lg text-lg focus:outline-none focus:ring-2 focus:ring-primary/50"
             />
           </div>

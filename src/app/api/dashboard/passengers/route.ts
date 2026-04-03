@@ -24,10 +24,10 @@ export async function GET(req: NextRequest) {
 
     const { data: passengers, error } = await supabase
       .from('bookings')
-      .select('id, customer_name, adults, children, children_free, payment_method, booking_reference, status')
+      .select('id, customer_name, adults, children, children_free, payment_method, booking_reference, status, total_amount, stripe_payment_intent_id, gift_card_id, notes')
       .eq('departure_id', departureId)
       .eq('booking_date', date)
-      .eq('status', 'confirmed')
+      .in('status', ['confirmed', 'refunded', 'partial_refund'])
       .order('created_at', { ascending: true });
 
     if (error) {

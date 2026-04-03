@@ -14,6 +14,10 @@ export async function POST(req: Request) {
     const body = await req.json();
     const mode = body.mode || 'individual';
 
+    if (mode === 'block') {
+      return handleBlockSale(body, session);
+    }
+
     if (mode === 'bulk') {
       return handleBulkSale(body, session);
     }
@@ -274,5 +278,116 @@ async function handleBulkSale(
     booking_id: booking.id,
     booking_reference: bookingReference,
     total_amount: totalAmount,
+  });
+}
+
+async function handleBlockSale(
+  body: Record<string, unknown>,
+  session: { staff_id: string; name: string; role: string }
+) {
+  const {
+    departure_id,
+    booking_date,
+    adults = 1,
+    notes = 'Reserviert',
+  } = body as {
+    departure_id?: string;
+    booking_date?: string;
+    adults?: number;
+    notes?: string;
+  };
+
+  if (!departure_id || !booking_date) {
+    return NextResponse.json(
+      { error: 'Abfahrt und Datum erforderlich' },
+      { status: 400 }
+    );
+  }
+
+  const seatsToBlock = adults as number;
+  if (seatsToBlock <= 0) {
+    return NextResponse.json(
+      { error: 'Mindestens ein Platz erforderlich' },
+      { status: 400 }
+    );
+  }
+
+  const supabase = getSupabaseAdmin();
+
+  // Fetch departure + tour for capacity check
+  const { data: departure, error: depError } = await supabase
+    .from('departures')
+    .select('*, tours(*)')
+    .eq('id', departure_id)
+    .single();
+
+  if (depError || !departure) {
+    return NextResponse.json(
+      { error: 'Abfahrt nicht gefunden' },
+      { status: 400 }
+    );
+  }
+
+  const tour = departure.tours;
+  const capacity: number = tour.max_capacity;
+
+  // Check availability
+  const { data: existingBookings } = await supabase
+    .from('bookings')
+    .select('adults, children, children_free, ghost_seats')
+    .eq('departure_id', departure_id)
+    .eq('booking_date', booking_date)
+    .eq('status', 'confirmed');
+
+  const usedSeats = (existingBookings || []).reduce((sum: number, b: { adults: number; children: number; children_free: number; ghost_seats: number | null }) => {
+    return sum + b.adults + b.children + (b.children_free || 0) + (b.ghost_seats || 0);
+  }, 0);
+
+  if (seatsToBlock > capacity - usedSeats) {
+    return NextResponse.json(
+      {
+        error: 'Nicht genügend Plätze verfügbar',
+        available: Math.max(0, capacity - usedSeats),
+      },
+      { status: 409 }
+    );
+  }
+
+  const bookingReference = generateBookingReference();
+
+  const { data: booking, error: insertError } = await supabase
+    .from('bookings')
+    .insert({
+      departure_id,
+      booking_date,
+      adults: seatsToBlock,
+      children: 0,
+      children_free: 0,
+      ghost_seats: 0,
+      customer_name: 'BLOCKIERT',
+      customer_email: 'block@helgolandbahn.de',
+      total_amount: 0,
+      booking_reference: bookingReference,
+      status: 'confirmed',
+      payment_method: 'manual_entry',
+      created_by: session.staff_id,
+      notes: notes || 'Reserviert',
+    })
+    .select()
+    .single();
+
+  if (insertError || !booking) {
+    console.error('Block insert error:', insertError);
+    return NextResponse.json(
+      { error: 'Blockierung konnte nicht erstellt werden' },
+      { status: 500 }
+    );
+  }
+
+  return NextResponse.json({
+    success: true,
+    booking_id: booking.id,
+    booking_reference: bookingReference,
+    total_amount: 0,
   });
 }
