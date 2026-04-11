@@ -153,10 +153,10 @@ export async function GET(req: NextRequest) {
           max_capacity: onlineCap, // Show online capacity as "max" to customers (not physical 18)
           online_capacity: onlineCap,
           booked: usedPassengers, // Show passenger count (not including ghost seats)
-          remaining: Math.max(0, onlineRemaining), // Actual bookable passengers
+          remaining: Math.max(0, Math.min(onlineRemaining, physicalRemaining)), // Stricter of both limits
           physical_remaining: Math.max(0, physicalRemaining), // For dashboard
-          available: onlineRemaining > 0,
-          online_sold_out: onlineRemaining <= 0 && physicalRemaining > 0,
+          available: Math.min(onlineRemaining, physicalRemaining) > 0,
+          online_sold_out: Math.min(onlineRemaining, physicalRemaining) <= 0 && physicalRemaining > 0,
           bookable_online: dep.bookable_online !== false,
           past: isPast,
           price_adult: tour.price_adult,

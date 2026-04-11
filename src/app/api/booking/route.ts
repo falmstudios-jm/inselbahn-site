@@ -104,13 +104,17 @@ export async function POST(req: Request) {
 
     // Two-tier capacity check:
     // 1. Passengers must fit within ONLINE capacity (e.g. 16)
-    // 2. Passengers + ghost seats can use up to PHYSICAL capacity (e.g. 18)
+    // 2. Total (passengers + ghost) must fit within PHYSICAL capacity (e.g. 18)
+    // Use the stricter of both limits
     const remainingOnline = onlineCapacity - usedPassengers;
-    if (groupSize > remainingOnline) {
+    const remainingPhysical = physicalCapacity - usedTotal;
+    const effectiveRemaining = Math.min(remainingOnline, remainingPhysical);
+
+    if (groupSize > effectiveRemaining) {
       return NextResponse.json(
         {
           error: 'Nicht genügend Plätze verfügbar',
-          available: Math.max(0, remainingOnline),
+          available: Math.max(0, effectiveRemaining),
         },
         { status: 409 }
       );
@@ -118,7 +122,6 @@ export async function POST(req: Request) {
 
     // Ghost seats can overflow into reserve seats (up to physical max)
     // If ghost seats don't fully fit, reduce them (still allow the booking)
-    const remainingPhysical = physicalCapacity - usedTotal;
     const effectiveGhostSeats = Math.min(ghostSeats, Math.max(0, remainingPhysical - groupSize));
 
     // Calculate total price
