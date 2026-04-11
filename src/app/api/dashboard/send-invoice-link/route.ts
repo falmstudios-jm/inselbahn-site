@@ -35,7 +35,7 @@ export async function POST(req: Request) {
       .eq('id', booking.id);
 
     // Send email with invoice self-service link
-    const baseUrl = process.env.NEXT_PUBLIC_BASE_URL || 'https://inselbahnhelgoland.vercel.app';
+    const baseUrl = process.env.NEXT_PUBLIC_BASE_URL || 'https://www.helgolandbahn.de';
     const invoiceUrl = `${baseUrl}/booking/invoice`;
 
     const resend = new Resend(process.env.RESEND_API_KEY);

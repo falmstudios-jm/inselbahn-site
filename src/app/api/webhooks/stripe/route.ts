@@ -185,7 +185,7 @@ async function confirmBookingAndSendEmail(bookingId: string, paymentIntentId: st
       if (feedbackTime > new Date()) {
         const qstash = new QStashClient({ token: process.env.QSTASH_TOKEN! });
         await qstash.publishJSON({
-          url: `${process.env.NEXT_PUBLIC_BASE_URL || 'https://inselbahnhelgoland.vercel.app'}/api/feedback`,
+          url: `${process.env.NEXT_PUBLIC_BASE_URL || 'https://www.helgolandbahn.de'}/api/feedback`,
           body: { booking_id: booking.id },
           notBefore: Math.floor(feedbackTime.getTime() / 1000),
         });

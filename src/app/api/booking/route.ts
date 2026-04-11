@@ -10,7 +10,7 @@ import {
 } from '@/lib/booking-utils';
 import { buildConfirmationEmail } from '@/lib/email-templates';
 
-const BASE_URL = process.env.NEXT_PUBLIC_BASE_URL || 'https://inselbahnhelgoland.vercel.app';
+const BASE_URL = process.env.NEXT_PUBLIC_BASE_URL || 'https://www.helgolandbahn.de';
 
 export async function POST(req: Request) {
   try {

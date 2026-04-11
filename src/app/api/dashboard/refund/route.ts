@@ -158,7 +158,7 @@ ${isOnline ? 'Die Rückerstattung erfolgt auf Ihr ursprüngliches Zahlungsmittel
 <p style="color:#555;font-size:14px;line-height:1.6;">
 Wir würden uns freuen, Sie bald wieder auf Helgoland begrüßen zu dürfen!
 </p>
-<a href="https://inselbahnhelgoland.vercel.app/#buchung" style="display:inline-block;background:#F24444;color:#fff;font-size:14px;font-weight:700;text-decoration:none;padding:12px 24px;border-radius:6px;margin-top:8px;">
+<a href="https://www.helgolandbahn.de/#buchung" style="display:inline-block;background:#F24444;color:#fff;font-size:14px;font-weight:700;text-decoration:none;padding:12px 24px;border-radius:6px;margin-top:8px;">
 Neue Tour buchen
 </a>
 </td></tr>

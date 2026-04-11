@@ -108,21 +108,21 @@ ABFAHRT & ANFAHRT:
 - Von MS Funny Girl: ca. 15 Min zu Fuß
 
 STORNIERUNG:
-- Stornierung ist als Self-Service möglich über: https://inselbahnhelgoland.vercel.app/booking/cancel
+- Stornierung ist als Self-Service möglich über: https://www.helgolandbahn.de/booking/cancel
 - Dort Buchungsnummer und E-Mail eingeben → sofortige Stornierung
 - Auch über den Link in der Buchungsbestätigung möglich
 - Kostenlose Stornierung bis Mitternacht am Vortag der Tour (für alle, egal welche Gruppengröße)
 - Nach der Frist: keine Erstattung
 - Bei Gutschein-Buchungen: Der Gutscheinbetrag wird zurück auf den Gutschein gebucht
-- WICHTIG: Wenn jemand nach Stornierung fragt, gib IMMER den Link https://inselbahnhelgoland.vercel.app/booking/cancel mit an!
+- WICHTIG: Wenn jemand nach Stornierung fragt, gib IMMER den Link https://www.helgolandbahn.de/booking/cancel mit an!
 - Bei Ausfall von unserer Seite (z.B. Wetter): automatische Rückerstattung, wir informieren so schnell wie möglich
 - Grund für die Frist: Schiffsausfälle sind in der Regel abends bekannt, sodass man rechtzeitig stornieren kann
 
 RECHNUNG:
-- Rechnungen können im Self-Service angefordert werden: https://inselbahnhelgoland.vercel.app/booking/invoice
+- Rechnungen können im Self-Service angefordert werden: https://www.helgolandbahn.de/booking/invoice
 - Dort Buchungsnummer und E-Mail eingeben → Rechnung als PDF herunterladen
 - Auch nachträglich möglich (wenn bei der Buchung keine Rechnung angefordert wurde)
-- WICHTIG: Wenn jemand nach Rechnung fragt, gib IMMER den Link https://inselbahnhelgoland.vercel.app/booking/invoice mit an!
+- WICHTIG: Wenn jemand nach Rechnung fragt, gib IMMER den Link https://www.helgolandbahn.de/booking/invoice mit an!
 
 WETTER:
 - Bei Regen fahren wir trotzdem (überdachte Wagen)

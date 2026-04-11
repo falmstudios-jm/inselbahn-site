@@ -109,7 +109,7 @@ interface FeedbackEmailParams {
 
 function buildFeedbackEmail(params: FeedbackEmailParams): string {
   const { customerName, tourName, discountCode, validUntil } = params;
-  const BASE = process.env.NEXT_PUBLIC_BASE_URL || 'https://inselbahnhelgoland.vercel.app';
+  const BASE = process.env.NEXT_PUBLIC_BASE_URL || 'https://www.helgolandbahn.de';
 
   return `<!DOCTYPE html><html lang="de"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"></head>
 <body style="margin:0;padding:0;background-color:#F7F7F7;font-family:'Montserrat',Arial,Helvetica,sans-serif;">
