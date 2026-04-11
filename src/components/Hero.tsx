@@ -52,7 +52,7 @@ export default function Hero() {
         <div className="absolute inset-0 bg-gradient-to-b from-black/30 via-black/40 to-black/60" />
 
         {/* Content - LEFT aligned */}
-        <div className="absolute inset-0 flex flex-col justify-center px-5 sm:px-8 md:px-14 lg:px-20 max-w-7xl mx-auto text-white">
+        <div className="absolute inset-0 flex flex-col justify-end pb-[20%] sm:pb-[18%] md:pb-[15%] px-5 sm:px-8 md:px-14 lg:px-20 max-w-7xl mx-auto text-white">
           <h1 className="text-[24px] sm:text-[32px] md:text-[42px] lg:text-[52px] font-bold leading-[1.1] mb-3 md:mb-5">
             Starten Sie Ihr
             <br className="sm:hidden" />
@@ -61,8 +61,8 @@ export default function Hero() {
             {" "}mit...
           </h1>
 
-          {/* Rotating text */}
-          <div className="min-h-[48px] sm:min-h-[40px] md:min-h-[36px] flex items-start">
+          {/* Rotating text - fixed height so H1 doesn't jump */}
+          <div className="h-[48px] sm:h-[40px] md:h-[36px] flex items-start overflow-hidden">
             <p
               className={`text-[14px] sm:text-[16px] md:text-[22px] lg:text-[26px] text-white/90 italic font-light max-w-2xl transition-all duration-500 ease-out ${
                 isVisible
