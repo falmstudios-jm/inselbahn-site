@@ -15,6 +15,7 @@ const TOOLS = [
           tour_slug: { type: 'string', enum: ['unterland', 'premium'] },
           price_adult: { type: 'number' },
           price_child: { type: 'number' },
+          password: { type: 'string', description: 'Security password required for >20% price changes' },
         },
         required: ['tour_slug'],
       },

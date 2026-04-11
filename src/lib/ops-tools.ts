@@ -34,6 +34,7 @@ export async function update_tour_price(args: {
   tour_slug: string;
   price_adult?: number;
   price_child?: number;
+  password?: string;
 }): Promise<string> {
   const supabase = getSupabaseAdmin();
   const tour = await getTourBySlug(args.tour_slug);
@@ -52,17 +53,20 @@ export async function update_tour_price(args: {
     if (val === 0) return `Fehler: Preis darf nicht 0€ sein. Falls gewünscht, bitte mit Sicherheitspasswort bestätigen.`;
   }
 
-  // Validate: >20% price change requires confirmation (server-side guard)
+  // Validate: >20% price change requires password confirmation
+  const SECURITY_PASSWORD = 'GER12234+GER12956!';
+  const passwordValid = args.password === SECURITY_PASSWORD;
+
   if (args.price_adult !== undefined && tour.price_adult > 0) {
     const changePercent = Math.abs(args.price_adult - tour.price_adult) / tour.price_adult;
-    if (changePercent > 0.2) {
-      return `SICHERHEITSSPERRE: Erwachsenenpreis-Änderung von ${tour.price_adult}€ auf ${args.price_adult}€ entspricht ${(changePercent * 100).toFixed(0)}% Abweichung (> 20%). Bitte bestätigen Sie mit dem Sicherheitspasswort und rufen Sie die Funktion erneut auf.`;
+    if (changePercent > 0.2 && !passwordValid) {
+      return `SICHERHEITSSPERRE: Erwachsenenpreis-Änderung von ${tour.price_adult}€ auf ${args.price_adult}€ entspricht ${(changePercent * 100).toFixed(0)}% Abweichung (> 20%). Bitte bestätigen Sie mit dem Sicherheitspasswort.`;
     }
   }
   if (args.price_child !== undefined && tour.price_child > 0) {
     const changePercent = Math.abs(args.price_child - tour.price_child) / tour.price_child;
-    if (changePercent > 0.2) {
-      return `SICHERHEITSSPERRE: Kinderpreis-Änderung von ${tour.price_child}€ auf ${args.price_child}€ entspricht ${(changePercent * 100).toFixed(0)}% Abweichung (> 20%). Bitte bestätigen Sie mit dem Sicherheitspasswort und rufen Sie die Funktion erneut auf.`;
+    if (changePercent > 0.2 && !passwordValid) {
+      return `SICHERHEITSSPERRE: Kinderpreis-Änderung von ${tour.price_child}€ auf ${args.price_child}€ entspricht ${(changePercent * 100).toFixed(0)}% Abweichung (> 20%). Bitte bestätigen Sie mit dem Sicherheitspasswort.`;
     }
   }
 
