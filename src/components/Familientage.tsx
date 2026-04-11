@@ -26,16 +26,11 @@ export default function Familientage() {
           <div>
             <SectionPill label="Familientage" />
             <h2 className="text-[28px] md:text-[40px] font-bold text-dark mb-6 leading-tight">
-              Kinder fahren kostenlos!
+              Familientage
             </h2>
-            <p className="text-lg md:text-xl font-semibold text-amber-500 mb-4">
-              Auf ausgew&auml;hlten Touren fahren Kinder kostenlos!
-            </p>
             <p className="text-dark/60 text-base md:text-lg leading-relaxed mb-4">
-              An bestimmten Tagen und Uhrzeiten ist die Inselbahn besonders
-              familienfreundlich: Bei der Unterland-Tour um 14:30 Uhr fahren alle
-              Kinder kostenlos. Die perfekte Gelegenheit f&uuml;r einen entspannten
-              Familienausflug auf Helgoland.
+              T&auml;glich um 14:30 Uhr fahren bei der Unterland-Tour alle Kinder kostenlos.
+              Die perfekte Gelegenheit f&uuml;r einen entspannten Familienausflug auf Helgoland.
             </p>
             <p className="text-dark/40 text-sm">
               Nur in Begleitung mindestens eines zahlenden Erwachsenen.
