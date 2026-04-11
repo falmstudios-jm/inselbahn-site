@@ -11,10 +11,10 @@ const montserrat = Montserrat({
 });
 
 export const metadata: Metadata = {
-  metadataBase: new URL("https://helgolandbahn.de"),
-  title: "Inselbahn Helgoland - Geführte Inselrundfahrten & Touren",
+  metadataBase: new URL("https://www.helgolandbahn.de"),
+  title: "Inselbahn Helgoland | Rundfahrten & Touren auf Helgoland",
   description:
-    "Entdecken Sie Helgoland mit der Inselbahn! Geführte Rundfahrten am Franz-Schensky-Platz. Unterland-Tour (45 Min, ab 11\u20AC) und Premium-Tour in kleiner Gruppe (90 Min, ab 22\u20AC) mit Ausstieg an der Langen Anna. Jetzt online buchen!",
+    "Geführte Inselrundfahrten auf Helgoland. Unterland-Tour ab 11 EUR und Premium-Tour ab 22 EUR mit Halt an der Langen Anna. Jetzt online buchen!",
   keywords: [
     "Helgoland",
     "Inselbahn",
@@ -29,37 +29,49 @@ export const metadata: Metadata = {
     "Lange Anna Helgoland",
     "Helgoland Aktivitäten",
     "Helgoland Rundfahrt buchen",
+    "Bimmelbahn Helgoland",
+    "Helgoland Bahn",
   ],
   alternates: {
-    canonical: "https://helgolandbahn.de",
+    canonical: "https://www.helgolandbahn.de",
+  },
+  icons: {
+    icon: [
+      { url: "/images/favicon.png", sizes: "32x32", type: "image/png" },
+      { url: "/images/favicon-large.png", sizes: "192x192", type: "image/png" },
+    ],
+    apple: { url: "/images/favicon-large.png", sizes: "180x180" },
   },
   openGraph: {
-    title: "Inselbahn Helgoland - Geführte Inselrundfahrten & Touren",
+    title: "Inselbahn Helgoland | Rundfahrten & Touren",
     description:
-      "Entdecken Sie Helgoland mit der Inselbahn! Geführte Rundfahrten am Franz-Schensky-Platz. Unterland-Tour und Premium-Tour in kleiner Gruppe mit Ausstieg an der Langen Anna.",
-    url: "https://helgolandbahn.de",
+      "Geführte Inselrundfahrten auf Helgoland. Unterland-Tour und Premium-Tour mit Halt an der Langen Anna. Online buchen!",
+    url: "https://www.helgolandbahn.de",
     siteName: "Inselbahn Helgoland",
     locale: "de_DE",
     type: "website",
     images: [
       {
-        url: "/images/inselbahn-hero.png",
+        url: "/images/extra-img_2202-2.jpg",
         width: 1200,
         height: 630,
-        alt: "Inselbahn Helgoland",
+        alt: "Inselbahn Helgoland - Premium-Tour",
       },
     ],
   },
   twitter: {
     card: "summary_large_image",
-    title: "Inselbahn Helgoland - Geführte Inselrundfahrten & Touren",
+    title: "Inselbahn Helgoland | Rundfahrten & Touren",
     description:
-      "Entdecken Sie Helgoland mit der Inselbahn! Unterland-Tour und Premium-Tour in kleiner Gruppe.",
-    images: ["/images/inselbahn-hero.png"],
+      "Geführte Inselrundfahrten auf Helgoland. Unterland-Tour und Premium-Tour mit Halt an der Langen Anna.",
+    images: ["/images/extra-img_2202-2.jpg"],
   },
   robots: {
     index: true,
     follow: true,
+  },
+  other: {
+    "apple-mobile-web-app-title": "Inselbahn",
   },
 };
 
@@ -69,7 +81,7 @@ const jsonLd = {
   name: "Inselbahn Helgoland",
   description:
     "Geführte Inselrundfahrten auf Helgoland mit der Inselbahn. Unterland-Tour und Premium-Tour mit Ausstieg an der Langen Anna.",
-  url: "https://helgolandbahn.de",
+  url: "https://www.helgolandbahn.de",
   telephone: "+491604170905",
   address: {
     "@type": "PostalAddress",
@@ -85,7 +97,7 @@ const jsonLd = {
   },
   openingHours: "Mo-Su 11:00-16:00",
   priceRange: "6\u20AC - 22\u20AC",
-  image: "https://helgolandbahn.de/images/inselbahn-hero.png",
+  image: "https://www.helgolandbahn.de/images/extra-img_2202-2.jpg",
   sameAs: [
     "https://www.tripadvisor.de/Attraction_Review-g187410-d27144771-Reviews-Inselbahn_Helgoland-Helgoland_Schleswig_Holstein.html",
   ],
