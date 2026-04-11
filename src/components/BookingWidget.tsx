@@ -1409,8 +1409,11 @@ export default function BookingWidget({ tours: supabaseTours }: BookingWidgetPro
               {/* Step 4: Passengers */}
               <div className={`w-full px-1 ${step === 3 ? '' : 'hidden'}`}>
                 <div className="max-w-md mx-auto bg-white rounded-2xl p-6 md:p-8 border border-gray-100 shadow-sm space-y-6">
+                  {/* Seat info */}
+                  <div className="bg-amber-50 border border-amber-200 rounded-lg px-3 py-2 text-xs text-amber-700">
+                    💺 Unsere Sitze sind ca. 50 cm breit.
+                  </div>
                   {/* Adults */}
-
                   <div className="flex items-center justify-between">
                     <div>
                       <p className="font-medium text-dark">Erwachsene</p>

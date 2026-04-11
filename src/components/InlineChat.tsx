@@ -93,7 +93,7 @@ export default function InlineChat() {
       <section id="kontakt" className="px-5 md:px-10 lg:px-20 py-16 md:py-24">
         <div className="max-w-4xl mx-auto text-center">
           <h2 className="text-[28px] md:text-[40px] font-bold text-dark mb-4">
-            Fragen? Unser Assistent hilft sofort.
+            Fragen? Wir helfen sofort.
           </h2>
           <p className="text-dark/60 text-base md:text-lg mb-8 max-w-xl mx-auto">
             Touren, Preise, Abfahrtszeiten, Helgoland-Tipps - unser KI-Assistent beantwortet
