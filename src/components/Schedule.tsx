@@ -15,11 +15,13 @@ function SectionPill({ label }: { label: string }) {
 
 /** Map tour slugs to schedule photos */
 const SCHEDULE_PHOTOS: Record<string, { src: string; alt: string }> = {
-  "unterland-tour": { src: "/images/helgolandbahn-photo-1.jpg", alt: "Unterland-Tour Inselbahn" },
+  "unterland": { src: "/images/unterland-main.jpg", alt: "Unterland-Tour Inselbahn" },
+  "unterland-tour": { src: "/images/unterland-main.jpg", alt: "Unterland-Tour Inselbahn" },
+  "premium": { src: "/images/extra-img_2202-2.jpg", alt: "Premium-Tour Inselbahn" },
   "premium-tour": { src: "/images/extra-img_2202-2.jpg", alt: "Premium-Tour Inselbahn" },
 };
 
-const DEFAULT_PHOTO = { src: "/images/helgolandbahn-photo-1.jpg", alt: "Inselbahn Tour" };
+const DEFAULT_PHOTO = { src: "/images/unterland-main.jpg", alt: "Inselbahn Tour" };
 
 function formatTime(timeStr: string): string {
   // departure_time is "HH:MM:SS" or "HH:MM" — display as "HH:MM Uhr"
