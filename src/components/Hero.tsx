@@ -74,6 +74,14 @@ export default function Hero() {
             </p>
           </div>
 
+          {/* CTA Button */}
+          <a
+            href="#buchung"
+            className="inline-block bg-primary text-white px-8 py-3.5 rounded-full text-base md:text-lg font-bold hover:bg-primary/90 transition-colors mt-4 md:mt-6"
+          >
+            Sofort buchen
+          </a>
+
           {/* Google rating badge */}
           <a
             href="https://g.page/r/CeEvXFmlaLMwEBE/review"
