@@ -11,7 +11,7 @@ const SLUG_TO_BOOKING_ID: Record<string, string> = {
 };
 
 const galleryRow1 = [
-  { src: "/images/666b81a83e5b0865626a34fe_helgolandbahn-1-2.jpg", alt: "Inselbahn Helgoland Rundfahrt" },
+  { src: "/images/unterland-main.jpg", alt: "Inselbahn Helgoland Rundfahrt" },
   { src: "/images/extra-img_2202-2.jpg", alt: "Premium-Tour Helgoland" },
   { src: "/images/premium-20250807_120428.jpg", alt: "Premium-Tour Lange Anna" },
   { src: "/images/666b90144c01c4b5cdca05c0_helgolandbahn-6.jpg", alt: "Helgoland Klippen" },
@@ -34,13 +34,13 @@ const TOUR_ASSETS: Record<string, { illustration: string; illustrationAlt: strin
   "unterland": {
     illustration: "/images/inselbahn-illustration-unterland.svg",
     illustrationAlt: "Unterland-Tour",
-    photo: "/images/666b81a83e5b0865626a34fe_helgolandbahn-1-2.jpg",
+    photo: "/images/unterland-main.jpg",
     photoAlt: "Unterland-Tour auf Helgoland",
   },
   "unterland-tour": {
     illustration: "/images/inselbahn-illustration-unterland.svg",
     illustrationAlt: "Unterland-Tour",
-    photo: "/images/666b81a83e5b0865626a34fe_helgolandbahn-1-2.jpg",
+    photo: "/images/unterland-main.jpg",
     photoAlt: "Unterland-Tour auf Helgoland",
   },
   "premium": {

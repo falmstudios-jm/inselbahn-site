@@ -84,7 +84,7 @@ const tourOptions = [
     dogs: true,
     accent: "amber" as const,
     illustration: "/images/inselbahn-illustration-unterland.svg",
-    photo: "/images/helgolandbahn-photo-2.jpg",
+    photo: "/images/unterland-main.jpg",
   },
 ];
 
