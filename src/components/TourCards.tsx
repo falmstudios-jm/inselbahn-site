@@ -291,14 +291,21 @@ export default function TourCards({ tours }: TourCardsProps) {
         </div>
       </div>
 
-      {/* Group booking */}
+      {/* Tour detail link + Group booking */}
       <div className="px-5 md:px-10 lg:px-20 pb-20 md:pb-28">
-        <div className="max-w-7xl mx-auto text-center">
-          <p className="text-dark/60 text-sm md:text-base">
+        <div className="max-w-7xl mx-auto text-center space-y-3">
+          <p className="text-dark text-base md:text-lg font-semibold">
+            Unsere Touren im detaillierten Vergleich sowie eine Karte finden Sie{" "}
+            <a href="/helgoland-tour" className="text-primary hover:underline">
+              hier
+            </a>
+            .
+          </p>
+          <p className="text-dark/40 text-xs md:text-sm">
             Gruppenrabatte f&uuml;r Reiseanbieter? Kontaktieren Sie uns f&uuml;r einen Rabattcode:{" "}
             <a
               href="mailto:anbieter@helgolandbahn.de"
-              className="text-primary hover:underline font-semibold"
+              className="text-primary/60 hover:text-primary hover:underline"
             >
               anbieter@helgolandbahn.de
             </a>
