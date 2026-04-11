@@ -268,96 +268,54 @@ export default function HelgolandTourPage() {
           </div>
         </section>
 
-        {/* 3. Tour-Vergleich */}
+        {/* 3. Tour-Vergleich (Text) */}
         <section className="bg-surface px-5 md:px-10 lg:px-20 py-16 md:py-24">
-          <div className="max-w-6xl mx-auto">
+          <div className="max-w-4xl mx-auto">
             <h2 className="text-2xl md:text-4xl font-bold text-dark mb-4 text-center">
-              Tour-Vergleich
+              Zwei Touren, ein Ziel: Helgoland erleben
             </h2>
             <p className="text-dark/60 text-center text-base md:text-lg mb-12 max-w-2xl mx-auto">
-              Beide Touren starten am Franz-Schensky-Platz. Hier sehen Sie alle
-              Unterschiede auf einen Blick.
+              Beide Touren starten am Franz-Schensky-Platz. Welche passt zu Ihnen?
             </p>
 
-            <div className="grid md:grid-cols-2 gap-6 md:gap-8">
-              {/* Premium-Tour Column */}
-              <div className="bg-white rounded-2xl overflow-hidden shadow-sm border border-gray-100">
-                <div className="relative aspect-[16/9]">
-                  <Image
-                    src="/images/extra-img_2202-2.jpg"
-                    alt="Premium-Tour Fahrzeug"
-                    fill
-                    className="object-cover"
-                  />
-                  <div className="absolute inset-0 bg-[#1B2A4A]/60 flex items-center justify-center">
-                    <h3 className="text-2xl md:text-3xl font-bold text-white">Premium-Tour</h3>
-                  </div>
-                </div>
-                <div className="p-6 space-y-4">
-                  {[
-                    ["Dauer", "ca. 90 Minuten"],
-                    ["Preis Erwachsene", "ab 22 EUR"],
-                    ["Preis Kinder (6-14)", "ab 15 EUR"],
-                    ["Unter 6 Jahren", "kostenlos"],
-                    ["Max. Personen", "18 (Kleingruppe)"],
-                    ["Oberland", "Ja"],
-                    ["Lange Anna & Lummenfelsen", "Ja (30 Min Aufenthalt)"],
-                    ["Rollstuhl", "Nicht möglich"],
-                    ["Hunde", "Nein"],
-                    ["Fahrzeug", "Vollelektrische Sonderanfertigung 2025"],
-                  ].map(([label, value]) => (
-                    <div key={label} className="flex justify-between items-start py-2 border-b border-gray-100 last:border-0">
-                      <span className="text-sm text-dark/50 font-medium">{label}</span>
-                      <span className="text-sm font-semibold text-[#1B2A4A] text-right max-w-[50%]">{value}</span>
-                    </div>
-                  ))}
-                  <Link
-                    href="/#buchung"
-                    className="block w-full text-center bg-[#1B2A4A] text-white px-6 py-3 rounded-full font-semibold hover:bg-[#1B2A4A]/90 transition-colors mt-4"
-                  >
-                    Premium-Tour buchen
-                  </Link>
-                </div>
+            <div className="space-y-8">
+              <div>
+                <h3 className="text-xl md:text-2xl font-bold text-[#1B2A4A] mb-3">
+                  Premium-Tour - Das komplette Helgoland-Erlebnis
+                </h3>
+                <p className="text-dark/60 text-base md:text-lg leading-relaxed mb-4">
+                  In einer kleinen Gruppe (max. 18 Personen) erleben Sie das gesamte
+                  Oberland und Unterland in 90 Minuten. 30 Minuten Aufenthalt an der
+                  Langen Anna und am Lummenfelsen, dazu Leuchtturm, Hummerbuden und
+                  echten Inselalltag. Ihr persönlicher Guide erzählt Geschichten, die in
+                  keinem Reiseführer stehen. Ideal für Erstbesucher, Naturliebhaber und
+                  Paare. Ab 22 EUR pro Person.
+                </p>
+                <Link
+                  href="/#buchung"
+                  className="inline-flex items-center gap-2 bg-[#1B2A4A] text-white px-8 py-3 rounded-full font-semibold hover:bg-[#1B2A4A]/90 transition-colors"
+                >
+                  Premium-Tour buchen
+                </Link>
               </div>
 
-              {/* Unterland-Tour Column */}
-              <div className="bg-white rounded-2xl overflow-hidden shadow-sm border border-gray-100">
-                <div className="relative aspect-[16/9]">
-                  <Image
-                    src="/images/unterland-main.jpg"
-                    alt="Unterland-Tour Fahrzeug"
-                    fill
-                    className="object-cover"
-                  />
-                  <div className="absolute inset-0 bg-amber-500/60 flex items-center justify-center">
-                    <h3 className="text-2xl md:text-3xl font-bold text-white">Unterland-Tour</h3>
-                  </div>
-                </div>
-                <div className="p-6 space-y-4">
-                  {[
-                    ["Dauer", "ca. 45 Minuten"],
-                    ["Preis Erwachsene", "ab 11 EUR"],
-                    ["Preis Kinder (6-14)", "ab 6 EUR"],
-                    ["Unter 6 Jahren", "kostenlos"],
-                    ["Max. Personen", "42 + 1 Rollstuhl"],
-                    ["Oberland", "Nein"],
-                    ["Lange Anna & Lummenfelsen", "Nein"],
-                    ["Rollstuhl", "Ja (Rampe & fester Platz)"],
-                    ["Hunde", "Ja (bis mittelgroß)"],
-                    ["Besonderheit", "Familientag: Kinder täglich 14:30 Uhr gratis"],
-                  ].map(([label, value]) => (
-                    <div key={label} className="flex justify-between items-start py-2 border-b border-gray-100 last:border-0">
-                      <span className="text-sm text-dark/50 font-medium">{label}</span>
-                      <span className="text-sm font-semibold text-amber-600 text-right max-w-[50%]">{value}</span>
-                    </div>
-                  ))}
-                  <Link
-                    href="/#buchung"
-                    className="block w-full text-center bg-amber-500 text-white px-6 py-3 rounded-full font-semibold hover:bg-amber-500/90 transition-colors mt-4"
-                  >
-                    Unterland-Tour buchen
-                  </Link>
-                </div>
+              <div>
+                <h3 className="text-xl md:text-2xl font-bold text-amber-600 mb-3">
+                  Unterland-Tour - Kompakt und familienfreundlich
+                </h3>
+                <p className="text-dark/60 text-base md:text-lg leading-relaxed mb-4">
+                  Große Gruppen willkommen (max. 42 Personen), barrierefrei mit festem
+                  Rollstuhlplatz und Rampe, Hunde erlaubt. In 45 Minuten sehen Sie
+                  Hummerbuden, Hafen und den Seenotrettungskreuzer Hermann Marwede.
+                  Ideal für Familien (Kinder fahren täglich um 14:30 Uhr gratis!),
+                  Senioren, Gruppen und Tagesgäste mit wenig Zeit. Ab 11 EUR pro Person.
+                </p>
+                <Link
+                  href="/#buchung"
+                  className="inline-flex items-center gap-2 bg-amber-500 text-white px-8 py-3 rounded-full font-semibold hover:bg-amber-500/90 transition-colors"
+                >
+                  Unterland-Tour buchen
+                </Link>
               </div>
             </div>
           </div>
@@ -434,45 +392,27 @@ export default function HelgolandTourPage() {
               ))}
             </ol>
 
-            {/* Tour-Karte */}
-            <div className="my-8">
-              <h3 className="text-lg font-bold text-dark mb-3">Tour-Karte</h3>
-              <div className="relative w-full rounded-xl overflow-hidden border border-gray-200">
-                <Image
-                  src="/images/tour-map.jpg"
-                  alt="Inselbahn Helgoland Tourenkarte - Premium-Tour und Unterland-Tour Route"
-                  width={1200}
-                  height={800}
-                  className="w-full h-auto"
-                />
-              </div>
-            </div>
+          </div>
+        </section>
 
-            <div className="bg-[#1B2A4A]/5 border border-[#1B2A4A]/10 rounded-xl p-6">
-              <h3 className="text-lg font-bold text-dark mb-3">Wussten Sie?</h3>
-              <ul className="space-y-3 text-dark/60 text-sm leading-relaxed">
-                <li>
-                  - Auf Helgoland gilt ein generelles Hupverbot und Fußgänger haben
-                  immer Vorfahrt. Die Inselbahn darf innerorts max. 6 km/h und außerorts
-                  max. 10 km/h fahren.
-                </li>
-                <li>
-                  - Im Juni springen junge Trottellummen vom Lummenfelsen ins Meer -
-                  der berühmte Lummensprung. Die noch flugunfähigen Küken werden von
-                  ihren Eltern im Wasser angelockt.
-                </li>
-                <li>
-                  - Gelegentlich besucht ein Schwarzbrauenalbatros die Kolonie - ein
-                  Vogel, der normalerweise nur auf der Südhalbkugel vorkommt.
-                </li>
-                <li>
-                  - Am 18. April 1947 zündeten die Briten im Mittelland Helgolands die
-                  größte konventionelle Sprengung der Geschichte (Big Bang). Die
-                  Detonation war noch in Hamburg spürbar. Die Krater prägen bis heute
-                  Teile der Inseloberfläche.
-                </li>
-              </ul>
+        {/* Tour-Karte (volle Breite) */}
+        <section className="px-5 md:px-10 lg:px-20 py-16 md:py-24 bg-surface">
+          <div className="max-w-6xl mx-auto">
+            <h2 className="text-2xl md:text-3xl font-bold text-dark mb-6 text-center">
+              Tour-Karte
+            </h2>
+            <div className="relative w-full rounded-2xl overflow-hidden border border-gray-200 shadow-sm">
+              <Image
+                src="/images/tour-map.jpg"
+                alt="Inselbahn Helgoland Tourenkarte - Premium-Tour und Unterland-Tour Route"
+                width={1600}
+                height={1000}
+                className="w-full h-auto"
+              />
             </div>
+            <p className="text-center text-sm text-dark/50 mt-4">
+              Unsere Touren auf Helgoland - Premium-Tour (rot) und Unterland-Tour (gelb)
+            </p>
           </div>
         </section>
 
@@ -664,47 +604,43 @@ export default function HelgolandTourPage() {
         {/* 5d. Inselbahn vs. Börteboot vs. zu Fuß */}
         <section className="px-5 md:px-10 lg:px-20 py-16 md:py-24">
           <div className="max-w-4xl mx-auto">
-            <h2 className="text-2xl md:text-4xl font-bold text-dark mb-4">
-              Inselbahn, Börteboot oder zu Fuß?
+            <h2 className="text-2xl md:text-4xl font-bold text-dark mb-8">
+              Helgoland erleben - Inselbahn, Börteboot oder zu Fuß?
             </h2>
+
+            <h3 className="text-xl font-bold text-dark mb-3">Mit der Inselbahn (das sind wir)</h3>
             <p className="text-dark/60 text-base md:text-lg leading-relaxed mb-8">
-              Auf Helgoland gibt es im Wesentlichen drei Arten, die Insel zu erleben.
-              Jede hat ihre Vorzüge, viele Gäste kombinieren sie.
+              Die schnellste und entspannteste Art, alle Highlights über Land zu sehen -
+              inklusive Oberland, Leuchtturm und Lange Anna. Mit Audioguide, ohne
+              Steigungen, ohne Stress. In 45 oder 90 Minuten haben Sie Helgoland im Kopf.
             </p>
 
-            <div className="space-y-4">
-              <div className="bg-white rounded-xl p-5 border border-gray-100">
-                <p className="font-bold text-dark mb-1">Mit der Inselbahn (das sind wir)</p>
-                <p className="text-sm text-dark/60 leading-relaxed">
-                  Die schnellste und entspannteste Art, alle Highlights über Land zu
-                  sehen, inklusive Oberland, Leuchtturm und Lange Anna. Mit Guide,
-                  ohne Steigungen, ohne Stress. In 45 oder 90 Minuten haben Sie
-                  Helgoland im Kopf.
-                </p>
-              </div>
-              <div className="bg-white rounded-xl p-5 border border-gray-100">
-                <p className="font-bold text-dark mb-1">Mit dem Börteboot</p>
-                <p className="text-sm text-dark/60 leading-relaxed">
-                  Eine Rundfahrt um die Insel vom Wasser aus. Sie sehen die Klippen,
-                  den Lummenfelsen und die Lange Anna von der Seeseite und kommen
-                  meistens an Brutvögeln und Robben im Wasser vorbei. Eine schöne
-                  Ergänzung zu unserer Inselbahn-Tour, kein Ersatz: vom Boot aus
-                  sehen Sie nicht das Oberland, die Hummerbuden oder den
-                  Inselalltag.
-                </p>
-              </div>
-              <div className="bg-white rounded-xl p-5 border border-gray-100">
-                <p className="font-bold text-dark mb-1">Zu Fuß</p>
-                <p className="text-sm text-dark/60 leading-relaxed">
-                  Helgoland ist klein, aber die 184 Stufen zwischen Unter- und Oberland
-                  und der Weg zur Langen Anna sind länger und steiler, als viele
-                  erwarten. Wer gut zu Fuß ist und mehrere Stunden Zeit hat, kann
-                  alles erlaufen. Wer beides will, also alle Highlights und entspannte
-                  Beine für den Rest des Tages, kombiniert die Inselbahn mit einem
-                  Spaziergang. Fahrräder mieten geht übrigens nicht: auf Helgoland
-                  gilt ein generelles Fahrradverbot.
-                </p>
-              </div>
+            <h3 className="text-xl font-bold text-dark mb-3">Mit dem Börteboot</h3>
+            <p className="text-dark/60 text-base md:text-lg leading-relaxed mb-8">
+              Eine Rundfahrt um die Insel vom Wasser aus. Sie sehen die Klippen, den
+              Lummenfelsen und die Lange Anna von der Seeseite. Eine schöne Ergänzung zu
+              unserer Inselbahn-Tour - vom Boot aus sehen Sie allerdings nicht das
+              Oberland, die Hummerbuden oder den Inselalltag.
+            </p>
+
+            <h3 className="text-xl font-bold text-dark mb-3">Zu Fuß</h3>
+            <p className="text-dark/60 text-base md:text-lg leading-relaxed mb-8">
+              Helgoland ist klein, aber die 184 Stufen zwischen Unter- und Oberland und
+              der Weg zur Langen Anna sind länger und steiler, als viele erwarten. Wer
+              gut zu Fuß ist und mehrere Stunden Zeit hat, kann alles erlaufen. Wer
+              beides will - alle Highlights und entspannte Beine für den Rest des Tages -
+              kombiniert die Inselbahn mit einem Spaziergang. Fahrräder mieten geht
+              übrigens nicht: auf Helgoland gilt ein generelles Fahrradverbot.
+            </p>
+
+            <div className="bg-primary/5 border border-primary/10 rounded-xl p-6">
+              <p className="font-bold text-dark mb-2">Unser Tipp</p>
+              <p className="text-dark/60 text-sm leading-relaxed">
+                Kombinieren Sie eine Inselbahn-Tour mit einer Bunkerführung. Unsere
+                Fahrzeuge kommen nicht unter die Erde - aber Sie schon! Die
+                unterirdischen Bunkeranlagen aus dem Zweiten Weltkrieg sind ein
+                faszinierendes Stück Geschichte.
+              </p>
             </div>
           </div>
         </section>

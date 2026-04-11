@@ -73,6 +73,17 @@ export default function Hero() {
               ...{rotatingTexts[currentIndex]}
             </p>
           </div>
+
+          {/* Google rating badge */}
+          <a
+            href="https://g.page/r/CeEvXFmlaLMwEBE/review"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="inline-flex items-center gap-1.5 mt-3 text-[13px] text-white/70 hover:text-white/90 transition-colors"
+          >
+            <span className="text-amber-400">&#9733;&#9733;&#9733;&#9733;&#9733;</span>
+            <span>4,9 / 5 bei 230+ Google-Bewertungen</span>
+          </a>
         </div>
       </div>
 
