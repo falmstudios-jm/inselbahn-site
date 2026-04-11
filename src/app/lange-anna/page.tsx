@@ -4,9 +4,9 @@ import Header from "@/components/Header";
 import Footer from "@/components/Footer";
 
 export const metadata: Metadata = {
-  title: "Die Lange Anna - Helgolands berühmtes Wahrzeichen",
+  title: "Die Lange Anna | Helgolands berühmtes Wahrzeichen erleben",
   description:
-    "Die Lange Anna ist Helgolands bekannteste Sehenswürdigkeit. Erfahren Sie alles über den 47 Meter hohen Felsen und erleben Sie ihn hautnah mit der Inselbahn Premium-Tour.",
+    "Alles über die Lange Anna auf Helgoland. 47 Meter hoher Felsen, Lummenfelsen und Vogelkolonien. Mit der Premium-Tour inkl. 30 Min Aufenthalt.",
   keywords: [
     "Lange Anna",
     "Lange Anna Helgoland",
@@ -20,9 +20,9 @@ export const metadata: Metadata = {
     canonical: "https://helgolandbahn.de/lange-anna",
   },
   openGraph: {
-    title: "Die Lange Anna - Helgolands berühmtes Wahrzeichen",
+    title: "Die Lange Anna | Helgolands berühmtes Wahrzeichen erleben",
     description:
-      "Die Lange Anna ist ein 47 Meter hoher Brandungspfeiler an der Nordwestspitze Helgolands. Erleben Sie das Wahrzeichen hautnah mit der Inselbahn Premium-Tour.",
+      "Alles über die Lange Anna auf Helgoland. 47 Meter hoher Felsen, Lummenfelsen und Vogelkolonien. Mit der Premium-Tour inkl. 30 Min Aufenthalt.",
     url: "https://helgolandbahn.de/lange-anna",
     siteName: "Inselbahn Helgoland",
     locale: "de_DE",

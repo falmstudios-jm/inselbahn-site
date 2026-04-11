@@ -4,9 +4,9 @@ import Header from "@/components/Header";
 import Footer from "@/components/Footer";
 
 export const metadata: Metadata = {
-  title: "Helgoland Sehenswürdigkeiten - Die schönsten Highlights der Insel",
+  title: "Helgoland Sehenswürdigkeiten | Die schönsten Highlights der Insel",
   description:
-    "Entdecken Sie die Top-Sehenswürdigkeiten auf Helgoland: Lange Anna, Hummerbuden, Oberland, Lummenfelsen, Düne und Nordostgelände. Am besten zu erleben mit der Inselbahn!",
+    "Lange Anna, Hummerbuden, Lummenfelsen, Oberland und mehr - entdecken Sie alle Sehenswürdigkeiten auf Helgoland. Am besten mit der Inselbahn!",
   keywords: [
     "Helgoland Sehenswürdigkeiten",
     "Lange Anna",
@@ -21,9 +21,9 @@ export const metadata: Metadata = {
     canonical: "https://helgolandbahn.de/helgoland-sehenswuerdigkeiten",
   },
   openGraph: {
-    title: "Helgoland Sehenswürdigkeiten - Die schönsten Highlights der Insel",
+    title: "Helgoland Sehenswürdigkeiten | Die schönsten Highlights der Insel",
     description:
-      "Entdecken Sie die Top-Sehenswürdigkeiten auf Helgoland mit der Inselbahn. Lange Anna, Hummerbuden, Oberland und mehr.",
+      "Lange Anna, Hummerbuden, Lummenfelsen, Oberland und mehr - entdecken Sie alle Sehenswürdigkeiten auf Helgoland. Am besten mit der Inselbahn!",
     url: "https://helgolandbahn.de/helgoland-sehenswuerdigkeiten",
     siteName: "Inselbahn Helgoland",
     locale: "de_DE",

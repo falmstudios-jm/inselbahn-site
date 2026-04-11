@@ -4,7 +4,7 @@ import Header from "@/components/Header";
 import Footer from "@/components/Footer";
 
 export const metadata: Metadata = {
-  title: "Impressum - Inselbahn Helgoland",
+  title: "Impressum | Inselbahn Helgoland",
   description: "Impressum der Helgoländer Dienstleistungs GmbH, Betreiber der Inselbahn Helgoland.",
 };
 

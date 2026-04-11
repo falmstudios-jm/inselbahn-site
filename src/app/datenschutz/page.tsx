@@ -4,7 +4,7 @@ import Header from "@/components/Header";
 import Footer from "@/components/Footer";
 
 export const metadata: Metadata = {
-  title: "Datenschutz - Inselbahn Helgoland",
+  title: "Datenschutz | Inselbahn Helgoland",
   description: "Datenschutzerklärung der Helgoländer Dienstleistungs GmbH, Betreiber der Inselbahn Helgoland.",
 };
 

@@ -4,7 +4,7 @@ import Header from "@/components/Header";
 import Footer from "@/components/Footer";
 
 export const metadata: Metadata = {
-  title: "AGB - Inselbahn Helgoland",
+  title: "AGB | Inselbahn Helgoland",
   description:
     "Allgemeine Geschäftsbedingungen der Helgoländer Dienstleistungs GmbH für die Inselbahn Helgoland.",
 };

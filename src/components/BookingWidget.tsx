@@ -268,12 +268,17 @@ export default function BookingWidget({ tours: supabaseTours }: BookingWidgetPro
     return opt;
   });
   const [maxFutureDays, setMaxFutureDays] = useState(DEFAULT_MAX_FUTURE_DAYS);
+  const [seasonStart, setSeasonStart] = useState<string | null>(null);
 
-  // Fetch max booking days from Supabase settings
+  // Fetch settings from Supabase
   useEffect(() => {
     fetch('/api/settings?key=max_booking_days')
       .then(r => r.ok ? r.json() : null)
       .then(d => { if (d?.value) setMaxFutureDays(parseInt(d.value, 10)); })
+      .catch(() => {});
+    fetch('/api/settings?key=season_start')
+      .then(r => r.ok ? r.json() : null)
+      .then(d => { if (d?.value) setSeasonStart(d.value); })
       .catch(() => {});
   }, []);
 
@@ -501,6 +506,25 @@ export default function BookingWidget({ tours: supabaseTours }: BookingWidgetPro
   /* ─── Submit booking → get client_secret → go to payment step ─── */
   async function handleSubmit() {
     if (!selectedSlot) return;
+
+    // Re-validate: check if departure is still in the future with enough time
+    const berlinNow = new Date(new Date().toLocaleString('en-US', { timeZone: 'Europe/Berlin' }));
+    const todayBerlin = berlinNow.toISOString().slice(0, 10);
+    if (selectedDate === todayBerlin && selectedTime) {
+      const [depH, depM] = selectedTime.split(':').map(Number);
+      const depMinutes = depH * 60 + depM;
+      const nowMinutes = berlinNow.getHours() * 60 + berlinNow.getMinutes();
+      if (depMinutes <= nowMinutes + 20) {
+        setSubmitError('Diese Tour kann nicht mehr online gebucht werden. Die Abfahrt ist in weniger als 20 Minuten.');
+        return;
+      }
+    }
+    // Check season_start
+    if (seasonStart && selectedDate < seasonStart) {
+      setSubmitError('Buchungen sind erst ab dem ' + new Date(seasonStart + 'T00:00:00').toLocaleDateString('de-DE', { day: '2-digit', month: 'long', year: 'numeric' }) + ' möglich.');
+      return;
+    }
+
     setSubmitting(true);
     setSubmitError("");
     try {
@@ -1090,7 +1114,11 @@ export default function BookingWidget({ tours: supabaseTours }: BookingWidgetPro
                       const isPast = dateObj < todayObj;
                       const isToday = dateObj.getTime() === todayObj.getTime();
                       const isTooFar = dateObj.getTime() > todayObj.getTime() + maxFutureDays * 86400000;
-                      const isDisabled = isPast || isTooFar;
+                      const isBeforeSeason = seasonStart ? dateStr < seasonStart : false;
+                      // Today after 18:00 Berlin time = no more tours, treat as past
+                      const berlinHour = new Date().toLocaleString('en-US', { timeZone: 'Europe/Berlin', hour: 'numeric', hour12: false });
+                      const isTodayEvening = isToday && parseInt(berlinHour) >= 18;
+                      const isDisabled = isPast || isTooFar || isBeforeSeason || isTodayEvening;
                       const isSelected = dateStr === selectedDate;
                       const isFuture = !isPast && !isTooFar;
 
