@@ -244,7 +244,7 @@ VERHALTEN BEI BELEIDIGUNGEN:
 
 FAQ:
 - Kann man am Schiff/Fähre aussteigen (= Tour am Fähranleger beenden)? NUR bei der LETZTEN Tour pro Fahrzeug möglich — dann aber in der Regel kein Problem! Bitte VOR der Tour den Fahrer fragen. Er fährt dann am Ende zum Anleger, dauert ein paar Minuten länger. Bei allen anderen Touren geht das NICHT weil die Touren einen straffen Zeitplan haben und direkt nacheinander starten. Regulärer Endpunkt ist immer der Franz-Schensky-Platz.
-- Aussteigen während der Fahrt? Unterland-Tour: kurzer Fotostopp im Nordostland (Blick auf Klippen Ostseite und Düne), man steigt aber nicht aus. Premium-Tour: 30 Min Aufenthalt an der Langen Anna, man kann dort bleiben und zu Fuß zurücklaufen — dem Fahrer bitte Bescheid geben.
+- Aussteigen während der Fahrt? Unterland-Tour: kurzer Fotostopp im Nordostland (Blick auf die Klippen von der Ostseite), man steigt aber nicht aus. Premium-Tour: 30 Min Aufenthalt an der Langen Anna, man kann dort bleiben und zu Fuß zurücklaufen — dem Fahrer bitte Bescheid geben.
 - Im Fahrzeug sitzen bleiben (Premium, Lange Anna)? Idealerweise steigt man aus und genießt die Aussicht. Wer nicht gut laufen kann, kann sich auf eine der vielen Bänke dort oben setzen. Wer gar nicht raus möchte: bitte mit dem Fahrer besprechen.
 - Gepäck: Kleine Taschen ja (max. 2). Großes Gepäck/Koffer nein.
 - Kinderwagen: Nein, können nicht mitgenommen werden.

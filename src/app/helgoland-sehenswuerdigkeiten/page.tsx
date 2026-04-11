@@ -41,7 +41,7 @@ const highlights = [
   {
     title: "Die Hummerbuden",
     description:
-      "Die farbenfrohen Hummerbuden am Binnenhafen (von Helgol\u00e4ndern auch \u201eScheibenhafen\u201c genannt - nach den britischen Zielscheiben, die hier einst lagerten) sind das Herzst\u00fcck des Unterlands. Die bunten Holzh\u00fctten dienten einst als Fischerschuppen und beherbergen heute Galerien, Schmuckl\u00e4den, Gastronomie, ein Standesamt (ja, man kann hier heiraten!), den Naturschutzverein Jordsand, den Souvenirladen \u201eRoter Flint\u201c und die James-Kr\u00fcss-\u00d6nnerb\u00fcnsken-Bude. Achtung: Die M\u00f6wen auf Helgoland sind dreist und stehlen einem gerne das Fischbr\u00f6tchen direkt aus der Hand!",
+      "Die farbenfrohen Hummerbuden am Binnenhafen (von Helgol\u00e4ndern auch \u201eScheibenhafen\u201c genannt - nach den britischen Zielscheiben, die hier einst lagerten) sind das Herzst\u00fcck des Unterlands. Die bunten Holzh\u00fctten dienten einst als Fischerschuppen und beherbergen heute Galerien, Schmuckl\u00e4den, Gastronomie, ein Standesamt (ja, man kann hier heiraten!), den Naturschutzverein Jordsand, den Souvenirladen \u201eRoter Flint\u201c und die James-Kr\u00fcss-\u00d6nnerbansken-Bude. Achtung: Die M\u00f6wen auf Helgoland sind dreist und stehlen einem gerne das Fischbr\u00f6tchen direkt aus der Hand!",
     tip: "Die Hummerbuden sind Teil unserer Unterland-Tour mit Fotostopp. Unser Tipp: Fischbrötchen erst nach der Tour genießen - sicher vor Möwen!",
   },
   {
@@ -78,13 +78,13 @@ const highlights = [
     title: "Die Düne mit Rotem Flint",
     description:
       "Die Nachbarinsel (1000 x 700 m, ca. 130.000 m² Strand) wurde 1721 durch einen verheerenden Sturm von der Hauptinsel getrennt. Die Dünenfähre \u201eWitte Kliff\u201c hat seit 1996 über 8 Millionen Fahrgäste befördert und fährt alle 30 Minuten (6 € Erwachsene, halber Preis für Kinder). Hier liegt der weltweit einzigartige Rote Flint - ein roter Feuerstein, der nur auf Helgolands Düne vorkommt. Die neugierigen und furchtlosen Kegelrobben und Seehunde am Strand sind ein unvergessliches Erlebnis.",
-    tip: "Bei der Unterland-Tour erhalten Sie einen Fotostopp im Nordostland mit Blick auf die Klippen von der Ostseite. Planen Sie extra Zeit f\u00fcr die D\u00fcnenf\u00e4hre ein!",
+    tip: "Seehunde und Robben sieht man das ganze Jahr über auf der Düne. Planen Sie extra Zeit für die Dünenfähre ein!",
   },
   {
     title: "Das Nordostgel\u00e4nde",
     description:
-      "Das Nordostgel\u00e4nde ist ein geschichtstr\u00e4chtiger Teil der Insel. Hier sollte im Rahmen des \u201eHummerschere\u201c-Projekts ein gigantischer Kriegshafen entstehen - die Pl\u00e4ne wurden nie vollendet. Heute befinden sich im Nordostland unter anderem die Jugendherberge, der Nordoststrand und der Fu\u00dfballplatz des VfL Fosite Helgoland. Der \u201eBig Bang\u201c vom 18. April 1947 - die gr\u00f6\u00dfte nicht-nukleare Explosion der Geschichte - fand im heutigen Mittelland statt und schuf die Landschaft, die Sie dort heute sehen. Die Detonation war bis Hamburg zu h\u00f6ren.",
-    tip: "Beide Touren f\u00fchren durch das Nordostland. Unser Guide erz\u00e4hlt die dramatische Geschichte des Big Bang von 1947 und des Hummerschere-Projekts.",
+      "Das Nordostgelände ist ein geschichtsträchtiger Teil der Insel. Hier sollte im Rahmen des \u201eHummerschere\u201c-Projekts ein gigantischer Kriegshafen entstehen - die Pläne wurden nie vollendet. Heute befinden sich im Nordostland unter anderem die Jugendherberge, der Nordoststrand und der Fußballplatz des VfL Fosite Helgoland.",
+    tip: "Beide Touren führen durch das Nordostland. Bei der Unterland-Tour gibt es einen Fotostopp mit Blick auf die Klippen von der Ostseite.",
   },
 ];
 
