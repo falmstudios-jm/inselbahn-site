@@ -1165,7 +1165,7 @@ export default function BookingWidget({ tours: supabaseTours }: BookingWidgetPro
 
               {/* Step 2: Tour — larger cards with SVG illustrations */}
               <div className={`w-full px-1 ${step === 1 ? '' : 'hidden'}`}>
-                <div className="max-w-3xl mx-auto grid md:grid-cols-2 gap-4">
+                <div className="max-w-3xl mx-auto grid md:grid-cols-2 gap-4 items-stretch">
                   {mergedTourOptions.map((t) => {
                     const isSelected = selectedTour === t.id;
                     const hasOnline = !selectedDate || tourHasOnlineBookable[t.id];
@@ -1182,7 +1182,7 @@ export default function BookingWidget({ tours: supabaseTours }: BookingWidgetPro
                           setSelectedTime("");
                           setSelectedSlot(null);
                         }}
-                        className={`w-full text-left rounded-2xl transition-all border-2 relative overflow-hidden ${
+                        className={`w-full text-left rounded-2xl transition-all border-2 relative overflow-hidden flex flex-col ${
                           isDisabledTour
                             ? "border-gray-200 shadow-sm cursor-default"
                             : isSelected
@@ -1200,7 +1200,7 @@ export default function BookingWidget({ tours: supabaseTours }: BookingWidgetPro
                           />
                         </div>
 
-                        <div className="p-5 md:p-6">
+                        <div className="p-4 md:p-6 flex flex-col flex-1">
                           {/* Badge for premium */}
                           {"badge" in t && t.badge && !isNotOnlineBookable && (
                             <span className="inline-block bg-[#1a3a5c] text-white text-[10px] font-bold uppercase tracking-wider px-2.5 py-0.5 rounded-full mb-2">
@@ -1263,8 +1263,8 @@ export default function BookingWidget({ tours: supabaseTours }: BookingWidgetPro
                             ))}
                           </ul>
 
-                          {/* Price */}
-                          <div className="flex items-baseline gap-2 pt-3 border-t border-gray-100">
+                          {/* Price — pushed to bottom */}
+                          <div className="flex items-baseline gap-2 pt-3 border-t border-gray-100 mt-auto">
                             <span className="text-xl font-bold text-dark">ab {t.adultPrice.toFixed(2).replace(".", ",")}&nbsp;&euro;</span>
                             <span className="text-xs text-dark/40">
                               Erwachsene &middot; Kinder ab {t.childPrice.toFixed(2).replace(".", ",")}&nbsp;&euro;

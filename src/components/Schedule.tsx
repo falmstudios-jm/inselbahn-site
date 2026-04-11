@@ -70,46 +70,47 @@ export default function Schedule({ tours, departures }: ScheduleProps) {
 
           return (
             <div key={tour.id} className="grid md:grid-cols-2 gap-6 mb-8">
-              <div className="bg-surface rounded-2xl p-6 md:p-8">
-                <h3 className="text-lg font-bold text-dark uppercase tracking-wide mb-5">
-                  {tour.name}
-                </h3>
-                <div className="space-y-3 mb-6">
-                  {tourDepartures.map((dep) => {
-                    const isNotOnlineBookable = dep.bookable_online === false;
-                    return (
-                    <div key={dep.id} className="flex flex-col">
-                      <div className="flex items-center justify-between">
-                        <span className="text-dark font-semibold text-lg">
-                          {dep.notes ? `(${formatTime(dep.departure_time)})` : formatTime(dep.departure_time)}
-                        </span>
-                        <span className="text-dark/50 text-sm">
-                          {dep.notes || "Abfahrt"}
-                        </span>
-                      </div>
-                      {isNotOnlineBookable && (
-                        <span className="text-xs text-dark/40 mt-0.5">
-                          Aktuell nicht online buchbar &ndash; Tickets vor Ort erh&auml;ltlich
-                        </span>
-                      )}
-                    </div>
-                    );
-                  })}
-                </div>
-                <div className="border-t border-dark/10 pt-4">
-                  <p className="text-dark/60 text-sm">
-                    Erwachsene: <span className="font-semibold text-dark">{Number(tour.price_adult).toFixed(2).replace('.', ',')}&nbsp;&euro;</span> &middot;
-                    Kinder (unter {tour.child_age_limit}): <span className="font-semibold text-dark">{Number(tour.price_child).toFixed(2).replace('.', ',')}&nbsp;&euro;</span>
-                  </p>
-                </div>
-              </div>
-              <div className="relative w-full aspect-[16/10] rounded-2xl overflow-hidden">
+              {/* Photo first on mobile, right on desktop */}
+              <div className="relative w-full aspect-[16/10] rounded-2xl overflow-hidden md:order-2">
                 <Image
                   src={photo.src}
                   alt={photo.alt}
                   fill
                   className="object-cover"
                 />
+              </div>
+              <div className="bg-surface rounded-2xl p-5 md:p-8 md:order-1">
+                <h3 className="text-lg font-bold text-dark uppercase tracking-wide mb-4">
+                  {tour.name}
+                </h3>
+                <div className="space-y-2.5 mb-5">
+                  {tourDepartures.map((dep) => {
+                    const isNotOnlineBookable = dep.bookable_online === false;
+                    return (
+                    <div key={dep.id} className="flex flex-col">
+                      <div className="flex items-center justify-between">
+                        <span className="text-dark font-semibold text-base md:text-lg">
+                          {dep.notes ? `(${formatTime(dep.departure_time)})` : formatTime(dep.departure_time)}
+                        </span>
+                        <span className="text-dark/50 text-xs md:text-sm">
+                          {dep.notes || "Abfahrt"}
+                        </span>
+                      </div>
+                      {isNotOnlineBookable && (
+                        <span className="text-xs text-dark/40 mt-0.5">
+                          Aktuell nicht online buchbar
+                        </span>
+                      )}
+                    </div>
+                    );
+                  })}
+                </div>
+                <div className="border-t border-dark/10 pt-3">
+                  <p className="text-dark/60 text-xs md:text-sm">
+                    Erwachsene: <span className="font-semibold text-dark">{Number(tour.price_adult).toFixed(2).replace('.', ',')}&nbsp;&euro;</span> &middot;
+                    Kinder (unter {tour.child_age_limit}): <span className="font-semibold text-dark">{Number(tour.price_child).toFixed(2).replace('.', ',')}&nbsp;&euro;</span>
+                  </p>
+                </div>
               </div>
             </div>
           );
