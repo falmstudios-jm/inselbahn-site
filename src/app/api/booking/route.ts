@@ -90,39 +90,32 @@ export async function POST(req: Request) {
       );
     }
 
-    // Count used seats: passengers separate from ghost seats
-    const usedPassengers = (existingBookings || []).reduce((sum, b) => {
-      return sum + b.adults + b.children + b.children_free;
-    }, 0);
+    // All seats (passengers + ghost seats) count within online capacity (e.g. 16)
+    // Ghost seats are empty buffer seats that reduce available passenger spots
     const usedTotal = (existingBookings || []).reduce((sum, b) => {
       return sum + b.adults + b.children + b.children_free + (b.ghost_seats || 0);
     }, 0);
 
-    // Calculate ghost seats for this booking
     const groupSize = input.adults + input.children + input.children_free;
-    const ghostSeats = calculateGhostSeats(groupSize);
+    const ghostSeats = calculateGhostSeats(input.adults, input.children, input.children_free);
+    const seatsNeeded = groupSize + ghostSeats;
 
-    // Two-tier capacity check:
-    // 1. Passengers must fit within ONLINE capacity (e.g. 16)
-    // 2. Total (passengers + ghost) must fit within PHYSICAL capacity (e.g. 18)
-    // Use the stricter of both limits
-    const remainingOnline = onlineCapacity - usedPassengers;
-    const remainingPhysical = physicalCapacity - usedTotal;
-    const effectiveRemaining = Math.min(remainingOnline, remainingPhysical);
-
-    if (groupSize > effectiveRemaining) {
+    const remaining = onlineCapacity - usedTotal;
+    if (seatsNeeded > remaining) {
+      // Show how many actual people can still book (remaining minus potential ghost seats)
+      let maxBookable = remaining;
+      if (remaining >= 8) maxBookable = remaining - 2;
+      else if (remaining >= 4) maxBookable = remaining - 1;
       return NextResponse.json(
         {
           error: 'Nicht genügend Plätze verfügbar',
-          available: Math.max(0, effectiveRemaining),
+          available: Math.max(0, maxBookable),
         },
         { status: 409 }
       );
     }
 
-    // Ghost seats can overflow into reserve seats (up to physical max)
-    // If ghost seats don't fully fit, reduce them (still allow the booking)
-    const effectiveGhostSeats = Math.min(ghostSeats, Math.max(0, remainingPhysical - groupSize));
+    const effectiveGhostSeats = ghostSeats;
 
     // Calculate total price
     const totalPrice = calculateTotal(
