@@ -45,11 +45,13 @@ export async function GET(req: NextRequest) {
     }
 
     // Build booking counts per departure with online/vor_ort breakdown
-    const bookingCounts = new Map<string, { total: number; online: number; vor_ort: number }>();
+    const bookingCounts = new Map<string, { total: number; reserved: number; online: number; vor_ort: number }>();
     for (const b of bookings || []) {
-      const current = bookingCounts.get(b.departure_id) || { total: 0, online: 0, vor_ort: 0 };
+      const current = bookingCounts.get(b.departure_id) || { total: 0, reserved: 0, online: 0, vor_ort: 0 };
       const passengers = b.adults + b.children + (b.children_free || 0);
-      current.total += passengers; // Show PASSENGERS only (not ghost seats)
+      const withGhosts = passengers + (b.ghost_seats || 0);
+      current.total += passengers; // Actual people coming
+      current.reserved += withGhosts; // Seats reserved (incl. ghost seats)
 
       // Online = online/stripe/gift_card/null, Vor Ort = cash/sumup/manual_entry
       const isOnline = !b.payment_method || b.payment_method === 'online' || b.payment_method === 'stripe' || b.payment_method === 'gift_card';
@@ -72,7 +74,7 @@ export async function GET(req: NextRequest) {
         price_child: number;
       };
 
-      const counts = bookingCounts.get(dep.id) || { total: 0, online: 0, vor_ort: 0 };
+      const counts = bookingCounts.get(dep.id) || { total: 0, reserved: 0, online: 0, vor_ort: 0 };
 
       return {
         departure_id: dep.id,
@@ -80,8 +82,9 @@ export async function GET(req: NextRequest) {
         tour_name: tour.name,
         tour_slug: tour.slug,
         max_capacity: tour.max_capacity,
-        booked: counts.total,
-        remaining: Math.max(0, tour.max_capacity - counts.total),
+        booked: counts.total, // Actual people
+        reserved: counts.reserved, // Seats reserved (incl. ghost)
+        remaining: Math.max(0, tour.max_capacity - counts.reserved), // Free seats
         online_count: counts.online,
         vor_ort_count: counts.vor_ort,
         price_adult: tour.price_adult,
