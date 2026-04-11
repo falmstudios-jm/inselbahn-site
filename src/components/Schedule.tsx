@@ -75,16 +75,26 @@ export default function Schedule({ tours, departures }: ScheduleProps) {
                   {tour.name}
                 </h3>
                 <div className="space-y-3 mb-6">
-                  {tourDepartures.map((dep) => (
-                    <div key={dep.id} className="flex items-center justify-between">
-                      <span className="text-dark font-semibold text-lg">
-                        {dep.notes ? `(${formatTime(dep.departure_time)})` : formatTime(dep.departure_time)}
-                      </span>
-                      <span className="text-dark/50 text-sm">
-                        {dep.notes || "Abfahrt"}
-                      </span>
+                  {tourDepartures.map((dep) => {
+                    const isNotOnlineBookable = dep.bookable_online === false;
+                    return (
+                    <div key={dep.id} className="flex flex-col">
+                      <div className="flex items-center justify-between">
+                        <span className="text-dark font-semibold text-lg">
+                          {dep.notes ? `(${formatTime(dep.departure_time)})` : formatTime(dep.departure_time)}
+                        </span>
+                        <span className="text-dark/50 text-sm">
+                          {dep.notes || "Abfahrt"}
+                        </span>
+                      </div>
+                      {isNotOnlineBookable && (
+                        <span className="text-xs text-dark/40 mt-0.5">
+                          Aktuell nicht online buchbar &ndash; Tickets vor Ort erh&auml;ltlich
+                        </span>
+                      )}
                     </div>
-                  ))}
+                    );
+                  })}
                 </div>
                 <div className="border-t border-dark/10 pt-4">
                   <p className="text-dark/60 text-sm">

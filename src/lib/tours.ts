@@ -22,6 +22,7 @@ export interface Departure {
   departure_time: string;
   is_active: boolean;
   notes: string | null;
+  bookable_online?: boolean;
 }
 
 export interface DepartureWithTour extends Departure {
@@ -43,6 +44,7 @@ export async function getDepartures(): Promise<DepartureWithTour[]> {
     .select('*, tour:tours(*)')
     .eq('is_active', true)
     .order('departure_time', { ascending: true });
+  // bookable_online comes from the DB automatically via '*'
   if (error) throw error;
   return data || [];
 }

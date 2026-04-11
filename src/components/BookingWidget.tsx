@@ -336,6 +336,26 @@ export default function BookingWidget({ tours: supabaseTours }: BookingWidgetPro
     [slots, selectedTour],
   );
 
+  // Check which tours have ANY online-bookable departures for the selected date
+  const tourHasOnlineBookable = useMemo(() => {
+    const result: Record<string, boolean> = {};
+    for (const opt of mergedTourOptions) {
+      const tourSlots = slots.filter((s) => s.tour_slug === opt.id || s.tour_slug === opt.slug);
+      result[opt.id] = tourSlots.some((s) => s.bookable_online && !s.past && !s.cancelled);
+    }
+    return result;
+  }, [slots, mergedTourOptions]);
+
+  // Check which tours have ANY departures at all (bookable or not) for the selected date
+  const tourHasDepartures = useMemo(() => {
+    const result: Record<string, boolean> = {};
+    for (const opt of mergedTourOptions) {
+      const tourSlots = slots.filter((s) => s.tour_slug === opt.id || s.tour_slug === opt.slug);
+      result[opt.id] = tourSlots.some((s) => !s.past && !s.cancelled);
+    }
+    return result;
+  }, [slots, mergedTourOptions]);
+
   // Check if ALL bookable departures for selected tour are sold out (excluding past and cancelled ones)
   const allSoldOut = useMemo(() => {
     const bookableSlots = filteredSlots.filter((s) => s.bookable_online && !s.past && !s.cancelled);
@@ -1120,18 +1140,26 @@ export default function BookingWidget({ tours: supabaseTours }: BookingWidgetPro
                 <div className="max-w-3xl mx-auto grid md:grid-cols-2 gap-4">
                   {mergedTourOptions.map((t) => {
                     const isSelected = selectedTour === t.id;
+                    const hasOnline = !selectedDate || tourHasOnlineBookable[t.id];
+                    const hasDeps = !selectedDate || tourHasDepartures[t.id];
+                    const isNotOnlineBookable = selectedDate && !hasOnline && hasDeps;
+                    const isDisabledTour = selectedDate && !hasOnline;
                     return (
                       <button
                         key={t.id}
+                        disabled={!!isDisabledTour}
                         onClick={() => {
+                          if (isDisabledTour) return;
                           setSelectedTour(t.id);
                           setSelectedTime("");
                           setSelectedSlot(null);
                         }}
                         className={`w-full text-left rounded-2xl transition-all border-2 relative overflow-hidden ${
-                          isSelected
-                            ? "border-primary shadow-lg scale-[1.01]"
-                            : "border-gray-100 shadow-sm hover:shadow-md hover:border-gray-200"
+                          isDisabledTour
+                            ? "border-gray-100 shadow-sm opacity-60 cursor-not-allowed grayscale"
+                            : isSelected
+                              ? "border-primary shadow-lg scale-[1.01]"
+                              : "border-gray-100 shadow-sm hover:shadow-md hover:border-gray-200"
                         }`}
                       >
                         {/* Photo header */}
@@ -1146,9 +1174,16 @@ export default function BookingWidget({ tours: supabaseTours }: BookingWidgetPro
 
                         <div className="p-5 md:p-6">
                           {/* Badge for premium */}
-                          {"badge" in t && t.badge && (
+                          {"badge" in t && t.badge && !isNotOnlineBookable && (
                             <span className="inline-block bg-[#1a3a5c] text-white text-[10px] font-bold uppercase tracking-wider px-2.5 py-0.5 rounded-full mb-2">
                               {t.badge}
+                            </span>
+                          )}
+
+                          {/* Not online bookable badge */}
+                          {isNotOnlineBookable && (
+                            <span className="inline-block bg-gray-200 text-gray-600 text-[10px] font-bold uppercase tracking-wider px-2.5 py-0.5 rounded-full mb-2">
+                              Aktuell nicht online buchbar
                             </span>
                           )}
 
@@ -1207,6 +1242,13 @@ export default function BookingWidget({ tours: supabaseTours }: BookingWidgetPro
                               Erwachsene &middot; Kinder ab {t.childPrice.toFixed(2).replace(".", ",")}&nbsp;&euro;
                             </span>
                           </div>
+
+                          {/* Not online bookable notice */}
+                          {isNotOnlineBookable && (
+                            <div className="mt-3 bg-gray-50 border border-gray-200 rounded-lg px-3 py-2 text-xs text-dark/50">
+                              Tickets vor Ort bei Tomek (11:30–14:30) oder beim Fahrer erh&auml;ltlich
+                            </div>
+                          )}
                         </div>
 
                         {/* Selected indicator */}

@@ -13,6 +13,16 @@ export async function GET(req: NextRequest) {
       );
     }
 
+    // Check season_start from site_settings
+    const { data: seasonSetting } = await supabase
+      .from('site_settings')
+      .select('value')
+      .eq('key', 'season_start')
+      .single();
+    if (seasonSetting?.value && date < seasonSetting.value) {
+      return NextResponse.json({ slots: [], message: 'Buchungen sind erst ab dem ' + new Date(seasonSetting.value + 'T00:00:00').toLocaleDateString('de-DE', { day: '2-digit', month: 'long', year: 'numeric' }) + ' möglich.' });
+    }
+
     // Fetch all active departures with their tour info (including non-online-bookable ones)
     const { data: departures, error: depError } = await supabase
       .from('departures')

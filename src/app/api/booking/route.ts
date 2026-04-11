@@ -27,6 +27,19 @@ export async function POST(req: Request) {
     const input = parsed.data;
     const supabaseAdmin = getSupabaseAdmin();
 
+    // Check season_start
+    const { data: seasonSetting } = await supabaseAdmin
+      .from('site_settings')
+      .select('value')
+      .eq('key', 'season_start')
+      .single();
+    if (seasonSetting?.value && input.booking_date < seasonSetting.value) {
+      return NextResponse.json(
+        { error: 'Buchungen sind erst ab dem ' + seasonSetting.value + ' möglich.' },
+        { status: 409 }
+      );
+    }
+
     // Fetch departure + tour details
     const { data: departure, error: depError } = await supabaseAdmin
       .from('departures')
