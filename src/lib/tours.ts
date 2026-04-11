@@ -87,7 +87,7 @@ export const FALLBACK_TOURS: Tour[] = [
     wheelchair_accessible: false,
     dogs_allowed: false,
     highlights: [
-      'Unterland & Oberland mit Pinneberg (61,3 m)',
+      'Unterland & Oberland komplett',
       '30 Min freie Erkundung an der Langen Anna',
       'Leuchtturm, Kleingärten & Lummenfelsen',
       'Kleine Gruppe (max. 18 Personen)',

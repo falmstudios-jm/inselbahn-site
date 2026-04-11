@@ -51,7 +51,7 @@ const tourOptions = [
     duration: "ca. 90 Minuten",
     description: "Das komplette Helgoland-Erlebnis. Zunächst das Unterland, dann hinauf ins Oberland am Pinneberg vorbei - mit 30 Minuten freier Erkundungszeit an der Langen Anna.",
     highlights: [
-      "Unterland & Oberland mit Pinneberg (61,3 m)",
+      "Unterland & Oberland komplett",
       "30 Min freie Erkundung an der Langen Anna",
       "Leuchtturm, Kleingärten & Lummenfelsen",
       "Kleine Gruppe (max. 18 Personen)",
@@ -467,6 +467,14 @@ export default function BookingWidget({ tours: supabaseTours }: BookingWidgetPro
     }
   }, [countdownExpired, step, paymentSuccess]);
 
+  /* ─── Auto-scroll to top of booking section on step change ─── */
+  useEffect(() => {
+    const el = document.getElementById('buchung');
+    if (el && step > 0) {
+      el.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    }
+  }, [step]);
+
   const canProceed = useMemo(() => {
     switch (step) {
       case 0:
@@ -833,7 +841,7 @@ export default function BookingWidget({ tours: supabaseTours }: BookingWidgetPro
           </h2>
 
           {/* Progress bar */}
-          <div className="max-w-2xl mx-auto mb-10 overflow-x-auto scrollbar-hide">
+          <div className="max-w-2xl mx-auto mb-6 md:mb-10 overflow-x-auto scrollbar-hide">
             <div className="flex items-center justify-between mb-2 min-w-0">
               {STEPS.map((s, i) => (
                 <div key={s} className="flex items-center">
@@ -928,8 +936,8 @@ export default function BookingWidget({ tours: supabaseTours }: BookingWidgetPro
               </div>
             </div>
 
-            {/* Summary sidebar */}
-            <div className="lg:w-[320px] flex-shrink-0">
+            {/* Summary sidebar — hidden on mobile */}
+            <div className="hidden lg:block lg:w-[320px] flex-shrink-0">
               <div className="bg-white rounded-2xl p-6 border border-gray-100 shadow-sm lg:sticky lg:top-32">
                 <h3 className="text-lg font-bold text-dark mb-4">Ihre Buchung</h3>
                 <div className="space-y-3 text-sm">
@@ -1003,11 +1011,11 @@ export default function BookingWidget({ tours: supabaseTours }: BookingWidgetPro
   return (
     <section
       id="buchung"
-      className="px-5 md:px-10 lg:px-20 py-20 md:py-28"
+      className="px-5 md:px-10 lg:px-20 py-12 md:py-20"
     >
       <div className="max-w-7xl mx-auto">
         {/* Header with subtle background */}
-        <div className="text-center mb-12">
+        <div className="text-center mb-6 md:mb-12">
           <h2 className="text-[28px] md:text-[40px] font-bold text-dark mb-3">
             Online buchen
           </h2>
@@ -1017,7 +1025,7 @@ export default function BookingWidget({ tours: supabaseTours }: BookingWidgetPro
         </div>
 
         {/* Progress bar — completed steps use primary color */}
-        <div className="max-w-2xl mx-auto mb-10 overflow-x-auto scrollbar-hide">
+        <div className="max-w-2xl mx-auto mb-6 md:mb-10 overflow-x-auto scrollbar-hide">
           <div className="flex items-center justify-between mb-2 min-w-0">
             {STEPS.map((s, i) => (
               <div key={s} className="flex items-center">
@@ -1165,7 +1173,7 @@ export default function BookingWidget({ tours: supabaseTours }: BookingWidgetPro
 
               {/* Step 2: Tour — larger cards with SVG illustrations */}
               <div className={`w-full px-1 ${step === 1 ? '' : 'hidden'}`}>
-                <div className="max-w-3xl mx-auto grid md:grid-cols-2 gap-4 items-stretch">
+                <div className="max-w-3xl mx-auto grid sm:grid-cols-2 gap-4 items-stretch">
                   {mergedTourOptions.map((t) => {
                     const isSelected = selectedTour === t.id;
                     const hasOnline = !selectedDate || tourHasOnlineBookable[t.id];
@@ -1191,7 +1199,7 @@ export default function BookingWidget({ tours: supabaseTours }: BookingWidgetPro
                         }`}
                       >
                         {/* Photo header */}
-                        <div className="relative w-full aspect-[16/9] overflow-hidden rounded-t-2xl">
+                        <div className="relative w-full aspect-[16/8] sm:aspect-[16/9] overflow-hidden rounded-t-2xl">
                           <Image
                             src={t.photo}
                             alt={`${t.name} Foto`}
@@ -1254,9 +1262,9 @@ export default function BookingWidget({ tours: supabaseTours }: BookingWidgetPro
                           </div>
 
                           {/* Highlights */}
-                          <ul className="space-y-1.5 mb-4">
+                          <ul className="space-y-1 sm:space-y-1.5 mb-3 sm:mb-4">
                             {t.highlights.map((h, idx) => (
-                              <li key={idx} className="flex items-start gap-2 text-xs text-dark/60">
+                              <li key={idx} className="flex items-start gap-2 text-[11px] sm:text-xs text-dark/60">
                                 <span className="text-green mt-0.5 font-bold text-[10px]">&#10003;</span>
                                 {h}
                               </li>
@@ -1761,8 +1769,8 @@ export default function BookingWidget({ tours: supabaseTours }: BookingWidgetPro
             </div>
           </div>
 
-          {/* Summary sidebar — sticky on desktop */}
-          <div className="lg:w-[320px] flex-shrink-0">
+          {/* Summary sidebar — hidden on mobile, sticky on desktop */}
+          <div className="hidden lg:block lg:w-[320px] flex-shrink-0">
             <div className="bg-white rounded-2xl p-6 border border-gray-100 shadow-sm lg:sticky lg:top-32">
               <h3 className="text-lg font-bold text-dark mb-4">Ihre Buchung</h3>
               <div className="space-y-3 text-sm">
@@ -1837,29 +1845,31 @@ export default function BookingWidget({ tours: supabaseTours }: BookingWidgetPro
           </div>
         </div>
 
-        {/* Navigation buttons */}
-        <div className="max-w-2xl mx-auto flex items-center justify-between mt-8 gap-4">
-          <button
-            onClick={handleBack}
-            disabled={step === 0}
-            className={`px-5 sm:px-6 py-3 min-h-[44px] rounded-full font-medium transition-colors ${
-              step === 0 ? "text-dark/20 cursor-not-allowed" : "text-dark hover:bg-dark/5"
-            }`}
-          >
-            Zur&uuml;ck
-          </button>
-          <button
-            onClick={handleNext}
-            disabled={!canProceed}
-            className={`px-6 sm:px-8 py-3 min-h-[44px] rounded-full font-semibold transition-colors flex items-center justify-center gap-2 ${
-              canProceed
-                ? "bg-dark text-white hover:bg-dark/85"
-                : "bg-dark/10 text-dark/30 cursor-not-allowed"
-            }`}
-          >
-            {submitting && <Spinner className="w-5 h-5" />}
-            {step === 5 ? (giftCardCoversAll ? "Jetzt buchen" : "Zur Kasse") : "Weiter"}
-          </button>
+        {/* Navigation buttons — sticky on mobile */}
+        <div className="sticky bottom-0 bg-white/95 backdrop-blur-sm border-t border-gray-100 py-3 px-5 -mx-5 md:static md:bg-transparent md:backdrop-blur-none md:border-0 md:py-0 md:px-0 md:mx-0 md:mt-8 z-10">
+          <div className="max-w-2xl mx-auto flex items-center justify-between gap-4">
+            <button
+              onClick={handleBack}
+              disabled={step === 0}
+              className={`px-5 sm:px-6 py-3 min-h-[44px] rounded-full font-medium transition-colors ${
+                step === 0 ? "text-dark/20 cursor-not-allowed" : "text-dark hover:bg-dark/5"
+              }`}
+            >
+              Zur&uuml;ck
+            </button>
+            <button
+              onClick={handleNext}
+              disabled={!canProceed}
+              className={`px-6 sm:px-8 py-3 min-h-[44px] rounded-full font-semibold transition-colors flex items-center justify-center gap-2 ${
+                canProceed
+                  ? "bg-dark text-white hover:bg-dark/85"
+                  : "bg-dark/10 text-dark/30 cursor-not-allowed"
+              }`}
+            >
+              {submitting && <Spinner className="w-5 h-5" />}
+              {step === 5 ? (giftCardCoversAll ? "Jetzt buchen" : "Zur Kasse") : "Weiter"}
+            </button>
+          </div>
         </div>
       </div>
     </section>

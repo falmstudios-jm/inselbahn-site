@@ -90,7 +90,7 @@ function TourCard({ tour, onBook }: { tour: Tour; onBook: (tourSlug: string) => 
     : `Kleingruppe (max. ${tour.max_capacity} Pers.)`;
 
   return (
-    <div>
+    <div className="flex flex-col h-full">
       <div className="relative w-full aspect-[16/9] rounded-xl overflow-hidden mb-5">
         <Image
           src={assets.photo}
@@ -110,7 +110,7 @@ function TourCard({ tour, onBook }: { tour: Tour; onBook: (tourSlug: string) => 
           alt={assets.illustrationAlt}
           width={120}
           height={28}
-          className="h-[28px] w-auto flex-shrink-0 opacity-60"
+          className="h-[28px] w-auto flex-shrink-0"
         />
       </div>
       {tour.notes && !/Fahrzeug/i.test(tour.notes) && (
@@ -147,7 +147,7 @@ function TourCard({ tour, onBook }: { tour: Tour; onBook: (tourSlug: string) => 
         ))}
       </ul>
 
-      <div className="flex items-baseline gap-2 mb-1">
+      <div className="flex items-baseline gap-2 mb-1 mt-auto">
         <span className="text-2xl font-bold text-dark">ab {Number(tour.price_adult).toFixed(2).replace('.', ',')}&nbsp;&euro;</span>
         <span className="text-dark/50 text-sm">Erwachsene</span>
       </div>
