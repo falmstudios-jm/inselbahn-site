@@ -391,7 +391,7 @@ function CancelPageContent() {
                   <strong>
                     {booking?.total_amount?.toFixed(2).replace(".", ",")} &euro;
                   </strong>{" "}
-                  wird in den n&auml;chsten 5&ndash;10 Werktagen erstattet.
+                  wird in der Regel innerhalb weniger Minuten erstattet. In seltenen F&auml;llen kann es bis zu 5&ndash;10 Werktage dauern.
                 </p>
               </div>
 
@@ -445,7 +445,7 @@ function CancelPageContent() {
             Diese Buchung ({booking.booking_reference}) wurde bereits storniert.
           </p>
           <p className="text-dark/40 text-sm mb-6">
-            Der Erstattungsbetrag wird innerhalb von 5&ndash;10 Werktagen gutgeschrieben.
+            Die Erstattung erfolgt in der Regel sofort. In seltenen F&auml;llen kann es bis zu 5&ndash;10 Werktage dauern.
           </p>
           <Link
             href="/"

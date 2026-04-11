@@ -265,7 +265,7 @@ export async function cancel_departures(args: {
     const tour = booking.departures?.tours;
     const formattedDate = new Date(args.date + 'T00:00:00').toLocaleDateString('de-DE', { weekday: 'long', day: 'numeric', month: 'long', year: 'numeric' });
     const refundInfo = booking.stripe_payment_intent_id
-      ? `Der gezahlte Betrag von ${Number(booking.total_amount).toFixed(2).replace('.', ',')} &euro; wird Ihnen in den n&auml;chsten 5&ndash;10 Werktagen automatisch erstattet.`
+      ? `Der gezahlte Betrag von ${Number(booking.total_amount).toFixed(2).replace('.', ',')} &euro; wird Ihnen in der Regel innerhalb weniger Minuten automatisch erstattet. In seltenen F&auml;llen kann es bis zu 5&ndash;10 Werktage dauern.`
       : booking.gift_card_id
         ? 'Der Gutscheinbetrag wurde zur&uuml;ck auf Ihren Gutschein gebucht.'
         : '';
@@ -742,7 +742,7 @@ export async function cancel_booking(args: {
           ${booking.stripe_payment_intent_id ? `
             <div style="border-left:4px solid #F24444;padding-left:16px;margin:16px 0;">
               <p><strong>Erstattung:</strong> ${refundAmount.toFixed(2).replace('.', ',')} €</p>
-              <p style="font-size:13px;color:#666;">Die Rückerstattung erfolgt innerhalb von 5–10 Werktagen auf Ihr Zahlungsmittel.</p>
+              <p style="font-size:13px;color:#666;">Die Rückerstattung erfolgt in der Regel innerhalb weniger Minuten. In seltenen Fällen kann es bis zu 5–10 Werktage dauern.</p>
             </div>
           ` : booking.gift_card_id ? `
             <div style="border-left:4px solid #F24444;padding-left:16px;margin:16px 0;">

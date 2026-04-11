@@ -153,7 +153,7 @@ wir haben eine ${isFullRefund ? 'vollständige' : 'teilweise'} Erstattung für I
 </td></tr></table>
 ${reason ? `<p style="color:#555;font-size:14px;">Grund: ${reason}</p>` : ''}
 <p style="color:#555;font-size:14px;line-height:1.6;">
-${isOnline ? 'Die Rückerstattung erfolgt auf Ihr ursprüngliches Zahlungsmittel und ist innerhalb von 5-10 Werktagen sichtbar.' : 'Die Erstattung wurde vor Ort veranlasst.'}
+${isOnline ? 'Die Rückerstattung erfolgt in der Regel innerhalb weniger Minuten auf Ihr ursprüngliches Zahlungsmittel. In seltenen Fällen kann es bis zu 5-10 Werktage dauern.' : 'Die Erstattung wurde vor Ort veranlasst.'}
 </p>
 <p style="color:#555;font-size:14px;line-height:1.6;">
 Wir würden uns freuen, Sie bald wieder auf Helgoland begrüßen zu dürfen!

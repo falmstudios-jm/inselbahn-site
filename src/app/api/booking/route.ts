@@ -175,18 +175,38 @@ export async function POST(req: Request) {
       }
     }
 
-    // Validate and increment discount code usage
+    // Validate and calculate discount SERVER-SIDE (never trust client)
     let discountCodeId: string | null = null;
+    let discountAmount = 0;
     if (input.discount_code) {
       const { data: dc } = await supabaseAdmin
         .from('discount_codes')
-        .select('id, current_uses, max_uses, is_active')
+        .select('id, type, value, current_uses, max_uses, is_active, valid_departure_ids, valid_from, valid_until')
         .eq('code', input.discount_code)
         .eq('is_active', true)
         .single();
       if (dc) {
+        const today = new Date().toISOString().slice(0, 10);
+        if (dc.valid_from && today < dc.valid_from) {
+          return NextResponse.json({ error: 'Rabattcode ist noch nicht gültig.' }, { status: 409 });
+        }
+        if (dc.valid_until && today > dc.valid_until) {
+          return NextResponse.json({ error: 'Rabattcode ist abgelaufen.' }, { status: 409 });
+        }
         if (dc.max_uses && dc.current_uses >= dc.max_uses) {
           return NextResponse.json({ error: 'Rabattcode wurde bereits zu oft verwendet.' }, { status: 409 });
+        }
+        // Check departure restriction
+        if (dc.valid_departure_ids && dc.valid_departure_ids.length > 0) {
+          if (!dc.valid_departure_ids.includes(input.departure_id)) {
+            return NextResponse.json({ error: 'Dieser Rabattcode gilt nicht für die gewählte Abfahrtszeit.' }, { status: 409 });
+          }
+        }
+        // Calculate discount server-side
+        if (dc.type === 'percentage') {
+          discountAmount = Math.round(totalPrice * Number(dc.value) / 100); // Round to full euro
+        } else {
+          discountAmount = Math.min(Number(dc.value), totalPrice);
         }
         discountCodeId = dc.id;
         await supabaseAdmin
@@ -196,7 +216,8 @@ export async function POST(req: Request) {
       }
     }
 
-    const amountToCharge = Math.max(0, totalPrice - giftCardDeduction);
+    const priceAfterDiscount = Math.max(0, totalPrice - discountAmount);
+    const amountToCharge = Math.max(0, priceAfterDiscount - giftCardDeduction);
 
     // Insert booking as 'pending'
     const { data: booking, error: insertError } = await supabaseAdmin
@@ -211,7 +232,7 @@ export async function POST(req: Request) {
         customer_name: input.customer_name,
         customer_email: input.customer_email,
         customer_phone: input.customer_phone || null,
-        total_amount: totalPrice,
+        total_amount: priceAfterDiscount, // Price AFTER discount, BEFORE gift card
         booking_reference: bookingReference,
         cancel_token: cancelToken,
         status: 'pending',
@@ -219,7 +240,7 @@ export async function POST(req: Request) {
         wheelchair_seat: input.wheelchair_seat || false,
         gift_card_id: giftCardId || null,
         discount_code_id: discountCodeId || null,
-        discount_amount: giftCardDeduction > 0 ? giftCardDeduction : 0,
+        discount_amount: discountAmount, // Server-calculated discount
         payment_method: amountToCharge <= 0 ? 'gift_card' : 'online',
       })
       .select()

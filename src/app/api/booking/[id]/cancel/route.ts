@@ -279,7 +279,7 @@ function buildCancellationEmail(params: CancelEmailParams): string {
                   <td>
                     <p style="margin:0 0 4px;font-size:14px;font-weight:700;color:#333;">R\u00FCckerstattung</p>
                     <p style="margin:0;font-size:14px;color:#555;line-height:1.6;">
-                      Die R\u00FCckerstattung von ${totalAmount.toFixed(2).replace('.', ',')} \u20AC erfolgt innerhalb von 5\u201310 Werktagen auf Ihr urspr\u00FCngliches Zahlungsmittel.
+                      Die R\u00FCckerstattung von ${totalAmount.toFixed(2).replace('.', ',')} \u20AC erfolgt in der Regel innerhalb weniger Minuten auf Ihr urspr\u00FCngliches Zahlungsmittel. In seltenen F\u00E4llen kann es bis zu 5\u201310 Werktage dauern.
                     </p>
                   </td>
                 </tr>
