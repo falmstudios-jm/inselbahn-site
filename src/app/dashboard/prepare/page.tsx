@@ -63,7 +63,7 @@ export default function PreparePage() {
 
   const loadNextDeparture = useCallback(async () => {
     try {
-      const res = await fetch('/api/dashboard/next-departure');
+      const res = await fetch('/api/dashboard/next-departure', { cache: 'no-store' });
       const data = await res.json();
       if (data.next_departure) {
         setDeparture(data.next_departure);
@@ -143,7 +143,8 @@ export default function PreparePage() {
     setSellSubmitting(true);
     setSellError('');
 
-    const todayISO = new Date().toLocaleDateString('en-CA', { timeZone: 'Europe/Berlin' });
+    // Use the date from the API (could be today or tomorrow)
+    const bookingDate = tomorrowDate || new Date().toLocaleDateString('en-CA', { timeZone: 'Europe/Berlin' });
 
     try {
       const res = await fetch('/api/dashboard/sell', {
@@ -152,7 +153,7 @@ export default function PreparePage() {
         body: JSON.stringify({
           mode: 'individual',
           departure_id: departure.departure_id,
-          booking_date: todayISO,
+          booking_date: bookingDate,
           adults: sellAdults,
           children: sellChildren,
           children_free: 0,
