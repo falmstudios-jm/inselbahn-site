@@ -74,17 +74,6 @@ export default function GettingThere() {
           </div>
         </div>
 
-        {/* Ferry illustration */}
-        <div className="flex justify-center mb-8">
-          <Image
-            src="/images/schiff-ferry.png"
-            alt="Fähre Illustration"
-            width={300}
-            height={120}
-            className="opacity-60"
-          />
-        </div>
-
         {/* Google Maps button */}
         <div className="text-center">
           <a

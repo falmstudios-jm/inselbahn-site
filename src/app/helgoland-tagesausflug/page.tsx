@@ -4,7 +4,7 @@ import Header from "@/components/Header";
 import Footer from "@/components/Footer";
 
 export const metadata: Metadata = {
-  title: "Helgoland Tagesausflug — So nutzen Sie Ihre Zeit optimal",
+  title: "Helgoland Tagesausflug - So nutzen Sie Ihre Zeit optimal",
   description:
     "Planen Sie Ihren perfekten Helgoland Tagesausflug: Fährankunft, Inselbahn-Tour, Sehenswürdigkeiten und zollfreies Shopping. Tipps für einen unvergesslichen Tag auf der Hochseeinsel.",
   keywords: [
@@ -21,7 +21,7 @@ export const metadata: Metadata = {
     canonical: "https://helgolandbahn.de/helgoland-tagesausflug",
   },
   openGraph: {
-    title: "Helgoland Tagesausflug — So nutzen Sie Ihre Zeit optimal",
+    title: "Helgoland Tagesausflug - So nutzen Sie Ihre Zeit optimal",
     description:
       "Der perfekte Helgoland Tagesausflug: Ankunft, Inselbahn-Tour, Sehenswürdigkeiten und Shopping. Alle Tipps für Ihren Tag.",
     url: "https://helgolandbahn.de/helgoland-tagesausflug",
@@ -48,7 +48,7 @@ const timelineSteps = [
     time: "12:30 - 14:00",
     title: "Mittagessen & Hummerbuden",
     description:
-      "Genießen Sie frischen Fisch in einem der Restaurants im Unterland oder stöbern Sie durch die bunten Hummerbuden am Binnenhafen (\u201eScheibenhafen\u201c). Hier finden Sie Galerien, Schmuckläden, Gastronomie und sogar ein Standesamt! Vorsicht: Fischbrötchen nicht offen tragen — die Möwen auf Helgoland sind berüchtigt dafür, einem das Essen zu klauen.",
+      "Genießen Sie frischen Fisch in einem der Restaurants im Unterland oder stöbern Sie durch die bunten Hummerbuden am Binnenhafen (\u201eScheibenhafen\u201c). Hier finden Sie Galerien, Schmuckläden, Gastronomie und sogar ein Standesamt! Vorsicht: Fischbrötchen nicht offen tragen - die Möwen auf Helgoland sind berüchtigt dafür, einem das Essen zu klauen.",
   },
   {
     time: "14:00 - 15:30",
@@ -60,7 +60,7 @@ const timelineSteps = [
     time: "15:30 - 16:30",
     title: "Zollfreies Shopping",
     description:
-      "Helgoland ist zollfrei! Spirituosen, Parfüm, Tabakwaren und Süßigkeiten sind hier deutlich günstiger als auf dem Festland. Oder nehmen Sie die Dünenfähre \u201eWitte Kliff\u201c (6 € Erwachsene, alle 30 Min.) zur Nachbarinsel Düne — mit Robben am Strand und dem weltweit einzigartigen Roten Flint.",
+      "Helgoland ist zollfrei! Spirituosen, Parfüm, Tabakwaren und Süßigkeiten sind hier deutlich günstiger als auf dem Festland. Oder nehmen Sie die Dünenfähre \u201eWitte Kliff\u201c (6 € Erwachsene, alle 30 Min.) zur Nachbarinsel Düne - mit Robben am Strand und dem weltweit einzigartigen Roten Flint.",
   },
   {
     time: "16:30 - 17:30",
@@ -72,12 +72,12 @@ const timelineSteps = [
 
 const tips = [
   "Buchen Sie Ihre Inselbahn-Tour im Voraus online, um sich einen Platz zu sichern.",
-  "Sagen Sie \u201eHallo\u201c oder \u201eHey\u201c zur Begrüßung — \u201eMoin Moin\u201c sagt man auf Helgoland nicht!",
+  "Sagen Sie \u201eHallo\u201c oder \u201eHey\u201c zur Begrüßung - \u201eMoin Moin\u201c sagt man auf Helgoland nicht!",
   "Achtung Möwen! Die Helgoländer Silbermöwen stehlen Fischbrötchen direkt aus der Hand. Essen besser in Innenräumen genießen.",
-  "Zum Oberland per Fahrstuhl oder 182-260 Stufen — der Fahrstuhl ist bequemer, die Treppe hat den besseren Ausblick.",
+  "Zum Oberland per Fahrstuhl oder 182-260 Stufen - der Fahrstuhl ist bequemer, die Treppe hat den besseren Ausblick.",
   "Helgoland ist zollfrei! Spirituosen, Parfüm, Tabak und Süßigkeiten gibt es hier deutlich günstiger als auf dem Festland.",
   "Dünenfähre \u201eWitte Kliff\u201c: 6 € Erwachsene, halber Preis für Kinder, fährt alle 30 Minuten. Robben und den einzigartigen Roten Flint gibt es nur dort!",
-  "Kein Fahrradfahren und keine Autos auf Helgoland — Fußgänger haben immer Vorrang. Genießen Sie die Ruhe!",
+  "Kein Fahrradfahren und keine Autos auf Helgoland - Fußgänger haben immer Vorrang. Genießen Sie die Ruhe!",
   "Packen Sie eine winddichte Jacke ein, auch bei Sonnenschein kann es auf Helgoland windig sein. Die Insel liegt 60 km vom Festland im offenen Meer.",
 ];
 

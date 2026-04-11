@@ -4,7 +4,7 @@ import Header from '@/components/Header';
 import Footer from '@/components/Footer';
 
 export const metadata: Metadata = {
-  title: 'Gutschein gekauft — Inselbahn Helgoland',
+  title: 'Gutschein gekauft - Inselbahn Helgoland',
   description: 'Vielen Dank für Ihren Gutscheinkauf bei der Inselbahn Helgoland.',
 };
 

@@ -4,7 +4,7 @@ import Header from "@/components/Header";
 import Footer from "@/components/Footer";
 
 export const metadata: Metadata = {
-  title: "Helgoland Sehenswürdigkeiten — Die schönsten Highlights der Insel",
+  title: "Helgoland Sehenswürdigkeiten - Die schönsten Highlights der Insel",
   description:
     "Entdecken Sie die Top-Sehenswürdigkeiten auf Helgoland: Lange Anna, Hummerbuden, Oberland, Lummenfelsen, Düne und Nordostgelände. Am besten zu erleben mit der Inselbahn!",
   keywords: [
@@ -21,7 +21,7 @@ export const metadata: Metadata = {
     canonical: "https://helgolandbahn.de/helgoland-sehenswuerdigkeiten",
   },
   openGraph: {
-    title: "Helgoland Sehenswürdigkeiten — Die schönsten Highlights der Insel",
+    title: "Helgoland Sehenswürdigkeiten - Die schönsten Highlights der Insel",
     description:
       "Entdecken Sie die Top-Sehenswürdigkeiten auf Helgoland mit der Inselbahn. Lange Anna, Hummerbuden, Oberland und mehr.",
     url: "https://helgolandbahn.de/helgoland-sehenswuerdigkeiten",
@@ -35,14 +35,14 @@ const highlights = [
   {
     title: "Die Lange Anna",
     description:
-      "Helgolands berühmtes Wahrzeichen ist ein 47 Meter hoher freistehender Brandungspfeiler aus rotem Buntsandstein an der Nordwestspitze der Insel. Der markante Felsen, Überbleibsel einer ehemaligen Felsbrücke, ist das meistfotografierte Motiv Helgolands. Er steht unter Naturschutz und darf nicht betreten werden, bietet aber von den umliegenden Aussichtspunkten spektakuläre Fotomotive — besonders bei Sonnenuntergang, wenn der rote Sandstein golden leuchtet.",
-    tip: "Mit unserer Premium-Tour erreichen Sie die Lange Anna bequem und haben 30 Minuten freie Erkundungszeit direkt vor Ort — ohne den anstrengenden Fußweg.",
+      "Helgolands ber\u00fchmtes Wahrzeichen ist ein 47 Meter hoher freistehender Brandungspfeiler aus rotem Buntsandstein an der Nordwestspitze der Insel. Der markante Felsen, \u00dcberbleibsel einer ehemaligen Felsbr\u00fccke, ist das meistfotografierte Motiv Helgolands. Er steht unter Naturschutz und darf nicht betreten oder direkt angen\u00e4hert werden. Von den umliegenden Aussichtspunkten am Klippenrandweg bieten sich spektakul\u00e4re Fotomotive - besonders bei Sonnenuntergang, wenn der rote Sandstein golden leuchtet.",
+    tip: "Mit unserer Premium-Tour erreichen Sie die Lange Anna bequem und haben einen exklusiven 30-min\u00fctigen Ausstieg, bei dem Sie den Klippenrandweg selbst erkunden, die Lange Anna bestaunen und die Brutv\u00f6gel beobachten k\u00f6nnen - die einzige Brutkolonie dieser Art in Deutschland.",
   },
   {
     title: "Die Hummerbuden",
     description:
-      "Die farbenfrohen Hummerbuden am Binnenhafen (von Helgoländern auch \u201eScheibenhafen\u201c genannt — nach den britischen Zielscheiben, die hier einst lagerten) sind das Herzstück des Unterlands. Die bunten Holzhütten dienten einst als Fischerschuppen und beherbergen heute Galerien, Schmuckläden, Gastronomie, ein Standesamt (ja, man kann hier heiraten!), den Naturschutzverein Jordsand und den Souvenirladen \u201eRoter Flint\u201c. Achtung: Die Möwen auf Helgoland sind dreist und stehlen einem gerne das Fischbrötchen direkt aus der Hand!",
-    tip: "Die Hummerbuden sind Teil unserer Unterland-Tour mit Fotostopp. Unser Tipp: Fischbrötchen erst nach der Tour genießen — sicher vor Möwen!",
+      "Die farbenfrohen Hummerbuden am Binnenhafen (von Helgol\u00e4ndern auch \u201eScheibenhafen\u201c genannt - nach den britischen Zielscheiben, die hier einst lagerten) sind das Herzst\u00fcck des Unterlands. Die bunten Holzh\u00fctten dienten einst als Fischerschuppen und beherbergen heute Galerien, Schmuckl\u00e4den, Gastronomie, ein Standesamt (ja, man kann hier heiraten!), den Naturschutzverein Jordsand, den Souvenirladen \u201eRoter Flint\u201c und die James-Kr\u00fcss-\u00d6nnerb\u00fcnsken-Bude. Achtung: Die M\u00f6wen auf Helgoland sind dreist und stehlen einem gerne das Fischbr\u00f6tchen direkt aus der Hand!",
+    tip: "Die Hummerbuden sind Teil unserer Unterland-Tour mit Fotostopp. Unser Tipp: Fischbrötchen erst nach der Tour genießen - sicher vor Möwen!",
   },
   {
     title: "Der Leuchtturm",
@@ -54,37 +54,37 @@ const highlights = [
     title: "Das Oberland (\u201edeät Bopperlun\u201c)",
     description:
       "Das Oberland thront auf den roten Buntsandstein-Klippen und ist über einen Fahrstuhl oder 182 bis 260 Stufen erreichbar. Der höchste Punkt, der Pinneberg, liegt auf 61,3 Metern. Hier oben befinden sich rund 70 Kleingärten, in denen die Kartoffeln dank des salzigen Bodens in nur 12 Minuten gar sind! Die Vogelwarte beringt jährlich bis zu 15.000 Vögel, und die James-Krüss-Schule unterrichtet Klassen 1 bis 10.",
-    tip: "Unsere Premium-Tour führt Sie durch das gesamte Oberland bis zum Pinneberg — ohne den steilen Aufstieg zu Fuß.",
+    tip: "Unsere Premium-Tour f\u00fchrt Sie durch das gesamte Oberland am Pinneberg vorbei - ohne den steilen Aufstieg zu Fu\u00df.",
   },
   {
     title: "Der Lummenfelsen",
     description:
-      "Deutschlands kleinstes Naturschutzgebiet ist Heimat tausender Seevögel: Trottellummen, Basstölpel, Dreizehenmöwen und Tordalke brüten hier in den Sommermonaten. Das spektakulärste Naturschauspiel ist der \u201eLummensprung\u201c im Juni, wenn die noch flugunfähigen Küken von den Klippen ins Meer springen. Gelegentlich besucht sogar ein Schwarzbrauenalbatros die Kolonie — ein extrem seltener Gast!",
-    tip: "Von der Premium-Tour aus haben Sie beste Blicke auf den Lummenfelsen. Der Klippenrandweg (ca. 3 km, ca. 1,5 Stunden) lohnt sich ebenfalls.",
+      "Deutschlands kleinstes Naturschutzgebiet ist Heimat tausender Seevögel: Trottellummen, Basstölpel, Dreizehenmöwen und Tordalke brüten hier in den Sommermonaten. Das spektakulärste Naturschauspiel ist der \u201eLummensprung\u201c im Juni, wenn die noch flugunfähigen Küken von den Klippen ins Meer springen. Gelegentlich besucht sogar ein Schwarzbrauenalbatros die Kolonie - ein extrem seltener Gast!",
+    tip: "Bei der Premium-Tour haben Sie einen exklusiven 30-min\u00fctigen Ausstieg am Lummenfelsen, bei dem Sie den Klippenrandweg selbst erkunden und die Brutv\u00f6gel aus n\u00e4chster N\u00e4he beobachten k\u00f6nnen - sie br\u00fcten nur hier in Deutschland.",
   },
   {
-    title: "Hermann Marwede — Seenotrettungskreuzer",
+    title: "Hermann Marwede - Seenotrettungskreuzer",
     description:
-      "Der 46 Meter lange Seenotrettungskreuzer Hermann Marwede der DGzRS liegt im Südhafen und ist einer der größten Rettungskreuzer an der deutschen Küste. Das Schiff kostete rund 15 Millionen Euro, die ausschließlich aus Spenden finanziert wurden. Seit der Indienststellung 2003 hat die Crew zahlreiche Menschenleben auf der Nordsee gerettet.",
-    tip: "Auf der Unterland-Tour fahren Sie direkt am Liegeplatz der Hermann Marwede vorbei und erfahren spannende Rettungsgeschichten.",
+      "Der 46 Meter lange Seenotrettungskreuzer Hermann Marwede der DGzRS liegt im S\u00fcdhafen und ist der gr\u00f6\u00dfte Rettungskreuzer an der deutschen K\u00fcste. Das Schiff kostete rund 15 Millionen Euro, die ausschlie\u00dflich aus Spenden finanziert wurden. Seit der Indienststellung 2003 hat die Crew zahlreiche Menschenleben auf der Nordsee gerettet.",
+    tip: "Wenn die Hermann Marwede im Hafen liegt, k\u00f6nnen Sie sie von der Unterland-Tour aus sehen.",
   },
   {
     title: "Alfred-Wegener-Institut (AWI)",
     description:
-      "Das AWI betreibt auf Helgoland eine bedeutende Meeresforschungsstation. Besonders bekannt ist das Hummer-Zuchtprogramm zur Wiederansiedlung des Helgoländer Hummers. Das alte Aquarium wird derzeit zum \u201eBluehouse Helgoland\u201c umgebaut — einer neuen Multimillionen-Attraktion für Besucher, die die faszinierende Unterwasserwelt der Nordsee erlebbar macht.",
+      "Das AWI betreibt auf Helgoland eine bedeutende Meeresforschungsstation. Besonders bekannt ist das Hummer-Zuchtprogramm zur Wiederansiedlung des Helgoländer Hummers. Das alte Aquarium wird derzeit zum \u201eBluehouse Helgoland\u201c umgebaut - einer neuen Multimillionen-Attraktion für Besucher, die die faszinierende Unterwasserwelt der Nordsee erlebbar macht.",
     tip: "Das AWI liegt auf der Route unserer Unterland-Tour. Fragen Sie unseren Guide nach dem Hummer-Zuchtprogramm!",
   },
   {
     title: "Die Düne mit Rotem Flint",
     description:
-      "Die Nachbarinsel (1000 x 700 m, ca. 130.000 m² Strand) wurde 1721 durch einen verheerenden Sturm von der Hauptinsel getrennt. Die Dünenfähre \u201eWitte Kliff\u201c hat seit 1996 über 8 Millionen Fahrgäste befördert und fährt alle 30 Minuten (6 € Erwachsene, halber Preis für Kinder). Hier liegt der weltweit einzigartige Rote Flint — ein roter Feuerstein, der nur auf Helgolands Düne vorkommt. Die neugierigen und furchtlosen Kegelrobben und Seehunde am Strand sind ein unvergessliches Erlebnis.",
-    tip: "Bei der Unterland-Tour erhalten Sie einen Fotostopp im Nordostland mit direktem Blick auf die Düne. Planen Sie extra Zeit für die Dünenfähre ein!",
+      "Die Nachbarinsel (1000 x 700 m, ca. 130.000 m² Strand) wurde 1721 durch einen verheerenden Sturm von der Hauptinsel getrennt. Die Dünenfähre \u201eWitte Kliff\u201c hat seit 1996 über 8 Millionen Fahrgäste befördert und fährt alle 30 Minuten (6 € Erwachsene, halber Preis für Kinder). Hier liegt der weltweit einzigartige Rote Flint - ein roter Feuerstein, der nur auf Helgolands Düne vorkommt. Die neugierigen und furchtlosen Kegelrobben und Seehunde am Strand sind ein unvergessliches Erlebnis.",
+    tip: "Bei der Unterland-Tour erhalten Sie einen Fotostopp im Nordostland mit Blick auf die Klippen von der Ostseite. Planen Sie extra Zeit f\u00fcr die D\u00fcnenf\u00e4hre ein!",
   },
   {
-    title: "Das Nordostgelände",
+    title: "Das Nordostgel\u00e4nde",
     description:
-      "Das Nordostgelände ist ein geschichtsträchtiger Teil der Insel mit Überresten der ehemaligen Marinebefestigungen. Am 18. April 1947 sprengten die Briten hier im \u201eBig Bang\u201c die größte nicht-nukleare Explosion der Geschichte — die Detonation war bis Hamburg zu hören und schuf das heutige Mittelland. Heute erleben Sie die wilde, naturbelassene Landschaft und die bewegte Vergangenheit Helgolands hautnah.",
-    tip: "Beide Touren führen durch das Nordostland. Unser Guide erzählt die dramatische Geschichte des Big Bang von 1947.",
+      "Das Nordostgel\u00e4nde ist ein geschichtstr\u00e4chtiger Teil der Insel. Hier sollte im Rahmen des \u201eHummerschere\u201c-Projekts ein gigantischer Kriegshafen entstehen - die Pl\u00e4ne wurden nie vollendet. Heute befinden sich im Nordostland unter anderem die Jugendherberge, der Nordoststrand und der Fu\u00dfballplatz des VfL Fosite Helgoland. Der \u201eBig Bang\u201c vom 18. April 1947 - die gr\u00f6\u00dfte nicht-nukleare Explosion der Geschichte - fand im heutigen Mittelland statt und schuf die Landschaft, die Sie dort heute sehen. Die Detonation war bis Hamburg zu h\u00f6ren.",
+    tip: "Beide Touren f\u00fchren durch das Nordostland. Unser Guide erz\u00e4hlt die dramatische Geschichte des Big Bang von 1947 und des Hummerschere-Projekts.",
   },
 ];
 

@@ -191,7 +191,7 @@ export default function GutscheinPage() {
                 Betrag w&auml;hlen
               </label>
               <p className="text-dark/50 text-sm mb-4 leading-relaxed">
-                W&auml;hlen Sie einen Betrag f&uuml;r Ihren Geschenkgutschein. Der Empf&auml;nger erh&auml;lt einen Code, der flexibel f&uuml;r alle unsere Touren einl&ouml;sbar ist — auch teilweise. Der Restwert bleibt erhalten.
+                W&auml;hlen Sie einen Betrag f&uuml;r Ihren Geschenkgutschein. Der Empf&auml;nger erh&auml;lt einen Code, der flexibel f&uuml;r alle unsere Touren einl&ouml;sbar ist - auch teilweise. Der Restwert bleibt erhalten.
               </p>
 
               {/* Preset tour quantities */}

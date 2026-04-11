@@ -130,7 +130,7 @@ export default function ChatBubble() {
               </div>
               <h3 className="text-lg font-semibold text-dark mb-2">Inselbahn Assistent</h3>
               <p className="text-sm text-dark/50 mb-6">
-                Touren, Preise, Abfahrtszeiten, Helgoland-Tipps — rund um die Uhr.
+                Touren, Preise, Abfahrtszeiten, Helgoland-Tipps - rund um die Uhr.
               </p>
               <button
                 onClick={() => setAccepted(true)}

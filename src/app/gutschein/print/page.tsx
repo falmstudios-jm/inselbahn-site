@@ -186,7 +186,7 @@ function PrintContent() {
                   <Image src="/images/666b9090ffbb1554bef8498f_helgolandbahn-9.jpg" alt="" fill className="object-cover" />
                 </div>
                 <div className="flex-1 rounded-lg overflow-hidden relative">
-                  <Image src="/images/666b822370124a550fa96b11_helgolandbahn-4.jpg" alt="" fill className="object-cover" />
+                  <Image src="/images/premium-20250707_103436.jpg" alt="" fill className="object-cover" />
                 </div>
                 <div className="flex-1 rounded-lg overflow-hidden relative">
                   <Image src="/images/abfahrt-inselbahn.jpg" alt="" fill className="object-cover" />

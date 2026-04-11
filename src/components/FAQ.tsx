@@ -12,17 +12,17 @@ const faqs = [
   {
     question: "Darf ich Snacks und Getränke mitbringen?",
     answer:
-      "Gerne dürfen Sie sich Snacks und Getränke mitbringen. Allerdings bitten wir darum, Speisen zu vermeiden, die leicht kleckern oder verschütten können — kein Eis, kein Ketchup. Ein Bier ist auch okay. Und Vorsicht vor den Möwen!",
+      "Gerne dürfen Sie sich Snacks und Getränke mitbringen. Allerdings bitten wir darum, Speisen zu vermeiden, die leicht kleckern oder verschütten können - kein Eis, kein Ketchup. Ein Bier ist auch okay. Und Vorsicht vor den Möwen!",
   },
   {
     question: "Kann ich mein Gepäck mitnehmen?",
     answer:
-      "Leider können wir weder Gepäcktransport noch Gepäckmitnahme anbieten. Unser Ticketverkäufer Tomek kann zwischen 11:30 und 14:30 Uhr ein Auge auf Ihre Sachen werfen — allerdings ohne Haftung. Aber auf Helgoland klaut keiner!",
+      "Leider können wir weder Gepäcktransport noch Gepäckmitnahme anbieten. Unser Ticketverkäufer Tomek kann zwischen 11:30 und 14:30 Uhr ein Auge auf Ihre Sachen werfen - allerdings ohne Haftung. Aber auf Helgoland klaut keiner!",
   },
   {
     question: "Wie sieht es mit Rollatoren oder Rollstühlen aus?",
     answer:
-      "Unterland-Tour: 1 Rollstuhlplatz verfügbar (kein E-Rollstuhl, zu schwer). Rollatoren können bei Tomek am Platz geparkt werden. Premium-Tour: Ein zusammenklappbarer Rollator kann bei nicht voller Belegung mitgenommen werden — ist aber nicht garantiert. Der Weg an der Langen Anna ist erneuert und es gibt viele Bänke.",
+      "Unterland-Tour: 1 Rollstuhlplatz verfügbar (kein E-Rollstuhl, zu schwer). Rollatoren können bei Tomek am Platz geparkt werden. Premium-Tour: Ein zusammenklappbarer Rollator kann bei nicht voller Belegung mitgenommen werden - ist aber nicht garantiert. Der Weg an der Langen Anna ist erneuert und es gibt viele Bänke.",
   },
   {
     question: "Kann ich meinen Hund mitnehmen?",
@@ -32,12 +32,12 @@ const faqs = [
   {
     question: "Gibt es Toiletten in der Nähe?",
     answer:
-      "Ja, direkt an der Landungsbrücke gibt es eine kostenlose öffentliche Toilette. Wichtig: Während der Touren gibt es keine Toilettenmöglichkeit — auch nicht an der Langen Anna! Bitte vorher gehen.",
+      "Ja, direkt an der Landungsbrücke gibt es eine kostenlose öffentliche Toilette. Wichtig: Während der Touren gibt es keine Toilettenmöglichkeit - auch nicht an der Langen Anna! Bitte vorher gehen.",
   },
   {
     question: "Was passiert bei schlechtem Wetter?",
     answer:
-      "Bei Regen fahren wir ganz normal — unsere Wagen sind überdacht und haben bei Bedarf Seitenabdeckungen. Bei extremem Wetter (Sturm, Gewitter) können Touren ausfallen. Online-Buchungen erhalten in dem Fall automatisch eine volle Rückerstattung.",
+      "Bei Regen fahren wir ganz normal - unsere Wagen sind überdacht und haben bei Bedarf Seitenabdeckungen. Bei extremem Wetter (Sturm, Gewitter) können Touren ausfallen. Online-Buchungen erhalten in dem Fall automatisch eine volle Rückerstattung.",
   },
 ];
 

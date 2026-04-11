@@ -4,7 +4,7 @@ import Header from "@/components/Header";
 import Footer from "@/components/Footer";
 
 export const metadata: Metadata = {
-  title: "Die Lange Anna — Helgolands berühmtes Wahrzeichen",
+  title: "Die Lange Anna - Helgolands berühmtes Wahrzeichen",
   description:
     "Die Lange Anna ist Helgolands bekannteste Sehenswürdigkeit. Erfahren Sie alles über den 47 Meter hohen Felsen und erleben Sie ihn hautnah mit der Inselbahn Premium-Tour.",
   keywords: [
@@ -20,7 +20,7 @@ export const metadata: Metadata = {
     canonical: "https://helgolandbahn.de/lange-anna",
   },
   openGraph: {
-    title: "Die Lange Anna — Helgolands berühmtes Wahrzeichen",
+    title: "Die Lange Anna - Helgolands berühmtes Wahrzeichen",
     description:
       "Die Lange Anna ist ein 47 Meter hoher Brandungspfeiler an der Nordwestspitze Helgolands. Erleben Sie das Wahrzeichen hautnah mit der Inselbahn Premium-Tour.",
     url: "https://helgolandbahn.de/lange-anna",
@@ -89,11 +89,11 @@ export default function LangeAnnaPage() {
 
           <section>
             <h2 className="text-2xl md:text-3xl font-bold text-dark mb-4">
-              Der Lummenfelsen — Heimat tausender Seevögel
+              Der Lummenfelsen - Heimat tausender Seevögel
             </h2>
             <p className="text-dark/60 text-base md:text-lg leading-relaxed mb-4">
               Die Lange Anna und die angrenzenden Klippen bilden den berühmten
-              Lummenfelsen — Deutschlands kleinstes Naturschutzgebiet und eine
+              Lummenfelsen - Deutschlands kleinstes Naturschutzgebiet und eine
               der bedeutendsten Seevogelkolonien des Landes. In den Sommermonaten
               nisten hier vier Hauptarten: <strong>Trottellummen</strong> (die
               Namensgeber des Felsens), <strong>Basstölpel</strong> mit ihrer
@@ -109,7 +109,7 @@ export default function LangeAnnaPage() {
             </p>
             <p className="text-dark/60 text-base md:text-lg leading-relaxed">
               Besondere Aufmerksamkeit erregt auch der gelegentliche Besuch eines
-              <strong> Schwarzbrauenalbatros</strong> — ein Irrgast der Südhalbkugel,
+              <strong> Schwarzbrauenalbatros</strong> - ein Irrgast der Südhalbkugel,
               der die Helgoländer Kolonie manchmal für mehrere Wochen besucht und
               für Aufsehen unter Vogelkundlern sorgt.
             </p>
@@ -120,13 +120,14 @@ export default function LangeAnnaPage() {
               Der Klippenrandweg
             </h2>
             <p className="text-dark/60 text-base md:text-lg leading-relaxed">
-              Der ca. 3 Kilometer lange Klippenrandweg führt entlang der gesamten
+              Der ca. 3 Kilometer lange Klippenrandweg f&uuml;hrt entlang der gesamten
               Oberkante der roten Felsklippen und bietet durchgehend atemberaubende
-              Ausblicke auf die Nordsee, die Düne und natürlich die Lange Anna.
-              Planen Sie etwa 1,5 Stunden für den Rundweg ein. Der Weg ist gut
+              Ausblicke auf die Nordsee und nat&uuml;rlich die Lange Anna.
+              Bei unserer Premium-Tour haben Sie einen exklusiven 30-min&uuml;tigen
+              Ausstieg an der Langen Anna, bei dem Sie einen Teil des Klippenrandwegs
+              selbst erkunden und die Brutv&ouml;gel beobachten k&ouml;nnen -
+              sie br&uuml;ten nur hier in Deutschland. Der Weg ist gut
               befestigt und ausgeschildert, festes Schuhwerk wird dennoch empfohlen.
-              Vom Oberland aus (erreichbar per Fahrstuhl oder 182 bis 260 Stufen)
-              starten Sie bequem in den Rundgang.
             </p>
           </section>
 
@@ -135,12 +136,14 @@ export default function LangeAnnaPage() {
               Die Lange Anna mit der Inselbahn erleben
             </h2>
             <p className="text-dark/60 text-base md:text-lg leading-relaxed mb-6">
-              Unsere Premium-Tour ist die beste Möglichkeit, die Lange Anna zu
-              erleben. Die Tour führt Sie durch das Ober- und Unterland direkt
-              zum Wahrzeichen, wo Sie 30 Minuten freie Erkundungszeit haben.
-              Genießen Sie den Blick auf die Lange Anna, die Seevogelkolonien
-              und die weite Nordsee, ohne den anstrengenden Fußweg bewältigen
-              zu müssen.
+              Unsere Premium-Tour ist die beste M&ouml;glichkeit, die Lange Anna zu
+              erleben. Die Tour f&uuml;hrt Sie durch das Ober- und Unterland direkt
+              zum Wahrzeichen, wo Sie einen exklusiven 30-min&uuml;tigen Ausstieg
+              haben. Erkunden Sie den Klippenrandweg, bestaunen Sie die Lange Anna
+              aus n&auml;chster N&auml;he und beobachten Sie die Brutv&ouml;gel -
+              Trottellummen, Basst&ouml;lpel, Dreizehenm&ouml;wen und Tordalke,
+              die nur hier in Deutschland br&uuml;ten. Ganz ohne den anstrengenden
+              Fu&szlig;weg bew&auml;ltigen zu m&uuml;ssen.
             </p>
             <div className="bg-surface rounded-2xl p-6 md:p-8">
               <h3 className="text-lg font-bold text-dark mb-3">

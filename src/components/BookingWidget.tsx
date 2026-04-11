@@ -49,20 +49,20 @@ const tourOptions = [
     childPrice: 15,
     capacity: 18,
     duration: "ca. 90 Minuten",
-    description: "Das komplette Helgoland-Erlebnis. Zunächst das Unterland, dann hinauf ins Oberland bis zum Pinneberg — mit 30 Minuten freier Erkundungszeit an der Langen Anna.",
+    description: "Das komplette Helgoland-Erlebnis. Zunächst das Unterland, dann hinauf ins Oberland am Pinneberg vorbei - mit 30 Minuten freier Erkundungszeit an der Langen Anna.",
     highlights: [
       "Unterland & Oberland mit Pinneberg (61,3 m)",
       "30 Min freie Erkundung an der Langen Anna",
       "Leuchtturm, Kleingärten & Lummenfelsen",
       "Kleine Gruppe (max. 18 Personen)",
-      "Einblicke in den Inselalltag \u2014 Geschichten, die nicht im Reisef\u00FChrer stehen",
+      "Einblicke in den Inselalltag - Geschichten, die nicht im Reiseführer stehen",
     ],
     wheelchair: false,
     dogs: false,
     accent: "navy" as const,
     badge: "PREMIUM",
     illustration: "/images/inselbahn-illustration-premium.svg",
-    photo: "/images/helgolandbahn-photo-1.jpg",
+    photo: "/images/extra-img_2202-2.jpg",
   },
   {
     id: "unterland",
@@ -73,12 +73,12 @@ const tourOptions = [
     childPrice: 6,
     capacity: 42,
     duration: "ca. 40 Minuten",
-    description: "An Bord unserer Inselbahn gleiten Sie mit maximal 6 km/h durch das Unterland — vorbei an den legendären Hummerbuden, dem historischen Binnenhafen und dem Seenotrettungskreuzer Hermann Marwede.",
+    description: "An Bord unserer Inselbahn gleiten Sie mit maximal 6 km/h durch das Unterland - vorbei an den legendären Hummerbuden, dem historischen Binnenhafen und dem Seenotrettungskreuzer Hermann Marwede.",
     highlights: [
       "Hafen, Landungsbrücke & Südstrandpromenade",
       "Hummerbuden & historischer Binnenhafen",
       "Hermann Marwede & AWI Meeresforschung",
-      "Fotostopp im Nordostland mit Dünenblick",
+      "Fotostopp im Nordostland mit Blick auf die Klippen von der Ostseite",
     ],
     wheelchair: true,
     dogs: true,
@@ -224,7 +224,7 @@ function CheckoutForm({
         {processing && <Spinner className="w-5 h-5" />}
         {processing
           ? "Wird verarbeitet..."
-          : `Jetzt bezahlen — ${totalPrice.toFixed(2).replace(".", ",")} \u20AC`}
+          : `Jetzt bezahlen - ${totalPrice.toFixed(2).replace(".", ",")} \u20AC`}
       </button>
     </form>
   );
@@ -1361,21 +1361,21 @@ export default function BookingWidget({ tours: supabaseTours }: BookingWidgetPro
                             {/* Past departure notice */}
                             {isPast && (
                               <p className="text-xs text-dark/35 mt-1">
-                                Nicht mehr online buchbar — {slot.booked} von {slot.max_capacity} Pl&auml;tze gebucht
+                                Nicht mehr online buchbar - {slot.booked} von {slot.max_capacity} Pl&auml;tze gebucht
                               </p>
                             )}
 
                             {/* Non-bookable notice (ab Schiff) */}
                             {!isPast && notBookableOnline && (
                               <p className="text-xs text-dark/35 mt-1">
-                                Abfahrt nach Schiffsankunft ab Hafen — Uhrzeit nur Schätzung, Tickets nur beim Fahrer
+                                Abfahrt nach Schiffsankunft ab Hafen - Uhrzeit nur Sch&auml;tzung, Tickets nur beim Fahrer
                               </p>
                             )}
 
                             {/* Online sold out but walk-up possible (not for cancelled departures) */}
                             {slot.online_sold_out && !isPast && slot.bookable_online && !isCancelled && (
                               <p className="text-xs text-amber-600 mt-1">
-                                Online ausgebucht — Restplätze ggf. vor Ort bei Tomek (11:30–14:30) oder beim Fahrer
+                                Online ausgebucht - Restpl&auml;tze ggf. vor Ort bei Tomek (11:30-14:30) oder beim Fahrer
                               </p>
                             )}
 

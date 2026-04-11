@@ -4,7 +4,7 @@ import Header from "@/components/Header";
 import Footer from "@/components/Footer";
 
 export const metadata: Metadata = {
-  title: "AGB — Inselbahn Helgoland",
+  title: "AGB - Inselbahn Helgoland",
   description:
     "Allgemeine Geschäftsbedingungen der Helgoländer Dienstleistungs GmbH für die Inselbahn Helgoland.",
 };
@@ -142,8 +142,7 @@ export default function AGBPage() {
             <p>
               Der Fahrgast kann seine Buchung{" "}
               <strong>
-                kostenlos bis Mitternacht (00:00 Uhr) am Tag vor der gebuchten
-                Tour
+                kostenlos bis Mitternacht vor der gebuchten Tour
               </strong>{" "}
               stornieren. Die Stornierung erfolgt &uuml;ber den in der
               Buchungsbest&auml;tigung enthaltenen Stornierungslink oder
@@ -204,14 +203,31 @@ export default function AGBPage() {
               Dreifache des gezahlten Ticketpreises pro betroffenem Fahrgast.
             </p>
             <p className="mt-2">
-              <strong>Hinweis zu den letzten Touren des Tages:</strong>{" "}
-              Die letzte Tour des Tages kann nach Abfahrt der letzten
-              Fährverbindung zum Festland enden. Fahrgästen wird empfohlen,
-              einen ausreichenden Zeitpuffer zwischen dem Ende der Tour
-              und der geplanten Schiffsabfahrt einzuplanen. Der Anbieter
-              übernimmt keine Haftung für verpasste Fährverbindungen,
-              wenn der Fahrgast eine Tour gebucht hat, deren planmäßiges
-              Ende weniger als 30 Minuten vor der Schiffsabfahrt liegt.
+              <strong>F&auml;hrverbindungen:</strong>{" "}
+              Der Anbieter haftet nicht f&uuml;r verpasste F&auml;hrverbindungen. Dies gilt insbesondere bei:
+            </p>
+            <ul className="mt-1 ml-6 list-disc text-dark/70">
+              <li>h&ouml;herer Gewalt und Wetterbedingungen</li>
+              <li>Verkehrsbedingungen auf der Insel</li>
+              <li>durch Dritte versperrte Wege</li>
+              <li>Fahrplan&auml;nderungen der Schifffahrtsgesellschaften</li>
+            </ul>
+            <p className="mt-2">
+              Der Fahrgast ist verpflichtet, einen Zeitpuffer von mindestens
+              45 Minuten zwischen dem geplanten Ende der Tour und der Abfahrt
+              seines Schiffes einzuplanen. Die Haftung ist in jedem Fall auf
+              den dreifachen Ticketpreis begrenzt.
+            </p>
+            <p className="mt-2">
+              Der Anbieter &uuml;bernimmt keine Haftung au&szlig;erhalb des
+              Fahrzeugs, insbesondere vor und nach der Abfahrt sowie
+              w&auml;hrend Aufenthalten au&szlig;erhalb des Fahrzeugs
+              (z.&nbsp;B. 30-min&uuml;tiger Aufenthalt an der Langen Anna
+              bei der Premium-Tour).
+            </p>
+            <p className="mt-2">
+              F&uuml;r im Fahrzeug hinterlassene oder vergessene
+              Gegenst&auml;nde wird keine Haftung &uuml;bernommen.
             </p>
             <p className="mt-2">
               Der Anbieter haftet nicht für Ausfälle, Verspätungen
@@ -251,7 +267,7 @@ export default function AGBPage() {
               Kaufbest&auml;tigung mitgeteilt.
             </p>
             <p className="mt-2">
-              Teileinl&ouml;sung ist m&ouml;glich &mdash; der Restwert bleibt erhalten
+              Teileinl&ouml;sung ist m&ouml;glich - der Restwert bleibt erhalten
               und kann bei sp&auml;teren Buchungen eingesetzt werden. Bei einem
               Restwert unter 1,00 &euro; kann auf Wunsch eine Barauszahlung erfolgen.
             </p>
@@ -268,7 +284,7 @@ export default function AGBPage() {
               Guthaben auf dem Gutschein belassen.
             </p>
             <p className="mt-2">
-              Gutscheine k&ouml;nnen mit Rabattcodes kombiniert werden.
+              Gutscheine und Rabattcodes k&ouml;nnen miteinander kombiniert werden.
             </p>
             <p className="mt-2">
               Der Gutscheincode ist vertraulich zu behandeln. F&uuml;r die
@@ -296,8 +312,8 @@ export default function AGBPage() {
               oder G&uuml;ltigkeit von Rabattcodes.
             </p>
             <p className="mt-2">
-              Rabattcodes sind nicht mit anderen Rabatten oder Gutscheinen
-              kombinierbar, sofern nicht ausdr&uuml;cklich anders angegeben.
+              Rabattcodes sind nicht mit anderen Rabattcodes kombinierbar.
+              Die Kombination mit Gutscheinen ist m&ouml;glich.
             </p>
           </section>
 

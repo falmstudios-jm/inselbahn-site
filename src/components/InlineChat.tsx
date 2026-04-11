@@ -96,7 +96,7 @@ export default function InlineChat() {
             Fragen? Unser Assistent hilft sofort.
           </h2>
           <p className="text-dark/60 text-base md:text-lg mb-8 max-w-xl mx-auto">
-            Touren, Preise, Abfahrtszeiten, Helgoland-Tipps — unser KI-Assistent beantwortet
+            Touren, Preise, Abfahrtszeiten, Helgoland-Tipps - unser KI-Assistent beantwortet
             Ihre Fragen rund um die Uhr.
           </p>
           <button

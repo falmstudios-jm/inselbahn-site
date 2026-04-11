@@ -81,7 +81,22 @@ export async function GET(req: NextRequest) {
       }
     }
 
-    // Current time in Berlin for 2-hour cutoff
+    // Fetch online cutoff from site_settings (default 20 minutes)
+    let cutoffMinutes = 20;
+    try {
+      const { data: cutoffSetting } = await supabase
+        .from('site_settings')
+        .select('value')
+        .eq('key', 'online_cutoff_minutes')
+        .single();
+      if (cutoffSetting?.value) {
+        cutoffMinutes = parseInt(cutoffSetting.value, 10) || 20;
+      }
+    } catch {
+      // Use default if setting doesn't exist
+    }
+
+    // Current time in Berlin for cutoff
     const nowBerlin = new Date().toLocaleString('en-US', { timeZone: 'Europe/Berlin' });
     const nowDate = new Date(nowBerlin);
     const today = nowDate.toISOString().slice(0, 10);
@@ -103,12 +118,12 @@ export async function GET(req: NextRequest) {
           child_age_limit: number;
         };
 
-        // For today: flag departures less than 2 hours from now as past
+        // For today: flag departures within the cutoff window as past
         let isPast = false;
         if (date === today) {
           const [depH, depM] = dep.departure_time.split(':').map(Number);
           const depTotalMinutes = depH * 60 + depM;
-          if (depTotalMinutes < nowTotalMinutes + 120) {
+          if (depTotalMinutes < nowTotalMinutes + cutoffMinutes) {
             isPast = true;
           }
         }
