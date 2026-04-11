@@ -12,6 +12,7 @@ const navItems = [
 ];
 
 const entdeckenItems = [
+  { label: "Helgoland Tour", href: "/helgoland-tour" },
   { label: "Sehenswürdigkeiten", href: "/helgoland-sehenswuerdigkeiten" },
   { label: "Die Lange Anna", href: "/lange-anna" },
 ];
