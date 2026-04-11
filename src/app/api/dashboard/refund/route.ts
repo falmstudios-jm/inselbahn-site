@@ -2,6 +2,7 @@ import { NextResponse } from 'next/server';
 import { getSupabaseAdmin } from '@/lib/supabase-admin';
 import { getSession } from '@/lib/dashboard-auth';
 import { getStripe } from '@/lib/stripe';
+import { Resend } from 'resend';
 
 export async function POST(req: Request) {
   const session = await getSession();
@@ -121,6 +122,55 @@ export async function POST(req: Request) {
         notes: notesText,
       })
       .eq('id', booking_id);
+
+    // Send refund email if customer has a real email
+    if (booking.customer_email && !booking.customer_email.includes('walkin@')) {
+      try {
+        const resend = new Resend(process.env.RESEND_API_KEY);
+        const formattedAmount = refundAmount.toFixed(2).replace('.', ',');
+        const isOnline = booking.stripe_payment_intent_id;
+
+        await resend.emails.send({
+          from: 'Inselbahn Helgoland <buchung@helgolandbahn.de>',
+          to: booking.customer_email,
+          subject: `Erstattung ${booking.booking_reference} - ${formattedAmount} EUR`,
+          html: `<!DOCTYPE html><html><body style="font-family:Helvetica,Arial,sans-serif;margin:0;padding:0;background:#f7f7f7;">
+<table width="100%" cellpadding="0" cellspacing="0"><tr><td align="center" style="padding:40px 20px;">
+<table width="600" cellpadding="0" cellspacing="0" style="background:#fff;border-radius:12px;overflow:hidden;">
+<tr><td style="background:#F24444;padding:24px;text-align:center;">
+<h1 style="margin:0;color:#fff;font-size:18px;">INSELBAHN HELGOLAND</h1>
+</td></tr>
+<tr><td style="padding:32px 24px;">
+<h2 style="margin:0 0 16px;font-size:20px;color:#333;">Erstattung bearbeitet</h2>
+<p style="color:#555;font-size:14px;line-height:1.6;">
+Hallo ${booking.customer_name},<br><br>
+wir haben eine ${isFullRefund ? 'vollständige' : 'teilweise'} Erstattung für Ihre Buchung <strong>${booking.booking_reference}</strong> veranlasst.
+</p>
+<table width="100%" cellpadding="0" cellspacing="0" style="background:#f7f7f7;border-radius:8px;margin:20px 0;">
+<tr><td style="padding:16px;">
+<p style="margin:0 0 8px;font-size:13px;color:#888;">Erstattungsbetrag</p>
+<p style="margin:0;font-size:24px;font-weight:700;color:#333;">${formattedAmount} &euro;</p>
+</td></tr></table>
+${reason ? `<p style="color:#555;font-size:14px;">Grund: ${reason}</p>` : ''}
+<p style="color:#555;font-size:14px;line-height:1.6;">
+${isOnline ? 'Die Rückerstattung erfolgt auf Ihr ursprüngliches Zahlungsmittel und ist innerhalb von 5-10 Werktagen sichtbar.' : 'Die Erstattung wurde vor Ort veranlasst.'}
+</p>
+<p style="color:#555;font-size:14px;line-height:1.6;">
+Wir würden uns freuen, Sie bald wieder auf Helgoland begrüßen zu dürfen!
+</p>
+<a href="https://inselbahnhelgoland.vercel.app/#buchung" style="display:inline-block;background:#F24444;color:#fff;font-size:14px;font-weight:700;text-decoration:none;padding:12px 24px;border-radius:6px;margin-top:8px;">
+Neue Tour buchen
+</a>
+</td></tr>
+<tr><td style="background:#f7f7f7;padding:16px;text-align:center;border-top:1px solid #e0e0e0;">
+<p style="margin:0;font-size:11px;color:#aaa;">Helgoländer Dienstleistungs GmbH - Von-Aschen-Str. 594 - 27498 Helgoland</p>
+</td></tr></table></td></tr></table></body></html>`,
+        });
+      } catch (emailErr) {
+        console.error('Refund email failed:', emailErr);
+        // Don't fail the refund if email fails
+      }
+    }
 
     return NextResponse.json({
       success: true,
