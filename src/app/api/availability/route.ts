@@ -135,6 +135,22 @@ export async function GET(req: NextRequest) {
         const onlineRemaining = onlineCap - totalBooked;
         const physicalRemaining = tour.max_capacity - totalBooked;
 
+        // Calculate max bookable group size accounting for ghost seats
+        // Ghost seats: 0 for 1-3, +1 for 4-7, +2 for 8+
+        // So remaining 4 seats = max group of 3 (3+1ghost=4)
+        // remaining 5 = max group of 4 (4+1ghost=5)
+        // remaining 8 = max group of 7 (7+1ghost=8)
+        // remaining 10 = max group of 8 (8+2ghost=10)
+        let maxBookableGroup = Math.max(0, onlineRemaining);
+        if (onlineRemaining >= 10) {
+          maxBookableGroup = onlineRemaining - 2; // 8+ group needs 2 ghost
+        } else if (onlineRemaining >= 5) {
+          maxBookableGroup = onlineRemaining - 1; // 4-7 group needs 1 ghost
+        } else if (onlineRemaining === 4) {
+          maxBookableGroup = 3; // 4 seats = max 3 people (3+1ghost)
+        }
+        // For 1-3 remaining, no ghost seats needed, so maxBookableGroup = remaining
+
         return {
           departure_id: dep.id,
           departure_time: dep.departure_time,
@@ -145,10 +161,10 @@ export async function GET(req: NextRequest) {
           max_capacity: tour.max_capacity, // Shown on website as marketing
           online_capacity: onlineCap, // Actual online sellable
           booked: totalBooked,
-          remaining: Math.max(0, onlineRemaining), // For online customers
+          remaining: Math.max(0, maxBookableGroup), // Max bookable group (accounts for ghost seats)
           physical_remaining: Math.max(0, physicalRemaining), // For dashboard
-          available: onlineRemaining > 0,
-          online_sold_out: onlineRemaining <= 0 && physicalRemaining > 0, // Online full but walk-up possible
+          available: maxBookableGroup > 0,
+          online_sold_out: maxBookableGroup <= 0 && physicalRemaining > 0, // Online full but walk-up possible
           bookable_online: dep.bookable_online !== false,
           past: isPast,
           price_adult: tour.price_adult,
