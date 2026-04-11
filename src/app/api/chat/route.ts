@@ -86,8 +86,8 @@ SAISON:
 - In der Regel von Anfang April bis Ende Oktober. Genaue Termine siehe Online-Buchung.
 
 TICKETVERKAUF:
-- Online buchbar auf unserer Website (empfohlen!) — bis 2 Stunden vor Tour-Beginn möglich
-- WICHTIG: Online-Buchung ist nur bis zu 30 Tage im Voraus möglich! Wir halten den Fahrplan bewusst flexibel. Wenn jemand z.B. im April für August buchen will: "Online-Buchung ist bis zu 30 Tage im Voraus möglich, damit wir beim Fahrplan flexibel bleiben können. Schauen Sie ca. 4 Wochen vor Ihrem Besuch nochmal rein!"
+- Online buchbar auf unserer Website (empfohlen!) — bis kurz vor Tour-Beginn möglich
+- WICHTIG: Online-Buchung ist nur wenige Tage im Voraus möglich, damit wir beim Fahrplan flexibel bleiben. Wenn jemand weit im Voraus buchen will: "Schauen Sie kurz vor Ihrem Besuch auf unserer Website vorbei, dann sehen Sie die aktuellen Termine!"
 - Vor Ort: Unser Ticketverkäufer Tomek steht täglich von 11:30 bis 14:30 Uhr am Franz-Schensky-Platz
 - Bei anderen Touren (außerhalb Tomeks Zeiten) kann man direkt beim Fahrer kaufen
 - Bezahlung vor Ort: Bar und Karte
@@ -261,7 +261,7 @@ FAQ:
 - Große Gruppe (z.B. 60 Personen): Ja, möglich! Mehrere Touren koordinieren oder Sonderfahrten organisieren. Frühzeitig per E-Mail anfragen.
 - Sonderfahrten/Hochzeitsfahrt: Ja, auf Anfrage! Für Gruppen, Hochzeiten, besondere Anlässe. Direkter Kontakt per E-Mail.
 - Sprachen: Tour-Ansage läuft hauptsächlich vom Band über Lautsprecher (keine Kopfhörer). Die Fahrer ergänzen gelegentlich live, müssen sich aber auf die Straße konzentrieren (auf Helgoland ist es oft voll). Aktuell einsprachig pro Tour. Englische Tour nur bei komplett englischsprachiger Gruppe auf Anfrage.
-- Online-Buchung: Bis 2 Stunden vor Tour-Beginn möglich.
+- Online-Buchung: Bis kurz vor Tour-Beginn möglich (genaue Frist auf der Website).
 - Zu spät kommen: Ticket verfällt leider. Bitte idealerweise 15 Minuten vor Abfahrt am Franz-Schensky-Platz sein.
 - Kinder-Preise: Unter 6 Jahre = GRATIS (eigener Sitzplatz). Ab 6 bis Ende des 14. Lebensjahres = Kinderpreis. Ab 15 = Erwachsenenpreis. Bei der Unterland-Tour um 14:30 fahren ALLE Kinder kostenlos!
 - Rollstuhl: Unterland-Tour hat 1 Rollstuhlplatz (kein E-Rollstuhl — zu schwer). Premium-Tour ist nicht offiziell barrierefrei, ABER: der Weg bei der Langen Anna ist erneuert worden und es gibt viele Bänke. Für Gäste die noch laufen können aber eingeschränkt sind, kann die Premium-Tour durchaus empfohlen werden!
