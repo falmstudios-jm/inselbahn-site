@@ -60,13 +60,16 @@ export async function GET(req: NextRequest) {
     }
 
     // Build booking counts per departure
-    const bookingCounts = new Map<string, number>();
+    const bookingCounts = new Map<string, number>(); // total including ghost seats
+    const passengerCounts = new Map<string, number>(); // passengers only (no ghost seats)
     const wheelchairBooked = new Map<string, boolean>();
     const cancelledDepartures = new Set<string>();
     if (bookings) {
       for (const b of bookings) {
-        const current = bookingCounts.get(b.departure_id) || 0;
-        bookingCounts.set(b.departure_id, current + b.adults + b.children + (b.ghost_seats || 0) + (b.children_free || 0));
+        const total = b.adults + b.children + (b.ghost_seats || 0) + (b.children_free || 0);
+        const passengers = b.adults + b.children + (b.children_free || 0);
+        bookingCounts.set(b.departure_id, (bookingCounts.get(b.departure_id) || 0) + total);
+        passengerCounts.set(b.departure_id, (passengerCounts.get(b.departure_id) || 0) + passengers);
         if (b.wheelchair_seat) {
           wheelchairBooked.set(b.departure_id, true);
         }
@@ -129,27 +132,16 @@ export async function GET(req: NextRequest) {
         }
 
         const totalBooked = bookingCounts.get(dep.id) || 0;
-        // Online capacity = soft cap for online sales (reserve seats for walk-ups)
-        // Physical capacity = hard cap for dashboard/walk-up sales
+        // Online capacity = max sellable passengers online (e.g. 16)
+        // Physical capacity = absolute max including ghost seats (e.g. 18)
+        // Ghost seats overflow into reserve (physical - online) so they don't reduce available slots
         const onlineCap = tour.online_capacity ?? tour.max_capacity;
-        const onlineRemaining = onlineCap - totalBooked;
-        const physicalRemaining = tour.max_capacity - totalBooked;
 
-        // Calculate max bookable group size accounting for ghost seats
-        // Ghost seats: 0 for 1-3, +1 for 4-7, +2 for 8+
-        // So remaining 4 seats = max group of 3 (3+1ghost=4)
-        // remaining 5 = max group of 4 (4+1ghost=5)
-        // remaining 8 = max group of 7 (7+1ghost=8)
-        // remaining 10 = max group of 8 (8+2ghost=10)
-        let maxBookableGroup = Math.max(0, onlineRemaining);
-        if (onlineRemaining >= 10) {
-          maxBookableGroup = onlineRemaining - 2; // 8+ group needs 2 ghost
-        } else if (onlineRemaining >= 5) {
-          maxBookableGroup = onlineRemaining - 1; // 4-7 group needs 1 ghost
-        } else if (onlineRemaining === 4) {
-          maxBookableGroup = 3; // 4 seats = max 3 people (3+1ghost)
-        }
-        // For 1-3 remaining, no ghost seats needed, so maxBookableGroup = remaining
+        // Count only actual passengers (not ghost seats) against online capacity
+        // Ghost seats use the physical reserve, not online slots
+        const usedPassengers = passengerCounts.get(dep.id) || 0;
+        const onlineRemaining = onlineCap - usedPassengers;
+        const physicalRemaining = tour.max_capacity - totalBooked;
 
         return {
           departure_id: dep.id,
@@ -158,13 +150,13 @@ export async function GET(req: NextRequest) {
           tour_id: tour.id,
           tour_slug: tour.slug,
           tour_name: tour.name,
-          max_capacity: tour.max_capacity, // Shown on website as marketing
-          online_capacity: onlineCap, // Actual online sellable
-          booked: totalBooked,
-          remaining: Math.max(0, maxBookableGroup), // Max bookable group (accounts for ghost seats)
+          max_capacity: onlineCap, // Show online capacity as "max" to customers (not physical 18)
+          online_capacity: onlineCap,
+          booked: usedPassengers, // Show passenger count (not including ghost seats)
+          remaining: Math.max(0, onlineRemaining), // Actual bookable passengers
           physical_remaining: Math.max(0, physicalRemaining), // For dashboard
-          available: maxBookableGroup > 0,
-          online_sold_out: maxBookableGroup <= 0 && physicalRemaining > 0, // Online full but walk-up possible
+          available: onlineRemaining > 0,
+          online_sold_out: onlineRemaining <= 0 && physicalRemaining > 0,
           bookable_online: dep.bookable_online !== false,
           past: isPast,
           price_adult: tour.price_adult,

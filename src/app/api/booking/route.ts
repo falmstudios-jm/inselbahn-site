@@ -43,7 +43,8 @@ export async function POST(req: Request) {
 
     const tour = departure.tours;
     // Use online_capacity for online bookings (reserve seats for walk-ups)
-    const capacity: number = tour.online_capacity ?? tour.max_capacity;
+    const onlineCapacity: number = tour.online_capacity ?? tour.max_capacity;
+    const physicalCapacity: number = tour.max_capacity;
 
     // Check 2-hour cutoff for today's departures
     const nowBerlin = new Date().toLocaleString('en-US', { timeZone: 'Europe/Berlin' });
@@ -89,25 +90,36 @@ export async function POST(req: Request) {
       );
     }
 
-    const usedSeats = (existingBookings || []).reduce((sum, b) => {
+    // Count used seats: passengers separate from ghost seats
+    const usedPassengers = (existingBookings || []).reduce((sum, b) => {
+      return sum + b.adults + b.children + b.children_free;
+    }, 0);
+    const usedTotal = (existingBookings || []).reduce((sum, b) => {
       return sum + b.adults + b.children + b.children_free + (b.ghost_seats || 0);
     }, 0);
 
     // Calculate ghost seats for this booking
     const groupSize = input.adults + input.children + input.children_free;
     const ghostSeats = calculateGhostSeats(groupSize);
-    const seatsNeeded = groupSize + ghostSeats;
 
-    const remainingCapacity = capacity - usedSeats;
-    if (seatsNeeded > remainingCapacity) {
+    // Two-tier capacity check:
+    // 1. Passengers must fit within ONLINE capacity (e.g. 16)
+    // 2. Passengers + ghost seats can use up to PHYSICAL capacity (e.g. 18)
+    const remainingOnline = onlineCapacity - usedPassengers;
+    if (groupSize > remainingOnline) {
       return NextResponse.json(
         {
           error: 'Nicht genügend Plätze verfügbar',
-          available: Math.max(0, remainingCapacity),
+          available: Math.max(0, remainingOnline),
         },
         { status: 409 }
       );
     }
+
+    // Ghost seats can overflow into reserve seats (up to physical max)
+    // If ghost seats don't fully fit, reduce them (still allow the booking)
+    const remainingPhysical = physicalCapacity - usedTotal;
+    const effectiveGhostSeats = Math.min(ghostSeats, Math.max(0, remainingPhysical - groupSize));
 
     // Calculate total price
     const totalPrice = calculateTotal(
@@ -184,7 +196,7 @@ export async function POST(req: Request) {
         adults: input.adults,
         children: input.children,
         children_free: input.children_free,
-        ghost_seats: ghostSeats,
+        ghost_seats: effectiveGhostSeats,
         customer_name: input.customer_name,
         customer_email: input.customer_email,
         customer_phone: input.customer_phone || null,
