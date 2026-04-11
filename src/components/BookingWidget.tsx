@@ -1670,15 +1670,15 @@ export default function BookingWidget({ tours: supabaseTours }: BookingWidgetPro
                 <div className="max-w-md mx-auto bg-white rounded-2xl p-6 md:p-8 border border-gray-100 shadow-sm space-y-4">
                   <div>
                     <label className="block text-sm font-medium text-dark mb-1.5">Name</label>
-                    <input type="text" value={contactName} onChange={(e) => setContactName(e.target.value)} placeholder="Max Mustermann" className="w-full px-4 py-3 rounded-xl border border-gray-200 focus:border-dark focus:outline-none transition-colors bg-transparent" />
+                    <input type="text" value={contactName} onChange={(e) => setContactName(e.target.value)} placeholder="Klaus Störtebeker" className="w-full px-4 py-3 rounded-xl border border-gray-200 focus:border-dark focus:outline-none transition-colors bg-transparent" />
                   </div>
                   <div>
                     <label className="block text-sm font-medium text-dark mb-1.5">E-Mail</label>
-                    <input type="email" value={contactEmail} onChange={(e) => setContactEmail(e.target.value)} placeholder="max@beispiel.de" className="w-full px-4 py-3 rounded-xl border border-gray-200 focus:border-dark focus:outline-none transition-colors bg-transparent" />
+                    <input type="email" value={contactEmail} onChange={(e) => setContactEmail(e.target.value)} placeholder="klaus@likedeeler.de" className="w-full px-4 py-3 rounded-xl border border-gray-200 focus:border-dark focus:outline-none transition-colors bg-transparent" />
                   </div>
                   <div>
                     <label className="block text-sm font-medium text-dark mb-1.5">Telefon <span className="font-normal text-dark/40">(nur bei Problemen, keine Werbung)</span></label>
-                    <input type="tel" value={contactPhone} onChange={(e) => setContactPhone(e.target.value)} placeholder="+49 170 1234567" className="w-full px-4 py-3 rounded-xl border border-gray-200 focus:border-dark focus:outline-none transition-colors bg-transparent" />
+                    <input type="tel" value={contactPhone} onChange={(e) => setContactPhone(e.target.value)} placeholder="+49 4725 1401" className="w-full px-4 py-3 rounded-xl border border-gray-200 focus:border-dark focus:outline-none transition-colors bg-transparent" />
                   </div>
                   {/* Wichtige Hinweise */}
                   <div className="pt-2">
