@@ -49,11 +49,11 @@ export async function GET(req: NextRequest) {
     for (const b of bookings || []) {
       const current = bookingCounts.get(b.departure_id) || { total: 0, online: 0, vor_ort: 0 };
       const passengers = b.adults + b.children + (b.children_free || 0);
-      const seatsWithGhost = passengers + (b.ghost_seats || 0);
-      current.total += seatsWithGhost;
+      current.total += passengers; // Show PASSENGERS only (not ghost seats)
 
-      // Online = stripe/null, Vor Ort = cash/sumup/manual_entry
-      if (!b.payment_method || b.payment_method === 'stripe') {
+      // Online = online/stripe/gift_card/null, Vor Ort = cash/sumup/manual_entry
+      const isOnline = !b.payment_method || b.payment_method === 'online' || b.payment_method === 'stripe' || b.payment_method === 'gift_card';
+      if (isOnline) {
         current.online += passengers;
       } else {
         current.vor_ort += passengers;
