@@ -219,9 +219,9 @@ export default function TourCards({ tours }: TourCardsProps) {
       </div>
 
       {/* ===== PHOTO GALLERY ===== */}
-      <div className="overflow-hidden py-4">
+      <div className="overflow-hidden py-4 max-w-[100vw]">
         {/* Row 1 */}
-        <div className="flex gap-2 mb-2">
+        <div className="flex gap-2 mb-2 overflow-hidden">
           <div
             className="flex gap-2"
             style={{
@@ -232,7 +232,7 @@ export default function TourCards({ tours }: TourCardsProps) {
             {[...galleryRow1, ...galleryRow1, ...galleryRow1, ...galleryRow1].map((photo, i) => (
               <div
                 key={i}
-                className="flex-shrink-0 w-[440px] md:w-[560px] h-[260px] md:h-[320px] rounded-lg overflow-hidden"
+                className="flex-shrink-0 w-[280px] sm:w-[440px] md:w-[560px] h-[180px] sm:h-[260px] md:h-[320px] rounded-lg overflow-hidden"
               >
                 <Image
                   src={photo.src}
@@ -246,7 +246,7 @@ export default function TourCards({ tours }: TourCardsProps) {
           </div>
         </div>
         {/* Row 2 */}
-        <div className="flex gap-2">
+        <div className="flex gap-2 overflow-hidden">
           <div
             className="flex gap-2"
             style={{
@@ -257,7 +257,7 @@ export default function TourCards({ tours }: TourCardsProps) {
             {[...galleryRow2, ...galleryRow2, ...galleryRow2, ...galleryRow2].map((photo, i) => (
               <div
                 key={i}
-                className="flex-shrink-0 w-[360px] md:w-[440px] h-[240px] md:h-[280px] rounded-lg overflow-hidden"
+                className="flex-shrink-0 w-[240px] sm:w-[360px] md:w-[440px] h-[160px] sm:h-[240px] md:h-[280px] rounded-lg overflow-hidden"
               >
                 <Image
                   src={photo.src}

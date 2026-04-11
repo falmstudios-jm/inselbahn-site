@@ -89,11 +89,15 @@
 
 html {
   scroll-behavior: smooth;
+  overflow-x: hidden;
+  -webkit-text-size-adjust: 100%;
 }
 
 body {
   background-color: #FFFFFF;
   color: #333333;
+  overflow-x: hidden;
+  -webkit-overflow-scrolling: touch;
 }
 
 a, button, [role="button"], input[type="submit"], input[type="button"], select, summary {

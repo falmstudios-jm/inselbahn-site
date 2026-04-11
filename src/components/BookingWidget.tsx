@@ -90,7 +90,7 @@ const tourOptions = [
 
 const DEFAULT_MAX_FUTURE_DAYS = 30;
 
-const STEPS = ["Datum", "Tour", "Uhrzeit", "Personen", "Rabatt", "Kontakt", "Zahlung"];
+const STEPS = ["Datum", "Tour", "Zeit", "Pers.", "Rabatt", "Kontakt", "Zahlung"];
 
 const COUNTRY_OPTIONS = [
   "Deutschland",
@@ -833,12 +833,12 @@ export default function BookingWidget({ tours: supabaseTours }: BookingWidgetPro
           </h2>
 
           {/* Progress bar */}
-          <div className="max-w-2xl mx-auto mb-10">
-            <div className="flex items-center justify-between mb-2">
+          <div className="max-w-2xl mx-auto mb-10 overflow-x-auto scrollbar-hide">
+            <div className="flex items-center justify-between mb-2 min-w-0">
               {STEPS.map((s, i) => (
                 <div key={s} className="flex items-center">
                   <div
-                    className={`w-8 h-8 rounded-full flex items-center justify-center text-sm font-medium transition-colors ${
+                    className={`w-7 h-7 sm:w-8 sm:h-8 rounded-full flex items-center justify-center text-xs sm:text-sm font-medium transition-colors flex-shrink-0 ${
                       i < step
                         ? "bg-primary text-white"
                         : i === step
@@ -847,7 +847,7 @@ export default function BookingWidget({ tours: supabaseTours }: BookingWidgetPro
                     }`}
                   >
                     {i < step ? (
-                      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round"><polyline points="20 6 9 17 4 12" /></svg>
+                      <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round"><polyline points="20 6 9 17 4 12" /></svg>
                     ) : (
                       i + 1
                     )}
@@ -866,7 +866,7 @@ export default function BookingWidget({ tours: supabaseTours }: BookingWidgetPro
               {STEPS.map((s, i) => (
                 <p
                   key={s}
-                  className={`text-xs ${
+                  className={`text-[10px] sm:text-xs text-center ${
                     i <= step ? "text-dark" : "text-dark/30"
                   }`}
                 >
@@ -1184,7 +1184,7 @@ export default function BookingWidget({ tours: supabaseTours }: BookingWidgetPro
                         }}
                         className={`w-full text-left rounded-2xl transition-all border-2 relative overflow-hidden ${
                           isDisabledTour
-                            ? "border-gray-100 shadow-sm opacity-60 cursor-not-allowed grayscale"
+                            ? "border-gray-200 shadow-sm cursor-default"
                             : isSelected
                               ? "border-primary shadow-lg scale-[1.01]"
                               : "border-gray-100 shadow-sm hover:shadow-md hover:border-gray-200"

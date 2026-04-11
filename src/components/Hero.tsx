@@ -52,17 +52,15 @@ export default function Hero() {
         <div className="absolute inset-0 bg-gradient-to-b from-black/30 via-black/40 to-black/60" />
 
         {/* Content - LEFT aligned */}
-        <div className="absolute inset-0 flex flex-col justify-center px-8 md:px-14 lg:px-20 max-w-7xl mx-auto text-white">
-          <h1 className="text-[32px] md:text-[48px] lg:text-[60px] font-bold leading-[1.1] mb-6 max-w-3xl">
-            Starten Sie Ihr
-            <br />
-            Helgoland-Abenteuer mit...
+        <div className="absolute inset-0 flex flex-col justify-center px-5 sm:px-8 md:px-14 lg:px-20 max-w-7xl mx-auto text-white">
+          <h1 className="text-[26px] md:text-[42px] lg:text-[52px] font-bold leading-[1.1] mb-4 md:mb-6">
+            Starten Sie Ihr Helgoland-Abenteuer mit...
           </h1>
 
           {/* Rotating text - larger, italic style */}
-          <div className="h-16 md:h-14 flex items-start overflow-hidden">
+          <div className="h-20 sm:h-14 md:h-12 flex items-start overflow-hidden">
             <p
-              className={`text-[18px] md:text-[24px] lg:text-[28px] text-white/90 italic font-light max-w-2xl transition-all duration-500 ease-out ${
+              className={`text-[16px] md:text-[22px] lg:text-[26px] text-white/90 italic font-light max-w-2xl transition-all duration-500 ease-out ${
                 isVisible
                   ? "opacity-100 translate-y-0"
                   : "opacity-0 translate-y-4"

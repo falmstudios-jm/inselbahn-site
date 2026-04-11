@@ -119,7 +119,7 @@ export default function RootLayout({
           dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
         />
       </head>
-      <body className="min-h-full flex flex-col font-[family-name:var(--font-montserrat)]">
+      <body className="min-h-full flex flex-col font-[family-name:var(--font-montserrat)] overflow-x-hidden">
         {children}
         <Script
           defer

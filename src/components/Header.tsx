@@ -118,7 +118,7 @@ export default function Header() {
         {/* Mobile hamburger */}
         <button
           onClick={() => setMobileOpen(!mobileOpen)}
-          className="md:hidden p-2 text-dark"
+          className="md:hidden p-3 -mr-2 min-w-[44px] min-h-[44px] flex items-center justify-center text-dark"
           aria-label="Menü öffnen"
         >
           <svg
@@ -155,7 +155,7 @@ export default function Header() {
               key={item.label}
               href={item.href}
               onClick={() => setMobileOpen(false)}
-              className="block py-2.5 text-dark/70 hover:text-dark text-sm font-medium transition-colors"
+              className="block py-3 min-h-[44px] flex items-center text-dark/70 hover:text-dark text-base font-medium transition-colors"
             >
               {item.label}
             </Link>
@@ -169,7 +169,7 @@ export default function Header() {
                 key={item.label}
                 href={item.href}
                 onClick={() => setMobileOpen(false)}
-                className="block py-2.5 text-dark/70 hover:text-dark text-sm font-medium transition-colors pl-3"
+                className="block py-3 min-h-[44px] flex items-center text-dark/70 hover:text-dark text-base font-medium transition-colors pl-3"
               >
                 {item.label}
               </Link>
@@ -178,7 +178,7 @@ export default function Header() {
           <Link
             href="/#buchung"
             onClick={() => setMobileOpen(false)}
-            className="block py-3 mt-2 bg-primary text-white text-center text-sm font-semibold rounded-xl hover:bg-primary/90 transition-colors"
+            className="block py-3.5 mt-2 bg-primary text-white text-center text-base font-semibold rounded-xl hover:bg-primary/90 transition-colors min-h-[44px]"
           >
             Jetzt buchen
           </Link>
