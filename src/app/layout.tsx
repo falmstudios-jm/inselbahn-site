@@ -12,9 +12,9 @@ const montserrat = Montserrat({
 
 export const metadata: Metadata = {
   metadataBase: new URL("https://www.helgolandbahn.de"),
-  title: "Inselbahn Helgoland | Alle Highlights in kurzer Zeit - Top bewertet",
+  title: "Inselbahn Helgoland | Alle Highlights in kurzer Zeit",
   description:
-    "Geführte Inselrundfahrten auf Helgoland. Alle Sehenswürdigkeiten bequem erleben - Unterland-Tour ab 11 EUR, Premium-Tour ab 22 EUR mit Halt an der Langen Anna. Jetzt online buchen!",
+    "Geführte Inselrundfahrten auf Helgoland. Unterland-Tour ab 11 EUR, Premium-Tour ab 22 EUR mit Halt an der Langen Anna. Online buchen!",
   keywords: [
     "Helgoland",
     "Inselbahn",

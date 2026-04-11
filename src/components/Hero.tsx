@@ -55,9 +55,9 @@ export default function Hero() {
           {/* Content - LEFT aligned */}
           <div className="absolute inset-0 flex flex-col justify-center px-8 md:px-14 lg:px-20 text-white">
             <h1 className="text-[28px] md:text-[44px] lg:text-[52px] font-bold leading-[1.15] mb-4 max-w-2xl">
-              Starten Sie Ihr
+              Geführte Inselrundfahrten
               <br />
-              Helgoland-Abenteuer mit...
+              auf Helgoland
             </h1>
 
             {/* Rotating text */}
