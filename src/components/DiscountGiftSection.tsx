@@ -144,7 +144,7 @@ export default function DiscountGiftSection({
             <button
               type="button"
               onClick={removeGiftCard}
-              className="text-dark/40 hover:text-dark/70 transition-colors"
+              className="text-dark/40 hover:text-dark/70 transition-colors p-2 min-w-[44px] min-h-[44px] flex items-center justify-center -mr-2"
               aria-label="Gutschein entfernen"
             >
               <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
@@ -169,7 +169,7 @@ export default function DiscountGiftSection({
               type="button"
               onClick={redeemGiftCard}
               disabled={giftCardLoading || !giftCardCode.trim()}
-              className="px-4 py-2.5 rounded-lg bg-dark text-white text-sm font-medium hover:bg-dark/90 disabled:opacity-40 disabled:cursor-not-allowed transition-all whitespace-nowrap"
+              className="px-4 py-2.5 min-h-[44px] rounded-lg bg-dark text-white text-sm font-medium hover:bg-dark/90 disabled:opacity-40 disabled:cursor-not-allowed transition-all whitespace-nowrap"
             >
               {giftCardLoading ? '\u2026' : 'Einl\u00F6sen'}
             </button>
@@ -206,7 +206,7 @@ export default function DiscountGiftSection({
             <button
               type="button"
               onClick={removeDiscount}
-              className="text-dark/40 hover:text-dark/70 transition-colors"
+              className="text-dark/40 hover:text-dark/70 transition-colors p-2 min-w-[44px] min-h-[44px] flex items-center justify-center -mr-2"
               aria-label="Rabattcode entfernen"
             >
               <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
@@ -231,7 +231,7 @@ export default function DiscountGiftSection({
               type="button"
               onClick={redeemDiscount}
               disabled={discountLoading || !discountCode.trim()}
-              className="px-4 py-2.5 rounded-lg bg-dark text-white text-sm font-medium hover:bg-dark/90 disabled:opacity-40 disabled:cursor-not-allowed transition-all whitespace-nowrap"
+              className="px-4 py-2.5 min-h-[44px] rounded-lg bg-dark text-white text-sm font-medium hover:bg-dark/90 disabled:opacity-40 disabled:cursor-not-allowed transition-all whitespace-nowrap"
             >
               {discountLoading ? '\u2026' : 'Einl\u00F6sen'}
             </button>

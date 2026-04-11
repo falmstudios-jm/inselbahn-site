@@ -159,7 +159,7 @@ function TourCard({ tour, onBook }: { tour: Tour; onBook: (tourSlug: string) => 
       <button
         onClick={() => onBook(tour.slug)}
         data-tour={tour.slug}
-        className="w-full py-3.5 rounded-xl bg-primary text-white font-semibold text-base hover:bg-primary/90 transition-colors"
+        className="w-full py-3.5 min-h-[44px] rounded-xl bg-primary text-white font-semibold text-base hover:bg-primary/90 transition-colors"
       >
         {tour.name} buchen
       </button>

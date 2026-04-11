@@ -37,8 +37,8 @@ export default function GettingThere() {
             </p>
 
             {/* Walking times table */}
-            <div className="bg-surface rounded-2xl overflow-hidden">
-              <table className="w-full text-sm">
+            <div className="bg-surface rounded-2xl overflow-hidden overflow-x-auto">
+              <table className="w-full text-xs sm:text-sm">
                 <thead>
                   <tr className="border-b border-dark/10">
                     <th className="text-left py-3 px-4 font-semibold text-dark">Fähre</th>
@@ -76,7 +76,7 @@ export default function GettingThere() {
             href="https://maps.app.goo.gl/NM5cejH96LjhS8n28"
             target="_blank"
             rel="noopener noreferrer"
-            className="inline-flex items-center gap-2.5 border border-dark/20 text-dark rounded-full px-6 py-2.5 font-semibold text-sm hover:bg-dark/5 transition-colors"
+            className="inline-flex items-center gap-2.5 border border-dark/20 text-dark rounded-full px-6 py-3 min-h-[44px] font-semibold text-sm hover:bg-dark/5 transition-colors"
           >
             <Image
               src="/images/google-maps-logo.svg"

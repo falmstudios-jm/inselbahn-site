@@ -1017,12 +1017,12 @@ export default function BookingWidget({ tours: supabaseTours }: BookingWidgetPro
         </div>
 
         {/* Progress bar — completed steps use primary color */}
-        <div className="max-w-2xl mx-auto mb-10">
-          <div className="flex items-center justify-between mb-2">
+        <div className="max-w-2xl mx-auto mb-10 overflow-x-auto scrollbar-hide">
+          <div className="flex items-center justify-between mb-2 min-w-0">
             {STEPS.map((s, i) => (
               <div key={s} className="flex items-center">
                 <div
-                  className={`w-8 h-8 rounded-full flex items-center justify-center text-sm font-medium transition-colors ${
+                  className={`w-7 h-7 sm:w-8 sm:h-8 rounded-full flex items-center justify-center text-xs sm:text-sm font-medium transition-colors flex-shrink-0 ${
                     i < step
                       ? "bg-primary text-white"
                       : i === step
@@ -1031,7 +1031,7 @@ export default function BookingWidget({ tours: supabaseTours }: BookingWidgetPro
                   }`}
                 >
                   {i < step ? (
-                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round"><polyline points="20 6 9 17 4 12" /></svg>
+                    <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round"><polyline points="20 6 9 17 4 12" /></svg>
                   ) : (
                     i + 1
                   )}
@@ -1050,7 +1050,7 @@ export default function BookingWidget({ tours: supabaseTours }: BookingWidgetPro
             {STEPS.map((s, i) => (
               <p
                 key={s}
-                className={`text-xs ${
+                className={`text-[10px] sm:text-xs text-center ${
                   i <= step ? "text-dark" : "text-dark/30"
                 }`}
               >
@@ -1490,9 +1490,9 @@ export default function BookingWidget({ tours: supabaseTours }: BookingWidgetPro
                       <p className="text-sm text-dark/50">{adultPrice.toFixed(2).replace(".", ",")}&nbsp;&euro; pro Person</p>
                     </div>
                     <div className="flex items-center gap-4">
-                      <button onClick={() => setAdults(Math.max(1, adults - 1))} className="w-10 h-10 rounded-full bg-dark/5 flex items-center justify-center text-dark hover:bg-dark/10 transition-colors text-lg">&minus;</button>
+                      <button onClick={() => setAdults(Math.max(1, adults - 1))} className="w-11 h-11 rounded-full bg-dark/5 flex items-center justify-center text-dark hover:bg-dark/10 transition-colors text-lg">&minus;</button>
                       <span className="text-xl font-bold w-6 text-center">{adults}</span>
-                      <button onClick={() => canAddMore && setAdults(adults + 1)} className={`w-10 h-10 rounded-full flex items-center justify-center transition-colors text-lg ${canAddMore ? "bg-dark/5 text-dark hover:bg-dark/10" : "bg-dark/5 text-dark/20 cursor-not-allowed"}`}>+</button>
+                      <button onClick={() => canAddMore && setAdults(adults + 1)} className={`w-11 h-11 rounded-full flex items-center justify-center transition-colors text-lg ${canAddMore ? "bg-dark/5 text-dark hover:bg-dark/10" : "bg-dark/5 text-dark/20 cursor-not-allowed"}`}>+</button>
                     </div>
                   </div>
 
@@ -1503,9 +1503,9 @@ export default function BookingWidget({ tours: supabaseTours }: BookingWidgetPro
                       <p className="text-sm text-dark/50">{childPrice.toFixed(2).replace(".", ",")}&nbsp;&euro; pro Kind</p>
                     </div>
                     <div className="flex items-center gap-4">
-                      <button onClick={() => setChildren(Math.max(0, children - 1))} className="w-10 h-10 rounded-full bg-dark/5 flex items-center justify-center text-dark hover:bg-dark/10 transition-colors text-lg">&minus;</button>
+                      <button onClick={() => setChildren(Math.max(0, children - 1))} className="w-11 h-11 rounded-full bg-dark/5 flex items-center justify-center text-dark hover:bg-dark/10 transition-colors text-lg">&minus;</button>
                       <span className="text-xl font-bold w-6 text-center">{children}</span>
-                      <button onClick={() => canAddMore && setChildren(children + 1)} className={`w-10 h-10 rounded-full flex items-center justify-center transition-colors text-lg ${canAddMore ? "bg-dark/5 text-dark hover:bg-dark/10" : "bg-dark/5 text-dark/20 cursor-not-allowed"}`}>+</button>
+                      <button onClick={() => canAddMore && setChildren(children + 1)} className={`w-11 h-11 rounded-full flex items-center justify-center transition-colors text-lg ${canAddMore ? "bg-dark/5 text-dark hover:bg-dark/10" : "bg-dark/5 text-dark/20 cursor-not-allowed"}`}>+</button>
                     </div>
                   </div>
 
@@ -1516,9 +1516,9 @@ export default function BookingWidget({ tours: supabaseTours }: BookingWidgetPro
                       <p className="text-sm text-dark/50">kostenlos</p>
                     </div>
                     <div className="flex items-center gap-4">
-                      <button onClick={() => setChildrenFree(Math.max(0, childrenFree - 1))} className="w-10 h-10 rounded-full bg-dark/5 flex items-center justify-center text-dark hover:bg-dark/10 transition-colors text-lg">&minus;</button>
+                      <button onClick={() => setChildrenFree(Math.max(0, childrenFree - 1))} className="w-11 h-11 rounded-full bg-dark/5 flex items-center justify-center text-dark hover:bg-dark/10 transition-colors text-lg">&minus;</button>
                       <span className="text-xl font-bold w-6 text-center">{childrenFree}</span>
-                      <button onClick={() => canAddMore && setChildrenFree(childrenFree + 1)} className={`w-10 h-10 rounded-full flex items-center justify-center transition-colors text-lg ${canAddMore ? "bg-dark/5 text-dark hover:bg-dark/10" : "bg-dark/5 text-dark/20 cursor-not-allowed"}`}>+</button>
+                      <button onClick={() => canAddMore && setChildrenFree(childrenFree + 1)} className={`w-11 h-11 rounded-full flex items-center justify-center transition-colors text-lg ${canAddMore ? "bg-dark/5 text-dark hover:bg-dark/10" : "bg-dark/5 text-dark/20 cursor-not-allowed"}`}>+</button>
                     </div>
                   </div>
 
@@ -1539,9 +1539,9 @@ export default function BookingWidget({ tours: supabaseTours }: BookingWidgetPro
                           <p className="text-sm text-dark/50">{selectedSlot ? `${Number(selectedSlot.price_adult).toFixed(2).replace('.', ',')} €` : ''}</p>
                         </div>
                         <div className="flex items-center gap-4">
-                          <button onClick={() => { setWheelchairAdult(0); setWheelchairSeat(wheelchairChild > 0); }} disabled={wheelchairAdult === 0} className={`w-10 h-10 rounded-full flex items-center justify-center transition-colors text-lg ${wheelchairAdult > 0 ? "bg-dark/5 text-dark hover:bg-dark/10" : "bg-dark/5 text-dark/20 cursor-not-allowed"}`}>&minus;</button>
+                          <button onClick={() => { setWheelchairAdult(0); setWheelchairSeat(wheelchairChild > 0); }} disabled={wheelchairAdult === 0} className={`w-11 h-11 rounded-full flex items-center justify-center transition-colors text-lg ${wheelchairAdult > 0 ? "bg-dark/5 text-dark hover:bg-dark/10" : "bg-dark/5 text-dark/20 cursor-not-allowed"}`}>&minus;</button>
                           <span className="text-xl font-bold w-6 text-center">{wheelchairAdult}</span>
-                          <button onClick={() => { if (wheelchairAvailable && wheelchairAdult + wheelchairChild < 1) { setWheelchairAdult(1); setWheelchairChild(0); setWheelchairSeat(true); } }} disabled={!wheelchairAvailable || wheelchairAdult + wheelchairChild >= 1} className={`w-10 h-10 rounded-full flex items-center justify-center transition-colors text-lg ${wheelchairAvailable && wheelchairAdult + wheelchairChild < 1 ? "bg-dark/5 text-dark hover:bg-dark/10" : "bg-dark/5 text-dark/20 cursor-not-allowed"}`}>+</button>
+                          <button onClick={() => { if (wheelchairAvailable && wheelchairAdult + wheelchairChild < 1) { setWheelchairAdult(1); setWheelchairChild(0); setWheelchairSeat(true); } }} disabled={!wheelchairAvailable || wheelchairAdult + wheelchairChild >= 1} className={`w-11 h-11 rounded-full flex items-center justify-center transition-colors text-lg ${wheelchairAvailable && wheelchairAdult + wheelchairChild < 1 ? "bg-dark/5 text-dark hover:bg-dark/10" : "bg-dark/5 text-dark/20 cursor-not-allowed"}`}>+</button>
                         </div>
                       </div>
                       {/* Wheelchair Child */}
@@ -1551,9 +1551,9 @@ export default function BookingWidget({ tours: supabaseTours }: BookingWidgetPro
                           <p className="text-sm text-dark/50">{selectedSlot ? `${Number(selectedSlot.price_child).toFixed(2).replace('.', ',')} €` : ''}</p>
                         </div>
                         <div className="flex items-center gap-4">
-                          <button onClick={() => { setWheelchairChild(0); setWheelchairSeat(wheelchairAdult > 0); }} disabled={wheelchairChild === 0} className={`w-10 h-10 rounded-full flex items-center justify-center transition-colors text-lg ${wheelchairChild > 0 ? "bg-dark/5 text-dark hover:bg-dark/10" : "bg-dark/5 text-dark/20 cursor-not-allowed"}`}>&minus;</button>
+                          <button onClick={() => { setWheelchairChild(0); setWheelchairSeat(wheelchairAdult > 0); }} disabled={wheelchairChild === 0} className={`w-11 h-11 rounded-full flex items-center justify-center transition-colors text-lg ${wheelchairChild > 0 ? "bg-dark/5 text-dark hover:bg-dark/10" : "bg-dark/5 text-dark/20 cursor-not-allowed"}`}>&minus;</button>
                           <span className="text-xl font-bold w-6 text-center">{wheelchairChild}</span>
-                          <button onClick={() => { if (wheelchairAvailable && wheelchairAdult + wheelchairChild < 1) { setWheelchairChild(1); setWheelchairAdult(0); setWheelchairSeat(true); } }} disabled={!wheelchairAvailable || wheelchairAdult + wheelchairChild >= 1} className={`w-10 h-10 rounded-full flex items-center justify-center transition-colors text-lg ${wheelchairAvailable && wheelchairAdult + wheelchairChild < 1 ? "bg-dark/5 text-dark hover:bg-dark/10" : "bg-dark/5 text-dark/20 cursor-not-allowed"}`}>+</button>
+                          <button onClick={() => { if (wheelchairAvailable && wheelchairAdult + wheelchairChild < 1) { setWheelchairChild(1); setWheelchairAdult(0); setWheelchairSeat(true); } }} disabled={!wheelchairAvailable || wheelchairAdult + wheelchairChild >= 1} className={`w-11 h-11 rounded-full flex items-center justify-center transition-colors text-lg ${wheelchairAvailable && wheelchairAdult + wheelchairChild < 1 ? "bg-dark/5 text-dark hover:bg-dark/10" : "bg-dark/5 text-dark/20 cursor-not-allowed"}`}>+</button>
                         </div>
                       </div>
                     </>
@@ -1838,11 +1838,11 @@ export default function BookingWidget({ tours: supabaseTours }: BookingWidgetPro
         </div>
 
         {/* Navigation buttons */}
-        <div className="max-w-2xl mx-auto flex items-center justify-between mt-8">
+        <div className="max-w-2xl mx-auto flex items-center justify-between mt-8 gap-4">
           <button
             onClick={handleBack}
             disabled={step === 0}
-            className={`px-6 py-3 rounded-full font-medium transition-colors ${
+            className={`px-5 sm:px-6 py-3 min-h-[44px] rounded-full font-medium transition-colors ${
               step === 0 ? "text-dark/20 cursor-not-allowed" : "text-dark hover:bg-dark/5"
             }`}
           >
@@ -1851,7 +1851,7 @@ export default function BookingWidget({ tours: supabaseTours }: BookingWidgetPro
           <button
             onClick={handleNext}
             disabled={!canProceed}
-            className={`px-8 py-3 rounded-full font-semibold transition-colors flex items-center gap-2 ${
+            className={`px-6 sm:px-8 py-3 min-h-[44px] rounded-full font-semibold transition-colors flex items-center justify-center gap-2 ${
               canProceed
                 ? "bg-dark text-white hover:bg-dark/85"
                 : "bg-dark/10 text-dark/30 cursor-not-allowed"

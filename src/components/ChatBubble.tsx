@@ -94,7 +94,7 @@ export default function ChatBubble() {
 
       {/* Chat panel */}
       {open && (
-        <div className="fixed bottom-0 right-0 md:bottom-6 md:right-6 z-50 w-full md:w-[400px] h-[100dvh] md:h-[560px] bg-white md:rounded-2xl shadow-2xl border border-gray-200 flex flex-col overflow-hidden">
+        <div className="fixed bottom-0 right-0 md:bottom-6 md:right-6 z-50 w-full md:w-[400px] h-[100dvh] md:h-[560px] bg-white md:rounded-2xl shadow-2xl border border-gray-200 flex flex-col overflow-hidden" style={{ WebkitOverflowScrolling: 'touch' }}>
           {/* Header */}
           <div className="flex items-center justify-between px-5 py-4 border-b border-gray-100 bg-white shrink-0">
             <div className="flex items-center gap-3">
@@ -110,7 +110,7 @@ export default function ChatBubble() {
             </div>
             <button
               onClick={() => setOpen(false)}
-              className="w-8 h-8 rounded-full hover:bg-gray-100 flex items-center justify-center transition-colors"
+              className="w-11 h-11 rounded-full hover:bg-gray-100 flex items-center justify-center transition-colors"
               aria-label="Chat schließen"
             >
               <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
@@ -220,7 +220,7 @@ export default function ChatBubble() {
                 <button
                   onClick={() => sendMessage(input)}
                   disabled={loading || !input.trim()}
-                  className="bg-primary text-white w-10 h-10 rounded-full flex items-center justify-center shrink-0 hover:bg-primary/90 transition-colors disabled:opacity-40"
+                  className="bg-primary text-white w-11 h-11 rounded-full flex items-center justify-center shrink-0 hover:bg-primary/90 transition-colors disabled:opacity-40"
                 >
                   <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
                     <line x1="22" y1="2" x2="11" y2="13" />

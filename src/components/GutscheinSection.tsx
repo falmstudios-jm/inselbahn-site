@@ -60,7 +60,7 @@ export default function GutscheinSection() {
 
                 <Link
                   href="/gutschein"
-                  className="block w-full text-center py-3 rounded-xl bg-primary text-white font-semibold text-sm hover:bg-primary/90 transition-colors"
+                  className="block w-full text-center py-3.5 min-h-[44px] flex items-center justify-center rounded-xl bg-primary text-white font-semibold text-sm hover:bg-primary/90 transition-colors"
                 >
                   Jetzt schenken
                 </Link>

@@ -98,7 +98,7 @@ export default function FAQ() {
               >
                 <button
                   onClick={() => toggle(i)}
-                  className="w-full flex items-center gap-3 p-4 md:p-5 text-left"
+                  className="w-full flex items-center gap-3 p-4 md:p-5 text-left min-h-[44px]"
                 >
                   {/* Red circle bullet */}
                   <span className="flex-shrink-0 w-3 h-3 rounded-full bg-primary" />

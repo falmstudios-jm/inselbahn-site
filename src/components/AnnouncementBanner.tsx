@@ -63,14 +63,14 @@ export default function AnnouncementBanner() {
 
   return (
     <div className={`fixed bottom-0 left-0 right-0 z-50 ${bgClass} animate-slide-up`}>
-      <div className="max-w-7xl mx-auto px-5 md:px-10 py-3 flex items-center justify-center gap-3 text-sm md:text-base relative">
-        <div className="text-center pr-8">
-          <p className="font-bold">{announcement.message}</p>
+      <div className="max-w-7xl mx-auto px-5 md:px-10 py-3 flex items-center justify-center gap-3 text-xs sm:text-sm md:text-base relative">
+        <div className="text-center pr-10 sm:pr-8">
+          <p className="font-bold leading-tight">{announcement.message}</p>
         </div>
         <button
           onClick={dismiss}
           aria-label="Schließen"
-          className="absolute right-4 top-1/2 -translate-y-1/2 p-1.5 hover:bg-white/20 rounded-full transition-colors"
+          className="absolute right-2 sm:right-4 top-1/2 -translate-y-1/2 p-2.5 min-w-[44px] min-h-[44px] flex items-center justify-center hover:bg-white/20 rounded-full transition-colors"
         >
           <svg
             width="18"

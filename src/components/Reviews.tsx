@@ -69,7 +69,7 @@ export default function Reviews() {
           </h2>
 
           {/* Google Reviews header card */}
-          <div className="inline-flex items-center gap-4 bg-white rounded-2xl border border-gray-100 shadow-sm px-6 py-4 mb-10">
+          <div className="inline-flex flex-wrap items-center justify-center gap-3 sm:gap-4 bg-white rounded-2xl border border-gray-100 shadow-sm px-4 sm:px-6 py-4 mb-10 max-w-full">
             <Image
               src="/images/google-maps-logo.svg"
               alt="Google"
@@ -94,7 +94,7 @@ export default function Reviews() {
               href="https://g.page/r/CeEvXFmlaLMwEBE/review"
               target="_blank"
               rel="noopener noreferrer"
-              className="ml-4 bg-primary text-white text-xs font-semibold px-4 py-2 rounded-full hover:bg-primary/90 transition-colors whitespace-nowrap"
+              className="bg-primary text-white text-xs font-semibold px-4 py-2.5 min-h-[44px] flex items-center rounded-full hover:bg-primary/90 transition-colors whitespace-nowrap"
             >
               Bewerten Sie uns auf Google
             </a>
