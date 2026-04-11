@@ -82,8 +82,8 @@ export default function FAQ() {
           {/* Left: Large photo */}
           <div className="relative w-full aspect-[3/4] md:aspect-auto md:h-full rounded-2xl overflow-hidden min-h-[400px]">
             <Image
-              src="/images/helgolandbahn-photo-1.jpg"
-              alt="Inselbahn vor bunten Häusern"
+              src="/images/premium-20250807_120428.jpg"
+              alt="Premium-Tour Sitzplätze"
               fill
               className="object-cover"
             />

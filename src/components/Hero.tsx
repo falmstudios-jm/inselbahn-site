@@ -74,32 +74,6 @@ export default function Hero() {
             </div>
           </div>
 
-          {/* Social proof frosted glass pill - BOTTOM LEFT */}
-          <div className="absolute bottom-5 left-5 md:bottom-8 md:left-8 lg:left-14">
-            <div className="flex items-center gap-4 md:gap-6 bg-white/15 backdrop-blur-md rounded-full px-5 py-2.5 border border-white/20">
-              <Image
-                src="/images/google-maps-logo.svg"
-                alt="Google Maps"
-                width={70}
-                height={20}
-                className="brightness-0 invert opacity-90 h-4 md:h-5 w-auto"
-              />
-              <Image
-                src="/images/tripadvisor-logo.svg"
-                alt="TripAdvisor"
-                width={90}
-                height={20}
-                className="brightness-0 invert opacity-90 h-4 md:h-5 w-auto"
-              />
-              <Image
-                src="/images/kayak-logo.svg"
-                alt="Kayak"
-                width={55}
-                height={20}
-                className="brightness-0 invert opacity-90 h-4 md:h-5 w-auto"
-              />
-            </div>
-          </div>
         </div>
 
         {/* Scroll down indicator - centered red circle below image */}

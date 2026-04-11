@@ -27,6 +27,7 @@ const galleryRow2 = [
   { src: "/images/666b90643e5b08656276030b_helgolandbahn-12.jpg", alt: "Inselbahn auf Tour" },
   { src: "/images/premium-20250814_123029.jpg", alt: "Premium-Tour Helgoland von oben" },
   { src: "/images/666b9090ffbb1554bef8498f_helgolandbahn-9.jpg", alt: "Helgoland Landschaft" },
+  { src: "/images/extra-img_2384-large.jpeg", alt: "Inselbahn Fahrgäste" },
 ];
 
 /** Map tour slugs to their illustration and photo assets */

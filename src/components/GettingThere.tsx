@@ -67,10 +67,6 @@ export default function GettingThere() {
               fill
               className="object-cover"
             />
-            {/* Red badge overlay */}
-            <div className="absolute top-4 right-4 bg-primary text-white text-xs font-bold px-4 py-2 rounded-full shadow-lg">
-              Abfahrt hier
-            </div>
           </div>
         </div>
 

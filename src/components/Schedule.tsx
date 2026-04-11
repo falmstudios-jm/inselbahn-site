@@ -16,7 +16,7 @@ function SectionPill({ label }: { label: string }) {
 /** Map tour slugs to schedule photos */
 const SCHEDULE_PHOTOS: Record<string, { src: string; alt: string }> = {
   "unterland-tour": { src: "/images/helgolandbahn-photo-1.jpg", alt: "Unterland-Tour Inselbahn" },
-  "premium-tour": { src: "/images/helgolandbahn-photo-2.jpg", alt: "Premium-Tour Inselbahn" },
+  "premium-tour": { src: "/images/extra-img_2202-2.jpg", alt: "Premium-Tour Inselbahn" },
 };
 
 const DEFAULT_PHOTO = { src: "/images/helgolandbahn-photo-1.jpg", alt: "Inselbahn Tour" };
@@ -53,9 +53,6 @@ export default function Schedule({ tours, departures }: ScheduleProps) {
           <h2 className="text-[28px] md:text-[40px] font-bold text-dark leading-tight">
             Der aktuelle Fahrplan
           </h2>
-          <p className="text-dark/50 text-sm mt-2 md:mt-0">
-            Aktualisiert im August 2026
-          </p>
         </div>
 
         {/* Countdown Timer + Weather */}
@@ -108,7 +105,7 @@ export default function Schedule({ tours, departures }: ScheduleProps) {
 
         <div className="text-center space-y-2 mt-4">
           <p className="text-sm text-dark/50">
-            *Bei den letzten Fahrten des Tages ist ein Ausstieg am Hafen m&ouml;glich, damit Sie Ihr Schiff rechtzeitig erreichen.
+            *Bei den letzten Fahrten des Tages ist ein Ausstieg am Hafen m&ouml;glich, damit Sie Ihr Schiff bequem erreichen.
           </p>
           <p className="text-sm font-medium text-dark/70">
             Kinder unter 6 Jahren fahren kostenlos.
