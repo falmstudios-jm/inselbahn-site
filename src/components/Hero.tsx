@@ -40,7 +40,7 @@ export default function Hero() {
   return (
     <section className="relative">
       {/* Full-width hero image */}
-      <div className="relative w-full min-h-[55vh] md:min-h-[60vh] lg:min-h-[65vh] overflow-hidden">
+      <div className="relative w-full min-h-[60vh] md:min-h-[65vh] lg:min-h-[70vh] overflow-hidden">
         <Image
           src="/images/topdown.jpg"
           alt="Helgoland Luftaufnahme"
@@ -51,7 +51,7 @@ export default function Hero() {
         {/* Dark overlay for text readability */}
         <div className="absolute inset-0 bg-gradient-to-b from-black/25 via-black/30 to-black/40" />
         {/* White fade at bottom */}
-        <div className="absolute bottom-0 left-0 right-0 h-[120px] md:h-[160px] bg-gradient-to-t from-white via-white/80 to-transparent" />
+        <div className="absolute bottom-0 left-0 right-0 h-[80px] md:h-[100px] bg-gradient-to-t from-white via-white/70 to-transparent" />
 
         {/* Content */}
         <div className="absolute inset-0 flex flex-col justify-center px-5 sm:px-8 md:px-14 lg:px-20 max-w-7xl mx-auto text-white">
@@ -64,7 +64,7 @@ export default function Hero() {
           </h1>
 
           {/* Rotating text */}
-          <div className="h-[40px] sm:h-[36px] md:h-[52px] lg:h-[60px] flex items-start overflow-hidden">
+          <div className="h-[52px] sm:h-[44px] md:h-[56px] lg:h-[64px] flex items-start overflow-hidden">
             <p
               className={`text-[14px] sm:text-[16px] md:text-[20px] lg:text-[24px] text-white/80 italic font-light max-w-2xl transition-all duration-500 ease-out ${
                 isVisible
@@ -77,7 +77,7 @@ export default function Hero() {
           </div>
 
           {/* CTA + Rating inline */}
-          <div className="flex items-center gap-4 sm:gap-6 flex-wrap mt-2">
+          <div className="flex items-center gap-4 sm:gap-6 flex-wrap mt-4 md:mt-5">
             <a
               href="#buchung"
               className="bg-primary text-white px-6 py-2.5 rounded-full text-sm md:text-base font-semibold hover:bg-primary/90 transition-colors"
