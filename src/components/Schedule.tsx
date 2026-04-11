@@ -17,8 +17,8 @@ function SectionPill({ label }: { label: string }) {
 const SCHEDULE_PHOTOS: Record<string, { src: string; alt: string }> = {
   "unterland": { src: "/images/unterland-main.jpg", alt: "Unterland-Tour Inselbahn" },
   "unterland-tour": { src: "/images/unterland-main.jpg", alt: "Unterland-Tour Inselbahn" },
-  "premium": { src: "/images/extra-img_2202-2.jpg", alt: "Premium-Tour Inselbahn" },
-  "premium-tour": { src: "/images/extra-img_2202-2.jpg", alt: "Premium-Tour Inselbahn" },
+  "premium": { src: "/images/extra-img_2207-large.jpeg", alt: "Premium-Tour Inselbahn" },
+  "premium-tour": { src: "/images/extra-img_2207-large.jpeg", alt: "Premium-Tour Inselbahn" },
 };
 
 const DEFAULT_PHOTO = { src: "/images/unterland-main.jpg", alt: "Inselbahn Tour" };

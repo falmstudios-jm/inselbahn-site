@@ -11,7 +11,7 @@ const giftCards = [
   {
     title: "1\u00D7 Premium-Tour",
     price: "22,00",
-    photo: "/images/extra-img_2202-2.jpg",
+    photo: "/images/extra-img_2217-large.jpeg",
     alt: "Premium-Tour",
   },
   {
