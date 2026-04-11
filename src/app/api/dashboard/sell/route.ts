@@ -97,7 +97,7 @@ async function handleIndividualSale(
   }, 0);
 
   const groupSize = (adults as number) + (children as number) + (children_free as number);
-  const ghostSeats = calculateGhostSeats(groupSize);
+  const ghostSeats = calculateGhostSeats();
   const seatsNeeded = groupSize + ghostSeats;
 
   if (seatsNeeded > capacity - usedSeats) {

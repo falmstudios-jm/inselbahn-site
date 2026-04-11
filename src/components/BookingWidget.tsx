@@ -1410,10 +1410,6 @@ export default function BookingWidget({ tours: supabaseTours }: BookingWidgetPro
               <div className={`w-full px-1 ${step === 3 ? '' : 'hidden'}`}>
                 <div className="max-w-md mx-auto bg-white rounded-2xl p-6 md:p-8 border border-gray-100 shadow-sm space-y-6">
                   {/* Adults */}
-                  {/* Seat width hint */}
-                  <div className="bg-blue-50 border border-blue-100 rounded-lg px-3 py-2 mb-3 text-xs text-blue-700">
-                    💺 Unsere Sitze sind ca. 50 cm breit. Bei Bedarf können zwei Plätze pro Person gebucht werden.
-                  </div>
 
                   <div className="flex items-center justify-between">
                     <div>

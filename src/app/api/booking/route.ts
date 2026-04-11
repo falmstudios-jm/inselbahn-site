@@ -100,7 +100,7 @@ export async function POST(req: Request) {
     }, 0);
 
     const groupSize = input.adults + input.children + input.children_free;
-    const ghostSeats = calculateGhostSeats(input.adults, input.children, input.children_free);
+    const ghostSeats = calculateGhostSeats();
 
     // Check: passengers must fit within online cap
     const remainingPassengers = onlineCapacity - usedPassengers;
