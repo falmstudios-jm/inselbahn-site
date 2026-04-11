@@ -40,7 +40,7 @@ export default function Hero() {
   return (
     <section className="relative">
       {/* Full-width hero image */}
-      <div className="relative w-full min-h-[60vh] md:min-h-[70vh] overflow-hidden">
+      <div className="relative w-full min-h-[50vh] md:min-h-[55vh] lg:min-h-[60vh] overflow-hidden">
         <Image
           src="/images/topdown.jpg"
           alt="Helgoland Luftaufnahme"
@@ -48,12 +48,12 @@ export default function Hero() {
           priority
           className="object-cover"
         />
-        {/* Gradient overlay - darker at bottom */}
-        <div className="absolute inset-0 bg-gradient-to-b from-black/30 via-black/40 to-black/60" />
+        {/* Gradient overlay */}
+        <div className="absolute inset-0 bg-gradient-to-b from-black/25 via-black/35 to-black/55" />
 
-        {/* Content - LEFT aligned */}
-        <div className="absolute inset-0 flex flex-col justify-end pb-[20%] sm:pb-[18%] md:pb-[15%] px-5 sm:px-8 md:px-14 lg:px-20 max-w-7xl mx-auto text-white">
-          <h1 className="text-[24px] sm:text-[32px] md:text-[42px] lg:text-[52px] font-bold leading-[1.1] mb-3 md:mb-5">
+        {/* Content */}
+        <div className="absolute inset-0 flex flex-col justify-end pb-12 sm:pb-14 md:pb-16 px-5 sm:px-8 md:px-14 lg:px-20 max-w-7xl mx-auto text-white">
+          <h1 className="text-[24px] sm:text-[32px] md:text-[42px] lg:text-[52px] font-bold leading-[1.1] mb-2 md:mb-3">
             Starten Sie Ihr
             <br className="sm:hidden" />
             {" "}Helgoland-Abenteuer
@@ -61,10 +61,10 @@ export default function Hero() {
             {" "}mit...
           </h1>
 
-          {/* Rotating text - fixed height so H1 doesn't jump */}
-          <div className="h-[56px] sm:h-[52px] md:h-[64px] lg:h-[72px] flex items-start overflow-hidden">
+          {/* Rotating text */}
+          <div className="h-[40px] sm:h-[36px] md:h-[52px] lg:h-[60px] flex items-start overflow-hidden">
             <p
-              className={`text-[14px] sm:text-[16px] md:text-[22px] lg:text-[26px] text-white/90 italic font-light max-w-2xl transition-all duration-500 ease-out ${
+              className={`text-[14px] sm:text-[16px] md:text-[20px] lg:text-[24px] text-white/80 italic font-light max-w-2xl transition-all duration-500 ease-out ${
                 isVisible
                   ? "opacity-100 translate-y-0"
                   : "opacity-0 translate-y-4"
@@ -74,24 +74,24 @@ export default function Hero() {
             </p>
           </div>
 
-          {/* CTA Button */}
-          <a
-            href="#buchung"
-            className="self-start bg-primary text-white px-8 py-3.5 rounded-full text-base md:text-lg font-bold hover:bg-primary/90 transition-colors mt-4 md:mt-6"
-          >
-            Sofort buchen
-          </a>
-
-          {/* Google rating badge */}
-          <a
-            href="https://g.page/r/CeEvXFmlaLMwEBE/review"
-            target="_blank"
-            rel="noopener noreferrer"
-            className="inline-flex items-center gap-1.5 mt-3 text-[13px] text-white/70 hover:text-white/90 transition-colors"
-          >
-            <span className="text-amber-400">&#9733;&#9733;&#9733;&#9733;&#9733;</span>
-            <span>4,9 / 5 bei 230+ Google-Bewertungen</span>
-          </a>
+          {/* CTA + Rating inline */}
+          <div className="flex items-center gap-4 sm:gap-6 flex-wrap mt-2">
+            <a
+              href="#buchung"
+              className="bg-primary text-white px-6 py-2.5 rounded-full text-sm md:text-base font-semibold hover:bg-primary/90 transition-colors"
+            >
+              Sofort buchen
+            </a>
+            <a
+              href="https://g.page/r/CeEvXFmlaLMwEBE/review"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="inline-flex items-center gap-1.5 text-[12px] md:text-[13px] text-white/60 hover:text-white/80 transition-colors"
+            >
+              <span className="text-amber-400">&#9733;&#9733;&#9733;&#9733;&#9733;</span>
+              <span>4,9 / 5 bei 230+ Bewertungen</span>
+            </a>
+          </div>
         </div>
       </div>
 
