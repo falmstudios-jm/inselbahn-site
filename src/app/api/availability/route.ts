@@ -59,14 +59,17 @@ export async function GET(req: NextRequest) {
       );
     }
 
-    // Build booking counts per departure (passengers + ghost seats all count within online cap)
-    const bookingCounts = new Map<string, number>();
+    // Build booking counts per departure
+    const bookingCounts = new Map<string, number>(); // total including ghosts
+    const passengerCounts = new Map<string, number>(); // passengers only
     const wheelchairBooked = new Map<string, boolean>();
     const cancelledDepartures = new Set<string>();
     if (bookings) {
       for (const b of bookings) {
         const total = b.adults + b.children + (b.ghost_seats || 0) + (b.children_free || 0);
+        const passengers = b.adults + b.children + (b.children_free || 0);
         bookingCounts.set(b.departure_id, (bookingCounts.get(b.departure_id) || 0) + total);
+        passengerCounts.set(b.departure_id, (passengerCounts.get(b.departure_id) || 0) + passengers);
         if (b.wheelchair_seat) {
           wheelchairBooked.set(b.departure_id, true);
         }
@@ -134,14 +137,11 @@ export async function GET(req: NextRequest) {
         // Ghost seats overflow into reserve (physical - online) so they don't reduce available slots
         const onlineCap = tour.online_capacity ?? tour.max_capacity;
 
-        // Everything (passengers + ghosts) counts within online capacity
-        const remaining = onlineCap - totalBooked;
+        // Passengers only count against online capacity
+        // Ghost seats use physical reserve separately
+        const passengerCount = passengerCounts.get(dep.id) || 0;
+        const remainingPassengers = onlineCap - passengerCount;
         const physicalRemaining = tour.max_capacity - totalBooked;
-
-        // Show max bookable people (remaining minus ghost seats they'd need)
-        let maxBookable = remaining;
-        if (remaining >= 8) maxBookable = remaining - 2;
-        else if (remaining >= 4) maxBookable = remaining - 1;
 
         return {
           departure_id: dep.id,
@@ -152,11 +152,11 @@ export async function GET(req: NextRequest) {
           tour_name: tour.name,
           max_capacity: onlineCap,
           online_capacity: onlineCap,
-          booked: totalBooked,
-          remaining: Math.max(0, maxBookable), // Max bookable PEOPLE (after ghost seat deduction)
+          booked: passengerCount, // Show passenger count only
+          remaining: Math.max(0, remainingPassengers), // Passengers remaining
           physical_remaining: Math.max(0, physicalRemaining), // For dashboard
-          available: maxBookable > 0,
-          online_sold_out: maxBookable <= 0 && physicalRemaining > 0,
+          available: remainingPassengers > 0,
+          online_sold_out: remainingPassengers <= 0 && physicalRemaining > 0,
           bookable_online: dep.bookable_online !== false,
           past: isPast,
           price_adult: tour.price_adult,

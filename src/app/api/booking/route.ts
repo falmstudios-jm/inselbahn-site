@@ -90,32 +90,33 @@ export async function POST(req: Request) {
       );
     }
 
-    // All seats (passengers + ghost seats) count within online capacity (e.g. 16)
-    // Ghost seats are empty buffer seats that reduce available passenger spots
+    // Passengers checked against ONLINE capacity (e.g. 16)
+    // Ghost seats use PHYSICAL reserve (e.g. 17-18) separately
+    const usedPassengers = (existingBookings || []).reduce((sum, b) => {
+      return sum + b.adults + b.children + b.children_free;
+    }, 0);
     const usedTotal = (existingBookings || []).reduce((sum, b) => {
       return sum + b.adults + b.children + b.children_free + (b.ghost_seats || 0);
     }, 0);
 
     const groupSize = input.adults + input.children + input.children_free;
     const ghostSeats = calculateGhostSeats(input.adults, input.children, input.children_free);
-    const seatsNeeded = groupSize + ghostSeats;
 
-    const remaining = onlineCapacity - usedTotal;
-    if (seatsNeeded > remaining) {
-      // Show how many actual people can still book (remaining minus potential ghost seats)
-      let maxBookable = remaining;
-      if (remaining >= 8) maxBookable = remaining - 2;
-      else if (remaining >= 4) maxBookable = remaining - 1;
+    // Check: passengers must fit within online cap
+    const remainingPassengers = onlineCapacity - usedPassengers;
+    if (groupSize > remainingPassengers) {
       return NextResponse.json(
         {
           error: 'Nicht genügend Plätze verfügbar',
-          available: Math.max(0, maxBookable),
+          available: Math.max(0, remainingPassengers),
         },
         { status: 409 }
       );
     }
 
-    const effectiveGhostSeats = ghostSeats;
+    // Ghost seats use physical reserve - reduce if needed
+    const remainingPhysical = physicalCapacity - usedTotal;
+    const effectiveGhostSeats = Math.min(ghostSeats, Math.max(0, remainingPhysical - groupSize));
 
     // Calculate total price
     const totalPrice = calculateTotal(
