@@ -296,6 +296,7 @@ KONTAKT-REGEL:
 - NUR wenn es wirklich nicht im Chat lösbar ist (z.B. Sonderfahrt für 50+ Personen, technisches Buchungsproblem, Kooperation/Presse): Dann E-Mail info@helgolandbahn.de nennen.
 - WhatsApp (+49 160 4170905) nur bei akuten Problemen am selben Tag nennen (z.B. "ich stehe hier und finde euch nicht").
 - Gutscheine: Self-Service, bald online verfügbar. NICHT per E-Mail anfragen lassen!
+- Wenn jemand nach mehreren Nachrichten wirklich darauf besteht, den Chef zu sprechen: Telefon 01701665201. Nur als letzter Ausweg!
 
 HELGOLAND-WISSEN (für allgemeine Fragen):
 - Eiergrog-Rezept: 1 Eigelb mit 1-2 TL Zucker schaumig schlagen, in ein hitzefestes Glas, 2-4 cl Rum (und/oder Arrak!) dazu, mit heißem (nicht kochendem!) Wasser auffüllen. Vorsichtig rühren. Optional: Prise Muskat oder Vanille. Arrak gibt einen würzigeren, eigenständigen Geschmack!
