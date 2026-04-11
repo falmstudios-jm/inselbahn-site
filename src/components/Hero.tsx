@@ -38,46 +38,44 @@ export default function Hero() {
   }, []);
 
   return (
-    <section className="px-5 md:px-10 lg:px-20 pt-6 pb-4">
-      <div className="max-w-7xl mx-auto">
-        {/* Hero image container with rounded corners */}
-        <div className="relative w-full aspect-[16/7] md:aspect-[16/6] rounded-2xl overflow-hidden">
-          <Image
-            src="/images/topdown.jpg"
-            alt="Helgoland Luftaufnahme"
-            fill
-            priority
-            className="object-cover"
-          />
-          {/* Dark overlay */}
-          <div className="absolute inset-0 bg-black/40" />
+    <section className="relative">
+      {/* Full-width hero image */}
+      <div className="relative w-full min-h-[60vh] md:min-h-[70vh] overflow-hidden">
+        <Image
+          src="/images/topdown.jpg"
+          alt="Helgoland Luftaufnahme"
+          fill
+          priority
+          className="object-cover"
+        />
+        {/* Gradient overlay - darker at bottom */}
+        <div className="absolute inset-0 bg-gradient-to-b from-black/30 via-black/40 to-black/60" />
 
-          {/* Content - LEFT aligned */}
-          <div className="absolute inset-0 flex flex-col justify-center px-8 md:px-14 lg:px-20 text-white">
-            <h1 className="text-[28px] md:text-[44px] lg:text-[52px] font-bold leading-[1.15] mb-4 max-w-2xl">
-              Geführte Inselrundfahrten
-              <br />
-              auf Helgoland
-            </h1>
+        {/* Content - LEFT aligned */}
+        <div className="absolute inset-0 flex flex-col justify-center px-8 md:px-14 lg:px-20 max-w-7xl mx-auto text-white">
+          <h1 className="text-[32px] md:text-[48px] lg:text-[60px] font-bold leading-[1.1] mb-6 max-w-3xl">
+            Starten Sie Ihr
+            <br />
+            Helgoland-Abenteuer mit...
+          </h1>
 
-            {/* Rotating text */}
-            <div className="h-14 md:h-10 flex items-start">
-              <p
-                className={`text-base md:text-lg text-white/85 font-medium max-w-xl transition-all duration-400 ${
-                  isVisible
-                    ? "opacity-100 translate-y-0"
-                    : "opacity-0 translate-y-3"
-                }`}
-              >
-                ...{rotatingTexts[currentIndex]}
-              </p>
-            </div>
+          {/* Rotating text - larger, italic style */}
+          <div className="h-16 md:h-14 flex items-start overflow-hidden">
+            <p
+              className={`text-[18px] md:text-[24px] lg:text-[28px] text-white/90 italic font-light max-w-2xl transition-all duration-500 ease-out ${
+                isVisible
+                  ? "opacity-100 translate-y-0"
+                  : "opacity-0 translate-y-4"
+              }`}
+            >
+              ...{rotatingTexts[currentIndex]}
+            </p>
           </div>
-
         </div>
+      </div>
 
-        {/* Scroll down indicator - centered red circle below image */}
-        <div className="flex justify-center mt-6">
+      {/* Scroll down indicator */}
+      <div className="flex justify-center -mt-6 relative z-10">
           <a
             href="#touren"
             className="w-12 h-12 rounded-full bg-primary flex items-center justify-center hover:bg-primary/90 transition-colors animate-float"
@@ -97,7 +95,6 @@ export default function Hero() {
             </svg>
           </a>
         </div>
-      </div>
     </section>
   );
 }
