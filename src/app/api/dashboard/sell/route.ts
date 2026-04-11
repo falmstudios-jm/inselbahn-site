@@ -97,14 +97,14 @@ async function handleIndividualSale(
   }, 0);
 
   const groupSize = (adults as number) + (children as number) + (children_free as number);
-  const ghostSeats = calculateGhostSeats();
-  const seatsNeeded = groupSize + ghostSeats;
+  const remaining = capacity - usedSeats;
 
-  if (seatsNeeded > capacity - usedSeats) {
+  // Passengers must fit in physical capacity
+  if (groupSize > remaining) {
     return NextResponse.json(
       {
         error: 'Nicht genügend Plätze verfügbar',
-        available: Math.max(0, capacity - usedSeats),
+        available: Math.max(0, remaining),
       },
       { status: 409 }
     );
@@ -131,15 +131,19 @@ async function handleIndividualSale(
     return sum + b.adults + b.children + (b.children_free || 0) + (b.ghost_seats || 0);
   }, 0);
 
-  if (seatsNeeded > capacity - recheckSeats) {
+  const recheckRemaining = capacity - recheckSeats;
+  if (groupSize > recheckRemaining) {
     return NextResponse.json(
       {
         error: 'Nicht genügend Plätze verfügbar (Kapazität hat sich geändert)',
-        available: Math.max(0, capacity - recheckSeats),
+        available: Math.max(0, recheckRemaining),
       },
       { status: 409 }
     );
   }
+
+  // Ghost seats: 1 per booking, reduced if near physical capacity
+  const ghostSeats = Math.min(calculateGhostSeats(), Math.max(0, recheckRemaining - groupSize));
 
   const { data: booking, error: insertError } = await supabase
     .from('bookings')

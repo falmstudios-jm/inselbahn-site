@@ -102,20 +102,21 @@ export async function POST(req: Request) {
     const groupSize = input.adults + input.children + input.children_free;
     const ghostSeats = calculateGhostSeats();
 
-    // Check: passengers must fit within online cap
-    const remainingPassengers = onlineCapacity - usedPassengers;
-    if (groupSize > remainingPassengers) {
+    // Check: passengers must fit within BOTH online cap AND physical cap
+    const remainingOnline = onlineCapacity - usedPassengers;
+    const remainingPhysical = physicalCapacity - usedTotal;
+    const effectiveRemaining = Math.min(remainingOnline, remainingPhysical);
+    if (groupSize > effectiveRemaining) {
       return NextResponse.json(
         {
           error: 'Nicht genügend Plätze verfügbar',
-          available: Math.max(0, remainingPassengers),
+          available: Math.max(0, effectiveRemaining),
         },
         { status: 409 }
       );
     }
 
-    // Ghost seats use physical reserve - reduce if needed
-    const remainingPhysical = physicalCapacity - usedTotal;
+    // Ghost seats use physical reserve - reduce if near capacity
     const effectiveGhostSeats = Math.min(ghostSeats, Math.max(0, remainingPhysical - groupSize));
 
     // Calculate total price

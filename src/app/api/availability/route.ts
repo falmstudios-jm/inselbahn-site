@@ -137,11 +137,11 @@ export async function GET(req: NextRequest) {
         // Ghost seats overflow into reserve (physical - online) so they don't reduce available slots
         const onlineCap = tour.online_capacity ?? tour.max_capacity;
 
-        // Passengers only count against online capacity
-        // Ghost seats use physical reserve separately
+        // Use stricter of online cap and physical cap
         const passengerCount = passengerCounts.get(dep.id) || 0;
-        const remainingPassengers = onlineCap - passengerCount;
+        const remainingOnline = onlineCap - passengerCount;
         const physicalRemaining = tour.max_capacity - totalBooked;
+        const effectiveRemaining = Math.min(remainingOnline, physicalRemaining);
 
         return {
           departure_id: dep.id,
@@ -152,11 +152,11 @@ export async function GET(req: NextRequest) {
           tour_name: tour.name,
           max_capacity: onlineCap,
           online_capacity: onlineCap,
-          booked: passengerCount, // Show passenger count only
-          remaining: Math.max(0, remainingPassengers), // Passengers remaining
-          physical_remaining: Math.max(0, physicalRemaining), // For dashboard
-          available: remainingPassengers > 0,
-          online_sold_out: remainingPassengers <= 0 && physicalRemaining > 0,
+          booked: passengerCount,
+          remaining: Math.max(0, effectiveRemaining),
+          physical_remaining: Math.max(0, physicalRemaining),
+          available: effectiveRemaining > 0,
+          online_sold_out: effectiveRemaining <= 0 && physicalRemaining > 0,
           bookable_online: dep.bookable_online !== false,
           past: isPast,
           price_adult: tour.price_adult,
