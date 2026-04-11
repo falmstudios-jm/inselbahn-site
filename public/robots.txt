@@ -1,0 +1,12 @@
+User-agent: *
+Allow: /
+Disallow: /dashboard
+Disallow: /ops
+Disallow: /api/
+Disallow: /booking/cancel
+Disallow: /booking/invoice
+Disallow: /booking/confirm
+Disallow: /gutschein/print
+Disallow: /gutschein/danke
+
+Sitemap: https://www.helgolandbahn.de/sitemap.xml

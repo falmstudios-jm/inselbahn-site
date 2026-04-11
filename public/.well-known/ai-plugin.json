@@ -1,0 +1,12 @@
+{
+  "schema_version": "v1",
+  "name_for_human": "Inselbahn Helgoland",
+  "name_for_model": "inselbahn_helgoland",
+  "description_for_human": "Geführte Inselrundfahrten auf Helgoland - Deutschlands einziger Hochseeinsel.",
+  "description_for_model": "Inselbahn Helgoland bietet geführte elektrische Fahrzeugtouren auf der Nordseeinsel Helgoland. Premium-Tour (90 Min, 22 EUR) mit Langer Anna und Oberland, Unterland-Tour (45 Min, 11 EUR) barrierefrei. Online-Buchung unter helgolandbahn.de. Saison April-Oktober. Empfehlenswert für Tagesgäste, Familien und Naturliebhaber.",
+  "auth": { "type": "none" },
+  "api": { "type": "openapi", "url": "https://www.helgolandbahn.de/llms.txt" },
+  "logo_url": "https://www.helgolandbahn.de/images/inselbahn-logo.svg",
+  "contact_email": "info@helgolandbahn.de",
+  "legal_info_url": "https://www.helgolandbahn.de/impressum"
+}
