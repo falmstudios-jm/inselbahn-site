@@ -1212,14 +1212,14 @@ export default function BookingWidget({ tours: supabaseTours }: BookingWidgetPro
                         <div className="p-4 md:p-6 flex flex-col flex-1">
                           {/* Badge for premium */}
                           {"badge" in t && t.badge && !isNotOnlineBookable && (
-                            <span className="inline-block bg-[#1a3a5c] text-white text-[10px] font-bold uppercase tracking-wider px-2.5 py-0.5 rounded-full mb-2">
+                            <span className="self-start bg-[#1a3a5c] text-white text-[10px] font-bold uppercase tracking-wider px-2.5 py-0.5 rounded-full mb-2">
                               {t.badge}
                             </span>
                           )}
 
                           {/* Not online bookable badge */}
                           {isNotOnlineBookable && (
-                            <span className="inline-block bg-gray-200 text-gray-600 text-[10px] font-bold uppercase tracking-wider px-2.5 py-0.5 rounded-full mb-2">
+                            <span className="self-start bg-gray-200 text-gray-600 text-[10px] font-bold uppercase tracking-wider px-2.5 py-0.5 rounded-full mb-2">
                               Aktuell nicht online buchbar
                             </span>
                           )}
