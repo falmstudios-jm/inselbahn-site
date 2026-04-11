@@ -40,7 +40,7 @@ export default function Hero() {
   return (
     <section className="relative">
       {/* Full-width hero image */}
-      <div className="relative w-full min-h-[60vh] md:min-h-[65vh] lg:min-h-[70vh] overflow-hidden">
+      <div className="relative w-full min-h-[65vh] md:min-h-[72vh] lg:min-h-[78vh] overflow-hidden">
         <Image
           src="/images/topdown.jpg"
           alt="Helgoland Luftaufnahme"
@@ -51,7 +51,7 @@ export default function Hero() {
         {/* Dark overlay for text readability */}
         <div className="absolute inset-0 bg-gradient-to-b from-black/25 via-black/30 to-black/40" />
         {/* White fade at bottom */}
-        <div className="absolute bottom-0 left-0 right-0 h-[80px] md:h-[100px] bg-gradient-to-t from-white via-white/70 to-transparent" />
+        <div className="absolute bottom-0 left-0 right-0 h-[120px] md:h-[150px] bg-gradient-to-t from-white via-white/70 to-transparent" />
 
         {/* Content */}
         <div className="absolute inset-0 flex flex-col justify-center px-5 sm:px-8 md:px-14 lg:px-20 max-w-7xl mx-auto text-white">
