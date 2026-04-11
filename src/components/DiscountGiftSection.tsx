@@ -33,11 +33,13 @@ export interface AppliedGiftCard {
 interface DiscountGiftSectionProps {
   onGiftCardApplied?: (giftCard: AppliedGiftCard | null) => void;
   onDiscountApplied?: (discount: AppliedDiscount | null) => void;
+  departureId?: string;
 }
 
 export default function DiscountGiftSection({
   onGiftCardApplied,
   onDiscountApplied,
+  departureId,
 }: DiscountGiftSectionProps) {
   const [giftCardCode, setGiftCardCode] = useState('');
   const [giftCardLoading, setGiftCardLoading] = useState(false);
@@ -94,7 +96,7 @@ export default function DiscountGiftSection({
       const res = await fetch('/api/discount/validate', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ code: discountCode.trim() }),
+        body: JSON.stringify({ code: discountCode.trim(), departure_id: departureId }),
       });
       const data: DiscountResult = await res.json();
 

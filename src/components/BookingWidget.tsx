@@ -374,11 +374,12 @@ export default function BookingWidget({ tours: supabaseTours }: BookingWidgetPro
 
   const subtotalPrice = adultPrice * (adults + wheelchairAdult) + childPrice * (children + wheelchairChild);
 
-  // Apply discount
+  // Apply discount — round to nearest full euro for clean prices
   const discountAmount = useMemo(() => {
     if (!appliedDiscount) return 0;
     if (appliedDiscount.type === 'percentage') {
-      return Math.round(subtotalPrice * appliedDiscount.value) / 100;
+      const raw = subtotalPrice * appliedDiscount.value / 100;
+      return Math.round(raw); // Round to full euro (2.2 → 2, 3.5 → 4)
     }
     return Math.min(appliedDiscount.value, subtotalPrice);
   }, [appliedDiscount, subtotalPrice]);
@@ -1624,6 +1625,7 @@ export default function BookingWidget({ tours: supabaseTours }: BookingWidgetPro
                   <DiscountGiftSection
                     onGiftCardApplied={(gc) => setAppliedGiftCard(gc)}
                     onDiscountApplied={(d) => setAppliedDiscount(d)}
+                    departureId={selectedSlot?.departure_id}
                   />
                   {(discountAmount > 0 || giftCardDeduction > 0) && (
                     <div className="mt-6 border-t border-gray-100 pt-4 space-y-2 text-sm">
