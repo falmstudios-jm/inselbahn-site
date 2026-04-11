@@ -52,7 +52,7 @@ export default function Hero() {
         <div className="absolute inset-0 bg-gradient-to-b from-black/25 via-black/35 to-black/55" />
 
         {/* Content */}
-        <div className="absolute inset-0 flex flex-col justify-end pb-12 sm:pb-14 md:pb-16 px-5 sm:px-8 md:px-14 lg:px-20 max-w-7xl mx-auto text-white">
+        <div className="absolute inset-0 flex flex-col justify-center px-5 sm:px-8 md:px-14 lg:px-20 max-w-7xl mx-auto text-white">
           <h1 className="text-[24px] sm:text-[32px] md:text-[42px] lg:text-[52px] font-bold leading-[1.1] mb-2 md:mb-3">
             Starten Sie Ihr
             <br className="sm:hidden" />
