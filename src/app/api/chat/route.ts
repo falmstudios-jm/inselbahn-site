@@ -373,7 +373,16 @@ async function fetchLiveData() {
     .eq('is_active', true)
     .or(`active_until.is.null,active_until.gte.${new Date().toISOString()}`);
 
-  return { tours, bookings, announcements, today };
+  // Fetch site settings
+  const { data: settings } = await supabase
+    .from('site_settings')
+    .select('key, value');
+  const settingsMap: Record<string, string> = {};
+  if (settings) {
+    for (const s of settings) settingsMap[s.key] = s.value;
+  }
+
+  return { tours, bookings, announcements, today, settings: settingsMap };
 }
 
 function buildDynamicPrompt(
@@ -381,13 +390,22 @@ function buildDynamicPrompt(
   bookings: Booking[] | null,
   announcements: Announcement[] | null,
   today: string,
+  settings: Record<string, string>,
 ): string {
   // Current time in Germany (CET/CEST)
   const nowDE = new Date().toLocaleString('de-DE', { timeZone: 'Europe/Berlin' });
   const nowTime = new Date().toLocaleTimeString('de-DE', { timeZone: 'Europe/Berlin', hour: '2-digit', minute: '2-digit', hour12: false });
   const hourNow = parseInt(nowTime.split(':')[0]);
   const isAfterHours = hourNow >= 17 || hourNow < 8;
+  const cutoffMinutes = settings.online_cutoff_minutes || '20';
+  const maxDays = settings.max_booking_days || '3';
+  const seasonStart = settings.season_start || '';
+  const seasonEnd = settings.season_end || '';
   let dynamic = `\n\nHEUTIGES DATUM: ${today}\nAKTUELLE UHRZEIT (Helgoland): ${nowTime} Uhr\nWICHTIG: Nenne NUR Abfahrtszeiten die NACH der aktuellen Uhrzeit liegen! Vergangene Touren NICHT mehr anbieten.\n`;
+  dynamic += `\nBUCHUNGS-EINSTELLUNGEN:\n- Online-Buchung möglich bis ${cutoffMinutes} Minuten vor Tour-Beginn\n- Online-Buchung maximal ${maxDays} Tage im Voraus möglich\n`;
+  if (seasonStart) dynamic += `- Saison-Start: ${seasonStart}\n`;
+  if (seasonEnd) dynamic += `- Saison-Ende: ${seasonEnd}\n`;
+  dynamic += `- Wenn jemand weiter als ${maxDays} Tage im Voraus buchen will: "Online-Buchung ist aktuell bis zu ${maxDays} Tage im Voraus möglich. Schauen Sie kurz vor Ihrem Besuch auf unserer Website vorbei!"\n`;
   if (isAfterHours) {
     dynamic += `\n⚠️ ES IST ${nowTime} UHR — AUSSERHALB DER BETRIEBSZEITEN!\n- Tomek ist NICHT am Platz (nur 11:30-14:30)\n- Es fahren KEINE Touren mehr heute\n- Empfehle IMMER die Online-Buchung für morgen oder einen anderen Tag\n- Sage NICHT "geh zum Platz" oder "frag den Fahrer" — da ist niemand!\n- Sage stattdessen: "Wir haben heute bereits Feierabend. Buchen Sie gerne online für Ihren nächsten Besuch!"\n`;
   }
@@ -485,12 +503,13 @@ export async function POST(req: NextRequest) {
     // Fetch live data from Supabase
     let systemPrompt = BASE_SYSTEM_PROMPT;
     try {
-      const { tours, bookings, announcements, today } = await fetchLiveData();
+      const { tours, bookings, announcements, today, settings } = await fetchLiveData();
       systemPrompt = buildDynamicPrompt(
         tours as TourWithDepartures[] | null,
         bookings as Booking[] | null,
         announcements as Announcement[] | null,
         today,
+        settings,
       );
     } catch (err) {
       console.error('Failed to fetch live data, using static prompt:', err);
