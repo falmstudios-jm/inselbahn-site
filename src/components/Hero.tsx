@@ -62,7 +62,7 @@ export default function Hero() {
           </h1>
 
           {/* Rotating text - fixed height so H1 doesn't jump */}
-          <div className="h-[48px] sm:h-[40px] md:h-[36px] flex items-start overflow-hidden">
+          <div className="h-[56px] sm:h-[52px] md:h-[64px] lg:h-[72px] flex items-start overflow-hidden">
             <p
               className={`text-[14px] sm:text-[16px] md:text-[22px] lg:text-[26px] text-white/90 italic font-light max-w-2xl transition-all duration-500 ease-out ${
                 isVisible
