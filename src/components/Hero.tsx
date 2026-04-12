@@ -2,6 +2,7 @@
 
 import { useState, useEffect } from "react";
 import Image from "next/image";
+import { trackEvent } from "@/lib/plausible";
 
 const rotatingTexts = [
   "einer praktischen Tour, die Ihnen alle Highlights in kurzer Zeit zeigt.",
@@ -80,6 +81,7 @@ export default function Hero() {
           <div className="flex items-center gap-4 sm:gap-6 flex-wrap mt-4 md:mt-5">
             <a
               href="#buchung"
+              onClick={() => trackEvent("Hero CTA Clicked")}
               className="bg-primary text-white px-6 py-2.5 rounded-full text-sm md:text-base font-semibold hover:bg-primary/90 transition-colors"
             >
               Sofort buchen

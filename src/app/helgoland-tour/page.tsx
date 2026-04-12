@@ -3,6 +3,7 @@ import Image from "next/image";
 import Link from "next/link";
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
+import TrackedLink from "@/components/TrackedLink";
 
 export const metadata: Metadata = {
   title: "Helgoland Tour | Welche Rundfahrt passt zu Ihnen?",
@@ -210,12 +211,14 @@ export default function HelgolandTourPage() {
                 <p className="text-2xl font-bold text-dark mb-6">
                   ab 22 EUR <span className="text-base font-normal text-dark/50">pro Person</span>
                 </p>
-                <Link
+                <TrackedLink
                   href="/#buchung"
+                  event="Tour Page CTA Clicked"
+                  props={{ location: "hero" }}
                   className="inline-flex items-center gap-2 bg-primary text-white px-8 py-3.5 rounded-full font-semibold hover:bg-primary/90 transition-colors"
                 >
                   Jetzt buchen
-                </Link>
+                </TrackedLink>
               </div>
             </div>
           </div>
@@ -291,12 +294,14 @@ export default function HelgolandTourPage() {
                   keinem Reiseführer stehen. Ideal für Erstbesucher, Naturliebhaber und
                   Paare. Ab 22 EUR pro Person.
                 </p>
-                <Link
+                <TrackedLink
                   href="/#buchung"
+                  event="Tour Page CTA Clicked"
+                  props={{ location: "comparison" }}
                   className="inline-flex items-center gap-2 bg-[#1B2A4A] text-white px-8 py-3 rounded-full font-semibold hover:bg-[#1B2A4A]/90 transition-colors"
                 >
                   Premium-Tour buchen
-                </Link>
+                </TrackedLink>
               </div>
 
               <div>
@@ -310,12 +315,14 @@ export default function HelgolandTourPage() {
                   Ideal für Familien (Kinder fahren täglich um 14:30 Uhr gratis!),
                   Senioren, Gruppen und Tagesgäste mit wenig Zeit. Ab 11 EUR pro Person.
                 </p>
-                <Link
+                <TrackedLink
                   href="/#buchung"
+                  event="Tour Page CTA Clicked"
+                  props={{ location: "comparison" }}
                   className="inline-flex items-center gap-2 bg-amber-500 text-white px-8 py-3 rounded-full font-semibold hover:bg-amber-500/90 transition-colors"
                 >
                   Unterland-Tour buchen
-                </Link>
+                </TrackedLink>
               </div>
             </div>
           </div>
@@ -410,8 +417,23 @@ export default function HelgolandTourPage() {
                 className="w-full h-auto"
               />
             </div>
-            <p className="text-center text-sm text-dark/50 mt-4">
-              Unsere Touren auf Helgoland - Premium-Tour (rot) und Unterland-Tour (gelb)
+            <div className="flex flex-col sm:flex-row items-center justify-center gap-4 sm:gap-8 mt-6">
+              <div className="flex items-center gap-2">
+                <div className="flex gap-1">
+                  <div className="w-5 h-3 rounded-sm bg-[#FFD700]" />
+                  <div className="w-5 h-3 rounded-sm bg-[#F24444]" />
+                </div>
+                <span className="text-sm font-semibold text-dark">Premium-Tour</span>
+                <span className="text-xs text-dark/40">(Gelb + Rot)</span>
+              </div>
+              <div className="flex items-center gap-2">
+                <div className="w-5 h-3 rounded-sm bg-[#F24444]" />
+                <span className="text-sm font-semibold text-dark">Unterland-Tour</span>
+                <span className="text-xs text-dark/40">(Rot)</span>
+              </div>
+            </div>
+            <p className="text-center text-xs text-dark/40 mt-2">
+              Die Premium-Tour umfasst die gesamte Unterland-Route plus den Oberland- und Mittelland-Abschnitt.
             </p>
           </div>
         </section>
@@ -698,12 +720,14 @@ export default function HelgolandTourPage() {
               ist bis zu 3 Tage im Voraus möglich, Tickets sind auch direkt am
               Franz-Schensky-Platz erhältlich.
             </p>
-            <Link
+            <TrackedLink
               href="/#buchung"
+              event="Tour Page CTA Clicked"
+              props={{ location: "bottom" }}
               className="inline-flex items-center gap-2 bg-primary text-white px-10 py-4 rounded-full text-lg font-bold hover:bg-primary/90 transition-colors"
             >
               Zur Online-Buchung
-            </Link>
+            </TrackedLink>
             <p className="text-dark/40 text-sm mt-4">
               Sie suchen ein Geschenk?{" "}
               <Link href="/gutschein" className="text-primary hover:underline">

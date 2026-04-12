@@ -5,6 +5,7 @@ import Image from "next/image";
 import { loadStripe } from "@stripe/stripe-js";
 import { Elements, PaymentElement, useStripe, useElements } from "@stripe/react-stripe-js";
 import DiscountGiftSection, { type AppliedGiftCard, type AppliedDiscount } from "./DiscountGiftSection";
+import { trackEvent } from "@/lib/plausible";
 
 /* ─── Stripe singleton ─── */
 const stripePromise = loadStripe(
@@ -395,6 +396,22 @@ export default function BookingWidget({ tours: supabaseTours }: BookingWidgetPro
   const totalPrice = Math.max(0, priceAfterDiscount - giftCardDeduction);
   const giftCardCoversAll = totalPrice === 0 && subtotalPrice > 0;
 
+  /* ─── Track abandonment on page unload ─── */
+  const stepRef = useRef(step);
+  const paymentSuccessRef = useRef(paymentSuccess);
+  stepRef.current = step;
+  paymentSuccessRef.current = paymentSuccess;
+
+  useEffect(() => {
+    function handleBeforeUnload() {
+      if (stepRef.current > 0 && !paymentSuccessRef.current) {
+        trackEvent("Booking Abandoned", { step: String(stepRef.current) });
+      }
+    }
+    window.addEventListener("beforeunload", handleBeforeUnload);
+    return () => window.removeEventListener("beforeunload", handleBeforeUnload);
+  }, []);
+
   /* ─── Listen for tour pre-selection from TourCards ─── */
   useEffect(() => {
     function handleSelectTour(e: Event) {
@@ -473,6 +490,10 @@ export default function BookingWidget({ tours: supabaseTours }: BookingWidgetPro
     const el = document.getElementById('buchung');
     if (el && step > 0) {
       el.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    }
+    const stepNames = ["1-Datum", "2-Tour", "3-Uhrzeit", "4-Personen", "5-Rabatt", "6-Kontakt", "7-Zahlung"];
+    if (step >= 0 && step < stepNames.length) {
+      trackEvent("Booking Step", { step: stepNames[step] });
     }
   }, [step]);
 
@@ -593,6 +614,7 @@ export default function BookingWidget({ tours: supabaseTours }: BookingWidgetPro
         // Gift card covers the full amount — no Stripe payment needed
         setBookingReference(data.booking_reference);
         setPaymentSuccess(true);
+        trackEvent("Booking Completed", { tour: selectedTour, amount: totalPrice.toFixed(2), passengers: String(totalPassengers) });
         return;
       }
 
@@ -601,6 +623,7 @@ export default function BookingWidget({ tours: supabaseTours }: BookingWidgetPro
       setReservationStart(Date.now());
       setPaymentError("");
       setPaymentSuccess(false);
+      trackEvent("Booking Payment Started", { tour: selectedTour, amount: totalPrice.toFixed(2) });
       setStep(6); // Go to payment step
     } catch {
       setSubmitError("Verbindung fehlgeschlagen. Bitte versuchen Sie es erneut.");
@@ -929,7 +952,7 @@ export default function BookingWidget({ tours: supabaseTours }: BookingWidgetPro
                   >
                     <CheckoutForm
                       totalPrice={totalPrice}
-                      onSuccess={() => setPaymentSuccess(true)}
+                      onSuccess={() => { setPaymentSuccess(true); trackEvent("Booking Completed", { tour: selectedTour, amount: totalPrice.toFixed(2), passengers: String(totalPassengers) }); }}
                       onError={(msg) => setPaymentError(msg)}
                     />
                   </Elements>
@@ -1135,7 +1158,7 @@ export default function BookingWidget({ tours: supabaseTours }: BookingWidgetPro
                         <div key={dateStr} className="flex items-center justify-center aspect-square p-0.5 relative">
                           <button
                             disabled={isDisabled}
-                            onClick={() => setSelectedDate(dateStr)}
+                            onClick={() => { setSelectedDate(dateStr); trackEvent("Booking Date Selected", { date: dateStr }); }}
                             className={`w-full h-full rounded-full text-sm font-medium transition-all relative flex flex-col items-center justify-center ${
                               isDisabled
                                 ? "text-dark/15 cursor-not-allowed"
@@ -1190,6 +1213,7 @@ export default function BookingWidget({ tours: supabaseTours }: BookingWidgetPro
                           setSelectedTour(t.id);
                           setSelectedTime("");
                           setSelectedSlot(null);
+                          trackEvent("Booking Tour Selected", { tour: t.id });
                         }}
                         className={`w-full text-left rounded-2xl transition-all border-2 relative overflow-hidden flex flex-col ${
                           isDisabledTour

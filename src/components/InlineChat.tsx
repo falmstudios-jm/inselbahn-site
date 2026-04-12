@@ -2,6 +2,7 @@
 
 import { useState, useRef, useEffect } from "react";
 import { useChatLogger } from "@/lib/useChatLogger";
+import { trackEvent } from "@/lib/plausible";
 
 interface Message {
   role: "user" | "assistant";
@@ -62,8 +63,13 @@ export default function InlineChat() {
     }
   }, [started]);
 
+  const messageCountRef = useRef(0);
+
   async function sendMessage(text: string) {
     if (!text.trim() || loading) return;
+
+    messageCountRef.current += 1;
+    trackEvent("Chat Message Sent", { message_number: String(messageCountRef.current) });
 
     const userMsg: Message = { role: "user", content: text.trim() };
     const newMessages = [...messages, userMsg];
@@ -104,7 +110,7 @@ export default function InlineChat() {
             Ihre Fragen rund um die Uhr.
           </p>
           <button
-            onClick={() => setStarted(true)}
+            onClick={() => { setStarted(true); trackEvent("Chat Opened"); trackEvent("Chat Consent Accepted"); }}
             className="bg-primary text-white px-10 py-4 rounded-full text-lg font-semibold hover:bg-primary/90 transition-colors mb-4"
           >
             Chat starten

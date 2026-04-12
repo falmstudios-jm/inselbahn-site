@@ -1,5 +1,5 @@
 import Image from "next/image";
-import Link from "next/link";
+import TrackedLink from "@/components/TrackedLink";
 
 const giftCards = [
   {
@@ -58,12 +58,13 @@ export default function GutscheinSection() {
                 <h3 className="text-lg font-bold text-dark mb-1">{card.title}</h3>
                 <p className="text-2xl font-bold text-dark mb-4">{card.price}&nbsp;&euro;</p>
 
-                <Link
+                <TrackedLink
                   href="/gutschein"
+                  event="Gutschein Section Clicked"
                   className="block w-full text-center py-3.5 min-h-[44px] flex items-center justify-center rounded-xl bg-primary text-white font-semibold text-sm hover:bg-primary/90 transition-colors"
                 >
                   Jetzt schenken
-                </Link>
+                </TrackedLink>
               </div>
             </div>
           ))}

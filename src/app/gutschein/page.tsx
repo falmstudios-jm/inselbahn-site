@@ -3,6 +3,7 @@
 import Link from 'next/link';
 import { useState, useCallback } from 'react';
 import { loadStripe } from '@stripe/stripe-js';
+import { trackEvent } from '@/lib/plausible';
 import Header from '@/components/Header';
 import Footer from '@/components/Footer';
 import {
@@ -131,6 +132,7 @@ export default function GutscheinPage() {
       }
 
       setClientSecret(data.client_secret);
+      trackEvent('Gift Card Started', { amount: amount.toFixed(2) });
     } catch {
       setError('Verbindungsfehler. Bitte versuchen Sie es erneut.');
     } finally {
@@ -464,6 +466,7 @@ function PaymentForm({ amount }: { amount: number }) {
     } else {
       setSuccess(true);
       setPaying(false);
+      trackEvent('Gift Card Completed', { amount: amount.toFixed(2) });
     }
   };
 

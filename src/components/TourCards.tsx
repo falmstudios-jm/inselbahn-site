@@ -3,6 +3,7 @@
 import { useCallback } from "react";
 import Image from "next/image";
 import type { Tour } from "@/lib/tours";
+import { trackEvent } from "@/lib/plausible";
 
 /** Map tour slugs to the BookingWidget tour IDs */
 const SLUG_TO_BOOKING_ID: Record<string, string> = {
@@ -173,6 +174,7 @@ interface TourCardsProps {
 
 export default function TourCards({ tours }: TourCardsProps) {
   const handleBook = useCallback((tourSlug: string) => {
+    trackEvent("Tour Card Book Clicked", { tour: tourSlug });
     const bookingId = SLUG_TO_BOOKING_ID[tourSlug] || tourSlug;
     // Dispatch custom event so BookingWidget can pre-select the tour
     window.dispatchEvent(

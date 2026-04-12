@@ -2,6 +2,7 @@
 
 import { useState, useRef, useEffect, ReactNode } from "react";
 import Link from "next/link";
+import { trackEvent } from "@/lib/plausible";
 
 function formatChatMessage(text: string): ReactNode[] {
   const parts = text.split(/(https?:\/\/[^\s)]+|\*\*[^*]+\*\*)/g);
@@ -62,10 +63,16 @@ export default function ChatWidget() {
   const handleConsent = () => {
     setHasConsented(true);
     sessionStorage.setItem("chatbot-consent", "true");
+    trackEvent("Chat Consent Accepted");
   };
+
+  const messageCountRef = useRef(0);
 
   const sendMessage = async (text: string) => {
     if (!text.trim() || isLoading || !hasConsented) return;
+
+    messageCountRef.current += 1;
+    trackEvent("Chat Message Sent", { message_number: String(messageCountRef.current) });
 
     const userMessage: Message = { role: "user", content: text.trim() };
     const updatedMessages = [...messages, userMessage];
@@ -116,7 +123,7 @@ export default function ChatWidget() {
     <>
       {/* Chat bubble button */}
       <button
-        onClick={() => setIsOpen(!isOpen)}
+        onClick={() => { if (!isOpen) trackEvent("Chat Opened"); setIsOpen(!isOpen); }}
         className={`fixed bottom-6 right-6 z-50 w-14 h-14 rounded-full bg-primary text-white shadow-lg hover:bg-primary/90 transition-all duration-300 flex items-center justify-center ${
           isOpen ? "scale-0 opacity-0" : "scale-100 opacity-100"
         }`}
