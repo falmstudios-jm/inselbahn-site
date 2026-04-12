@@ -486,23 +486,31 @@ export default function BookingWidget({ tours: supabaseTours }: BookingWidgetPro
   }, [countdownExpired, step, paymentSuccess]);
 
   /* ─── Auto-scroll to top of booking section on step change ─── */
+  const prevStepRef = useRef(-1);
   useEffect(() => {
     const el = document.getElementById('buchung');
     if (el && step > 0) {
       el.scrollIntoView({ behavior: 'smooth', block: 'start' });
     }
-    const stepEvents = [
-      "Booking: Datum gewählt",
-      "Booking: Tour gewählt",
-      "Booking: Uhrzeit gewählt",
-      "Booking: Personen gewählt",
-      "Booking: Rabatt",
-      "Booking: Kontakt ausgefüllt",
-      "Booking: Zahlung gestartet",
-    ];
-    if (step >= 0 && step < stepEvents.length) {
-      trackEvent(stepEvents[step]);
+    // Fire completion event for the step the user just FINISHED
+    // (only when moving forward, not on initial mount or going back)
+    // Steps: 0=Date, 1=Tour, 2=Time, 3=Passengers, 4=Discount, 5=Contact, 6=Payment
+    const completionEvents: Record<number, string> = {
+      0: "Booking: Datum gewaehlt",
+      1: "Booking: Tour gewaehlt",
+      2: "Booking: Uhrzeit gewaehlt",
+      3: "Booking: Personen gewaehlt",
+      // 4 = Rabatt (optional, not tracked — always passes through)
+      5: "Booking: Kontakt ausgefuellt",
+    };
+    if (prevStepRef.current >= 0 && step > prevStepRef.current) {
+      const completedStep = prevStepRef.current;
+      const eventName = completionEvents[completedStep];
+      if (eventName) trackEvent(eventName);
+      // Step 6 = entering payment, means contact was completed
+      if (step === 6) trackEvent("Booking: Zahlung gestartet");
     }
+    prevStepRef.current = step;
   }, [step]);
 
   const canProceed = useMemo(() => {
@@ -631,7 +639,7 @@ export default function BookingWidget({ tours: supabaseTours }: BookingWidgetPro
       setReservationStart(Date.now());
       setPaymentError("");
       setPaymentSuccess(false);
-      trackEvent("Booking Payment Started", { tour: selectedTour, amount: totalPrice.toFixed(2) });
+      // Payment tracking handled by step completion event
       setStep(6); // Go to payment step
     } catch {
       setSubmitError("Verbindung fehlgeschlagen. Bitte versuchen Sie es erneut.");
@@ -1166,7 +1174,7 @@ export default function BookingWidget({ tours: supabaseTours }: BookingWidgetPro
                         <div key={dateStr} className="flex items-center justify-center aspect-square p-0.5 relative">
                           <button
                             disabled={isDisabled}
-                            onClick={() => { setSelectedDate(dateStr); trackEvent("Booking Date Selected", { date: dateStr }); }}
+                            onClick={() => { setSelectedDate(dateStr); }}
                             className={`w-full h-full rounded-full text-sm font-medium transition-all relative flex flex-col items-center justify-center ${
                               isDisabled
                                 ? "text-dark/15 cursor-not-allowed"
@@ -1221,7 +1229,6 @@ export default function BookingWidget({ tours: supabaseTours }: BookingWidgetPro
                           setSelectedTour(t.id);
                           setSelectedTime("");
                           setSelectedSlot(null);
-                          trackEvent("Booking Tour Selected", { tour: t.id });
                         }}
                         className={`w-full text-left rounded-2xl transition-all border-2 relative overflow-hidden flex flex-col ${
                           isDisabledTour
