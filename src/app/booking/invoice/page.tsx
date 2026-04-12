@@ -4,6 +4,7 @@ import { useState } from "react";
 import Link from "next/link";
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
+import { trackEvent } from "@/lib/plausible";
 
 export default function InvoicePage() {
   const [bookingReference, setBookingReference] = useState("");
@@ -59,6 +60,7 @@ export default function InvoicePage() {
       // Download the PDF
       if (data.invoice_url) {
         window.open(data.invoice_url, "_blank");
+        trackEvent("Invoice Downloaded");
         setSuccess("Ihre Rechnung wird heruntergeladen.");
       }
     } catch {
@@ -101,6 +103,7 @@ export default function InvoicePage() {
 
       if (data.invoice_url) {
         window.open(data.invoice_url, "_blank");
+        trackEvent("Invoice Downloaded");
         setSuccess("Rechnungsdaten gespeichert. Ihre Rechnung wird heruntergeladen.");
         setShowInvoiceForm(false);
       }

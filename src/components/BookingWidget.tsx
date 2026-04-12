@@ -491,9 +491,17 @@ export default function BookingWidget({ tours: supabaseTours }: BookingWidgetPro
     if (el && step > 0) {
       el.scrollIntoView({ behavior: 'smooth', block: 'start' });
     }
-    const stepNames = ["1-Datum", "2-Tour", "3-Uhrzeit", "4-Personen", "5-Rabatt", "6-Kontakt", "7-Zahlung"];
-    if (step >= 0 && step < stepNames.length) {
-      trackEvent("Booking Step", { step: stepNames[step] });
+    const stepEvents = [
+      "Booking: Datum gewählt",
+      "Booking: Tour gewählt",
+      "Booking: Uhrzeit gewählt",
+      "Booking: Personen gewählt",
+      "Booking: Rabatt",
+      "Booking: Kontakt ausgefüllt",
+      "Booking: Zahlung gestartet",
+    ];
+    if (step >= 0 && step < stepEvents.length) {
+      trackEvent(stepEvents[step]);
     }
   }, [step]);
 

@@ -5,6 +5,7 @@ import { useSearchParams } from "next/navigation";
 import Link from "next/link";
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
+import { trackEvent } from "@/lib/plausible";
 
 interface BookingDetails {
   id: string;
@@ -37,6 +38,7 @@ function CancelLookupForm() {
   async function handleLookup(e: React.FormEvent) {
     e.preventDefault();
     if (!reference.trim() || !email.trim()) return;
+    trackEvent("Cancellation Started");
     setLookupLoading(true);
     setLookupError("");
 
@@ -234,6 +236,7 @@ function CancelPageContent() {
       }
 
       setCancelled(true);
+      trackEvent("Cancellation Completed");
     } catch (err) {
       setCancelError(
         err instanceof Error

@@ -3,6 +3,7 @@
 import { useState, useEffect, useRef } from "react";
 import Image from "next/image";
 import Link from "next/link";
+import { trackEvent } from "@/lib/plausible";
 
 const navItems = [
   { label: "Touren", href: "/#touren" },
@@ -64,6 +65,7 @@ export default function Header() {
             <Link
               key={item.label}
               href={item.href}
+              onClick={() => trackEvent("Header Nav Clicked", { link: item.label })}
               className="text-dark/70 hover:text-dark text-sm font-medium transition-colors"
             >
               {item.label}
@@ -98,7 +100,7 @@ export default function Header() {
                   <Link
                     key={item.label}
                     href={item.href}
-                    onClick={() => setDropdownOpen(false)}
+                    onClick={() => { setDropdownOpen(false); trackEvent("Header Nav Clicked", { link: item.label }); }}
                     className="block px-4 py-2.5 text-sm text-dark/70 hover:text-dark hover:bg-gray-50 transition-colors"
                   >
                     {item.label}
@@ -155,7 +157,7 @@ export default function Header() {
             <Link
               key={item.label}
               href={item.href}
-              onClick={() => setMobileOpen(false)}
+              onClick={() => { setMobileOpen(false); trackEvent("Header Nav Clicked", { link: item.label }); }}
               className="block py-3 min-h-[44px] flex items-center text-dark/70 hover:text-dark text-base font-medium transition-colors"
             >
               {item.label}
@@ -169,7 +171,7 @@ export default function Header() {
               <Link
                 key={item.label}
                 href={item.href}
-                onClick={() => setMobileOpen(false)}
+                onClick={() => { setMobileOpen(false); trackEvent("Header Nav Clicked", { link: item.label }); }}
                 className="block py-3 min-h-[44px] flex items-center text-dark/70 hover:text-dark text-base font-medium transition-colors pl-3"
               >
                 {item.label}
