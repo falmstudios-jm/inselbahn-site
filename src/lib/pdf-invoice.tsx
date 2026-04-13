@@ -349,7 +349,7 @@ export function InvoiceDocument({ data }: { data: InvoiceData }) {
 
   if (data.children > 0) {
     lineItems.push({
-      description: 'Kinder (6\u201314 Jahre)',
+      description: 'Kinder (bis 15 J.)',
       quantity: data.children,
       unitPrice: data.priceChild,
       total: data.children * data.priceChild,

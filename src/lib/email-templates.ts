@@ -43,7 +43,7 @@ export function buildConfirmationEmail(params: {
 
   const passengers: string[] = [];
   passengers.push(`${adults} ${adults === 1 ? 'Erwachsener' : 'Erwachsene'}`);
-  if (children > 0) passengers.push(`${children} ${children === 1 ? 'Kind' : 'Kinder'} (6\u201314 Jahre)`);
+  if (children > 0) passengers.push(`${children} ${children === 1 ? 'Kind' : 'Kinder'} (bis 15 J.)`);
   if (childrenFree > 0) passengers.push(`${childrenFree} ${childrenFree === 1 ? 'Kind' : 'Kinder'} (0\u20135 Jahre, frei)`);
 
   return `

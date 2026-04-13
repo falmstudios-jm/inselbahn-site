@@ -55,7 +55,7 @@ export default async function BookingConfirmPage({ params }: PageProps) {
   const passengers: string[] = [];
   passengers.push(`${booking.adults} Erwachsene`);
   if (booking.children > 0)
-    passengers.push(`${booking.children} Kinder (6–14)`);
+    passengers.push(`${booking.children} Kinder (bis 15 J.)`);
   if (booking.children_free > 0)
     passengers.push(`${booking.children_free} Kinder (0–5, frei)`);
 

@@ -1007,7 +1007,7 @@ export default function BookingWidget({ tours: supabaseTours }: BookingWidgetPro
                   </div>
                   {children > 0 && (
                     <div className="flex justify-between">
-                      <span className="text-dark/50">Kinder (6–14)</span>
+                      <span className="text-dark/50">Kinder (bis 15 J.)</span>
                       <span className="text-dark font-medium">{children} &times; {childPrice.toFixed(2).replace(".", ",")}&nbsp;&euro;</span>
                     </div>
                   )}
@@ -1544,10 +1544,10 @@ export default function BookingWidget({ tours: supabaseTours }: BookingWidgetPro
                     </div>
                   </div>
 
-                  {/* Children 6-14 (paid) */}
+                  {/* Children paid (bis 15 J.) */}
                   <div className="flex items-center justify-between">
                     <div>
-                      <p className="font-medium text-dark">Kinder 6–14</p>
+                      <p className="font-medium text-dark">Kinder (bis 15 J.)</p>
                       <p className="text-sm text-dark/50">{childPrice.toFixed(2).replace(".", ",")}&nbsp;&euro; pro Kind</p>
                     </div>
                     <div className="flex items-center gap-4">
@@ -1595,7 +1595,7 @@ export default function BookingWidget({ tours: supabaseTours }: BookingWidgetPro
                       {/* Wheelchair Child */}
                       <div className="flex items-center justify-between">
                         <div>
-                          <p className="font-medium text-dark">Rollstuhl Kind (6–14)</p>
+                          <p className="font-medium text-dark">Rollstuhl Kind (bis 15 J.)</p>
                           <p className="text-sm text-dark/50">{selectedSlot ? `${Number(selectedSlot.price_child).toFixed(2).replace('.', ',')} €` : ''}</p>
                         </div>
                         <div className="flex items-center gap-4">
@@ -1624,7 +1624,7 @@ export default function BookingWidget({ tours: supabaseTours }: BookingWidgetPro
                     )}
                     {children > 0 && (
                       <div className="flex items-center justify-between text-sm">
-                        <span className="text-dark/60">{children} &times; Kinder (6–14)</span>
+                        <span className="text-dark/60">{children} &times; Kinder (bis 15 J.)</span>
                         <span className="text-dark">{(children * childPrice).toFixed(2).replace(".", ",")}&nbsp;&euro;</span>
                       </div>
                     )}
@@ -1849,7 +1849,7 @@ export default function BookingWidget({ tours: supabaseTours }: BookingWidgetPro
                     </div>
                     {children > 0 && (
                       <div className="flex justify-between">
-                        <span className="text-dark/50">Kinder (6–14)</span>
+                        <span className="text-dark/50">Kinder (bis 15 J.)</span>
                         <span className="text-dark font-medium">{children} &times; {childPrice.toFixed(2).replace(".", ",")}&nbsp;&euro;</span>
                       </div>
                     )}

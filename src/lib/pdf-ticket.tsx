@@ -293,7 +293,7 @@ export function TicketDocument({ data }: { data: TicketData }) {
   }
   if (data.children > 0) {
     passengers.push(
-      `${data.children} ${data.children === 1 ? 'Kind' : 'Kinder'} (6\u201314 Jahre)`
+      `${data.children} ${data.children === 1 ? 'Kind' : 'Kinder'} (bis 15 J.)`
     );
   }
   if (data.childrenFree > 0) {

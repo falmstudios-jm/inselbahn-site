@@ -481,7 +481,7 @@ function CancelPageContent() {
   );
   if (booking.children > 0)
     passengers.push(
-      `${booking.children} ${booking.children === 1 ? "Kind" : "Kinder"} (6\u201314)`
+      `${booking.children} ${booking.children === 1 ? "Kind" : "Kinder"} (bis 15 J.)`
     );
   if (booking.children_free > 0)
     passengers.push(

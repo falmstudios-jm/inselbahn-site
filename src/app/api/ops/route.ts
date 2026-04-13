@@ -334,7 +334,7 @@ UNSERE TOUREN (aktuell in der Datenbank):
   Abfahrten: 10:00, 12:15 (ab Schiff, nicht online buchbar), 14:00, 16:00
 - Saison: April bis Oktober
 - Alle Preise sind Endpreise, keine MwSt (Helgoland §1 Abs. 2 UStG)
-- Kinder unter 6: kostenlos. Kinder 6-14: Kinderpreis. Ab 15: Erwachsenenpreis.
+- Kinder unter 6: kostenlos. Kinder bis 15 J. (bis zum 15. Geburtstag): Kinderpreis. Ab 15: Erwachsenenpreis.
 - Bei der Unterland-Tour um 14:30 fahren alle Kinder kostenlos!
 
 BUCHUNGS-STATI in der Datenbank:

@@ -393,7 +393,7 @@ export default function SellPage() {
 
           {/* Counter: Children paid */}
           <CounterRow
-            label="Kinder (6-14)"
+            label="Kinder (bis 15 J.)"
             sublabel={`${selectedSlot.price_child}\u20AC pro Kind`}
             value={children}
             onDecrement={() => setChildren(Math.max(0, children - 1))}

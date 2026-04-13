@@ -59,7 +59,17 @@ export async function POST(req: Request) {
     const onlineCapacity: number = tour.online_capacity ?? tour.max_capacity;
     const physicalCapacity: number = tour.max_capacity;
 
-    // Check 2-hour cutoff for today's departures
+    // Check cutoff for today's departures — use site_settings value
+    let cutoffMinutes = 20; // default
+    try {
+      const { data: cutoffSetting } = await supabaseAdmin
+        .from('site_settings')
+        .select('value')
+        .eq('key', 'online_cutoff_minutes')
+        .single();
+      if (cutoffSetting?.value) cutoffMinutes = parseInt(cutoffSetting.value, 10) || 20;
+    } catch { /* use default */ }
+
     const nowBerlin = new Date().toLocaleString('en-US', { timeZone: 'Europe/Berlin' });
     const nowDate = new Date(nowBerlin);
     const today = nowDate.toISOString().slice(0, 10);
@@ -67,9 +77,9 @@ export async function POST(req: Request) {
       const [depH, depM] = departure.departure_time.split(':').map(Number);
       const depMinutes = depH * 60 + depM;
       const nowMinutes = nowDate.getHours() * 60 + nowDate.getMinutes();
-      if (depMinutes <= nowMinutes + 120) {
+      if (depMinutes <= nowMinutes + cutoffMinutes) {
         return NextResponse.json(
-          { error: 'Diese Tour kann nicht mehr online gebucht werden (weniger als 2 Stunden bis zur Abfahrt). Tickets sind vor Ort bei Tomek oder beim Fahrer erhältlich.' },
+          { error: `Diese Tour kann nicht mehr online gebucht werden (weniger als ${cutoffMinutes} Minuten bis zur Abfahrt). Tickets sind vor Ort bei Tomek oder beim Fahrer erhältlich.` },
           { status: 409 }
         );
       }
