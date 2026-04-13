@@ -6,9 +6,66 @@ import { Client as QStashClient } from '@upstash/qstash';
 import { buildConfirmationEmail } from '@/lib/email-templates';
 
 const BASE_URL = process.env.NEXT_PUBLIC_BASE_URL || 'https://helgolandbahn.de';
+const ADMIN_EMAIL = 'admin@helgolandbahn.de';
 
 function getResend() {
   return new Resend(process.env.RESEND_API_KEY);
+}
+
+// ── Admin Notification for new bookings ──
+async function sendAdminNotification(
+  resend: InstanceType<typeof Resend>,
+  data: {
+    bookingReference: string;
+    customerName: string;
+    tourName: string;
+    bookingDate: string;
+    departureTime: string;
+    adults: number;
+    children: number;
+    childrenFree: number;
+    totalAmount: number;
+    paymentMethod: string;
+    customerEmail: string;
+    customerPhone: string;
+  }
+) {
+  const parts: string[] = [];
+  if (data.adults > 0) parts.push(`${data.adults} Erw`);
+  if (data.children > 0) parts.push(`${data.children} Kind`);
+  if (data.childrenFree > 0) parts.push(`${data.childrenFree} Kleinkind`);
+  const passengerSummary = parts.join(' + ');
+
+  const dateFormatted = new Date(data.bookingDate + 'T00:00:00').toLocaleDateString('de-DE', {
+    weekday: 'short', day: '2-digit', month: '2-digit', year: 'numeric',
+  });
+  const timeFormatted = data.departureTime?.slice(0, 5) || '';
+
+  const subject = `INSELBAHN: ${passengerSummary}`;
+
+  const html = `
+    <div style="font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; max-width: 480px; margin: 0 auto; padding: 20px;">
+      <h2 style="margin: 0 0 16px; font-size: 18px; color: #1a1a2e;">Neue Buchung ${data.bookingReference}</h2>
+      <table style="width: 100%; border-collapse: collapse; font-size: 14px;">
+        <tr><td style="padding: 6px 0; color: #666;">Tour</td><td style="padding: 6px 0; font-weight: 600;">${data.tourName}</td></tr>
+        <tr><td style="padding: 6px 0; color: #666;">Datum</td><td style="padding: 6px 0; font-weight: 600;">${dateFormatted}</td></tr>
+        <tr><td style="padding: 6px 0; color: #666;">Uhrzeit</td><td style="padding: 6px 0; font-weight: 600;">${timeFormatted} Uhr</td></tr>
+        <tr><td style="padding: 6px 0; color: #666;">Personen</td><td style="padding: 6px 0; font-weight: 600;">${passengerSummary}</td></tr>
+        <tr><td style="padding: 6px 0; color: #666;">Betrag</td><td style="padding: 6px 0; font-weight: 600;">${Number(data.totalAmount).toFixed(2).replace('.', ',')} &euro;</td></tr>
+        <tr><td style="padding: 6px 0; color: #666;">Zahlung</td><td style="padding: 6px 0;">${data.paymentMethod}</td></tr>
+        <tr style="border-top: 1px solid #eee;"><td style="padding: 10px 0 6px; color: #666;">Kunde</td><td style="padding: 10px 0 6px; font-weight: 600;">${data.customerName}</td></tr>
+        <tr><td style="padding: 6px 0; color: #666;">E-Mail</td><td style="padding: 6px 0;"><a href="mailto:${data.customerEmail}">${data.customerEmail}</a></td></tr>
+        ${data.customerPhone ? `<tr><td style="padding: 6px 0; color: #666;">Telefon</td><td style="padding: 6px 0;"><a href="tel:${data.customerPhone}">${data.customerPhone}</a></td></tr>` : ''}
+      </table>
+    </div>
+  `;
+
+  await resend.emails.send({
+    from: 'Inselbahn Helgoland <buchung@helgolandbahn.de>',
+    to: ADMIN_EMAIL,
+    subject,
+    html,
+  });
 }
 
 export async function POST(req: Request) {
@@ -175,6 +232,26 @@ async function confirmBookingAndSendEmail(bookingId: string, paymentIntentId: st
       invoiceUrl: invoiceUrl || undefined,
     }),
   });
+
+  // Send admin notification
+  try {
+    await sendAdminNotification(getResend(), {
+      bookingReference: booking.booking_reference,
+      customerName: booking.customer_name,
+      tourName: tour?.name || 'Tour',
+      bookingDate: booking.booking_date,
+      departureTime: dep?.departure_time || '',
+      adults: booking.adults,
+      children: booking.children,
+      childrenFree: booking.children_free,
+      totalAmount: booking.total_amount,
+      paymentMethod: booking.payment_method || 'stripe',
+      customerEmail: booking.customer_email,
+      customerPhone: booking.customer_phone || '',
+    });
+  } catch (adminErr) {
+    console.error('Admin notification email failed:', adminErr);
+  }
 
   // Schedule post-tour feedback email via QStash
   try {

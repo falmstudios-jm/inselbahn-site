@@ -9,8 +9,10 @@ import {
   generateCancelToken,
 } from '@/lib/booking-utils';
 import { buildConfirmationEmail } from '@/lib/email-templates';
+import { Resend } from 'resend';
 
 const BASE_URL = process.env.NEXT_PUBLIC_BASE_URL || 'https://www.helgolandbahn.de';
+const ADMIN_EMAIL = 'admin@helgolandbahn.de';
 
 export async function POST(req: Request) {
   try {
@@ -319,6 +321,38 @@ export async function POST(req: Request) {
               invoiceUrl,
             }),
           });
+
+          // Send admin notification
+          try {
+            const adminParts: string[] = [];
+            if (input.adults > 0) adminParts.push(`${input.adults} Erw`);
+            if (input.children > 0) adminParts.push(`${input.children} Kind`);
+            if (input.children_free > 0) adminParts.push(`${input.children_free} Kleinkind`);
+            const passengerSummary = adminParts.join(' + ');
+            const dateFormatted = new Date(input.booking_date + 'T00:00:00').toLocaleDateString('de-DE', { weekday: 'short', day: '2-digit', month: '2-digit', year: 'numeric' });
+            const timeFormatted = dep?.departure_time?.slice(0, 5) || '';
+
+            await resend.emails.send({
+              from: 'Inselbahn Helgoland <buchung@helgolandbahn.de>',
+              to: ADMIN_EMAIL,
+              subject: `INSELBAHN: ${passengerSummary}`,
+              html: `<div style="font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;max-width:480px;margin:0 auto;padding:20px;">
+                <h2 style="margin:0 0 16px;font-size:18px;color:#1a1a2e;">Neue Buchung ${bookingReference}</h2>
+                <table style="width:100%;border-collapse:collapse;font-size:14px;">
+                  <tr><td style="padding:6px 0;color:#666;">Tour</td><td style="padding:6px 0;font-weight:600;">${tour?.name || 'Tour'}</td></tr>
+                  <tr><td style="padding:6px 0;color:#666;">Datum</td><td style="padding:6px 0;font-weight:600;">${dateFormatted}</td></tr>
+                  <tr><td style="padding:6px 0;color:#666;">Uhrzeit</td><td style="padding:6px 0;font-weight:600;">${timeFormatted} Uhr</td></tr>
+                  <tr><td style="padding:6px 0;color:#666;">Personen</td><td style="padding:6px 0;font-weight:600;">${passengerSummary}</td></tr>
+                  <tr><td style="padding:6px 0;color:#666;">Betrag</td><td style="padding:6px 0;font-weight:600;">${Number(totalPrice).toFixed(2).replace('.', ',')} &euro;</td></tr>
+                  <tr><td style="padding:6px 0;color:#666;">Zahlung</td><td style="padding:6px 0;">Gutschein</td></tr>
+                  <tr style="border-top:1px solid #eee;"><td style="padding:10px 0 6px;color:#666;">Kunde</td><td style="padding:10px 0 6px;font-weight:600;">${input.customer_name}</td></tr>
+                  <tr><td style="padding:6px 0;color:#666;">E-Mail</td><td style="padding:6px 0;"><a href="mailto:${input.customer_email}">${input.customer_email}</a></td></tr>
+                  ${input.customer_phone ? `<tr><td style="padding:6px 0;color:#666;">Telefon</td><td style="padding:6px 0;"><a href="tel:${input.customer_phone}">${input.customer_phone}</a></td></tr>` : ''}
+                </table></div>`,
+            });
+          } catch (adminErr) {
+            console.error('Admin notification (gift card) failed:', adminErr);
+          }
         }
       } catch (emailErr) {
         console.error('Gift card booking email error:', emailErr);
