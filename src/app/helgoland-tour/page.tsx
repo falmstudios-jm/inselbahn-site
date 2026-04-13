@@ -717,7 +717,7 @@ export default function HelgolandTourPage() {
             </h2>
             <p className="text-dark/60 text-base md:text-lg leading-relaxed mb-8 max-w-2xl mx-auto">
               Sichern Sie sich Ihren Platz in der Inselbahn Helgoland. Online-Buchung
-              ist bis zu 3 Tage im Voraus möglich, Tickets sind auch direkt am
+              ist bis zu 30 Tage im Voraus möglich, Tickets sind auch direkt am
               Franz-Schensky-Platz erhältlich.
             </p>
             <TrackedLink

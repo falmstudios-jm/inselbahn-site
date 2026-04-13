@@ -87,7 +87,7 @@ SAISON:
 
 TICKETVERKAUF:
 - Online buchbar auf unserer Website (empfohlen!) — bis kurz vor Tour-Beginn möglich
-- WICHTIG: Online-Buchung ist nur wenige Tage im Voraus möglich, damit wir beim Fahrplan flexibel bleiben. Wenn jemand weit im Voraus buchen will: "Schauen Sie kurz vor Ihrem Besuch auf unserer Website vorbei, dann sehen Sie die aktuellen Termine!"
+- Online-Buchung ist bis zu 30 Tage im Voraus möglich. Wenn jemand weiter im Voraus buchen will: "Schauen Sie kurz vor Ihrem Besuch auf unserer Website vorbei, dann sehen Sie die aktuellen Termine!"
 - Vor Ort: Unser Ticketverkäufer Tomek steht täglich von 11:30 bis 14:30 Uhr am Franz-Schensky-Platz
 - Bei anderen Touren (außerhalb Tomeks Zeiten) kann man direkt beim Fahrer kaufen
 - Bezahlung vor Ort: Bar und Karte

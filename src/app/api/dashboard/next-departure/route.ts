@@ -14,14 +14,25 @@ export async function GET() {
   try {
     const supabase = getSupabaseAdmin();
 
+    // Check if this driver has an assigned tour (e.g. Klaus A → Premium only)
+    let assignedTourId: string | null = null;
+    if (session.staff_id) {
+      const { data: staff } = await supabase
+        .from('staff')
+        .select('assigned_tour_id')
+        .eq('id', session.staff_id)
+        .single();
+      assignedTourId = staff?.assigned_tour_id || null;
+    }
+
     // Current Berlin time
     const nowBerlin = new Date().toLocaleString('en-US', { timeZone: 'Europe/Berlin' });
     const now = new Date(nowBerlin);
     const today = now.toISOString().slice(0, 10);
     const currentTimeStr = `${String(now.getHours()).padStart(2, '0')}:${String(now.getMinutes()).padStart(2, '0')}:00`;
 
-    // Fetch all active departures with tour info
-    const { data: departures, error: depError } = await supabase
+    // Fetch active departures with tour info (filtered by assigned tour if set)
+    let depQuery = supabase
       .from('departures')
       .select(`
         id, departure_time, is_active, notes,
@@ -31,6 +42,12 @@ export async function GET() {
       .gte('departure_time', currentTimeStr)
       .order('departure_time')
       .limit(1);
+
+    if (assignedTourId) {
+      depQuery = depQuery.eq('tour_id', assignedTourId);
+    }
+
+    const { data: departures, error: depError } = await depQuery;
 
     if (depError) {
       console.error('Next departure error:', depError);
@@ -43,7 +60,7 @@ export async function GET() {
       tomorrow.setDate(tomorrow.getDate() + 1);
       const tomorrowStr = tomorrow.toISOString().slice(0, 10);
 
-      const { data: tomorrowDeps } = await supabase
+      let tomorrowQuery = supabase
         .from('departures')
         .select(`
           id, departure_time, notes,
@@ -52,6 +69,12 @@ export async function GET() {
         .eq('is_active', true)
         .order('departure_time')
         .limit(1);
+
+      if (assignedTourId) {
+        tomorrowQuery = tomorrowQuery.eq('tour_id', assignedTourId);
+      }
+
+      const { data: tomorrowDeps } = await tomorrowQuery;
 
       if (tomorrowDeps && tomorrowDeps.length > 0) {
         const tDep = tomorrowDeps[0];

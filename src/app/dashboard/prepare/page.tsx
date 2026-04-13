@@ -43,6 +43,17 @@ export default function PreparePage() {
   const [isTomorrow, setIsTomorrow] = useState(false);
   const [tomorrowDate, setTomorrowDate] = useState('');
 
+  // Check-in state
+  const [checkedIn, setCheckedIn] = useState<Set<string>>(new Set());
+  const toggleCheckIn = (bookingId: string) => {
+    setCheckedIn((prev) => {
+      const next = new Set(prev);
+      if (next.has(bookingId)) next.delete(bookingId);
+      else next.add(bookingId);
+      return next;
+    });
+  };
+
   // Quick sell state
   const [sellAdults, setSellAdults] = useState(0);
   const [sellChildren, setSellChildren] = useState(0);
@@ -338,6 +349,11 @@ export default function PreparePage() {
       <div className="mb-4">
         <h2 className="text-sm font-semibold text-gray-400 uppercase tracking-wider mb-2">
           Passagiere ({departure.passengers.length})
+          {departure.passengers.filter(p => p.customer_name !== 'BLOCKIERT').length > 0 && (
+            <span className="ml-2 text-green-600">
+              ✓ {checkedIn.size}/{departure.passengers.filter(p => p.customer_name !== 'BLOCKIERT').length} anwesend
+            </span>
+          )}
         </h2>
 
         {departure.passengers.length === 0 ? (
@@ -354,7 +370,22 @@ export default function PreparePage() {
                   key={p.id}
                   className={`px-4 py-3 ${isBlocked ? 'bg-gray-100' : ''}`}
                 >
-                  <div className="flex items-center justify-between">
+                  <div className="flex items-center gap-3">
+                    {/* Check-in toggle */}
+                    {!isBlocked && (
+                      <button
+                        onClick={() => toggleCheckIn(p.id)}
+                        className={`w-10 h-10 rounded-xl border-2 flex items-center justify-center shrink-0 transition-all ${
+                          checkedIn.has(p.id)
+                            ? 'bg-green-500 border-green-500'
+                            : 'border-gray-300 bg-white'
+                        }`}
+                      >
+                        {checkedIn.has(p.id) && (
+                          <svg className="w-5 h-5 text-white" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
+                        )}
+                      </button>
+                    )}
                     <div className="flex-1 min-w-0">
                       {isBlocked ? (
                         <div className="flex items-center gap-2">
@@ -365,7 +396,7 @@ export default function PreparePage() {
                         </div>
                       ) : (
                         <>
-                          <div className="font-bold text-dark text-lg truncate">
+                          <div className={`font-bold text-lg truncate ${checkedIn.has(p.id) ? 'text-green-700' : 'text-dark'}`}>
                             {p.customer_name}
                           </div>
                           <div className="flex items-center gap-2 text-sm text-gray-500">
