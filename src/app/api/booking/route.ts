@@ -42,6 +42,19 @@ export async function POST(req: Request) {
       );
     }
 
+    // Check season_end
+    const { data: seasonEndSetting } = await supabaseAdmin
+      .from('site_settings')
+      .select('value')
+      .eq('key', 'season_end')
+      .single();
+    if (seasonEndSetting?.value && input.booking_date >= seasonEndSetting.value) {
+      return NextResponse.json(
+        { error: 'Die Saison endet am ' + seasonEndSetting.value + '. Buchungen sind nur bis dahin möglich.' },
+        { status: 409 }
+      );
+    }
+
     // Fetch departure + tour details
     const { data: departure, error: depError } = await supabaseAdmin
       .from('departures')

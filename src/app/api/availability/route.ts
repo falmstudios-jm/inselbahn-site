@@ -23,6 +23,16 @@ export async function GET(req: NextRequest) {
       return NextResponse.json({ slots: [], message: 'Buchungen sind erst ab dem ' + new Date(seasonSetting.value + 'T00:00:00').toLocaleDateString('de-DE', { day: '2-digit', month: 'long', year: 'numeric' }) + ' möglich.' });
     }
 
+    // Check season_end
+    const { data: seasonEndSetting } = await supabase
+      .from('site_settings')
+      .select('value')
+      .eq('key', 'season_end')
+      .single();
+    if (seasonEndSetting?.value && date >= seasonEndSetting.value) {
+      return NextResponse.json({ slots: [], message: 'Die Saison endet am ' + new Date(new Date(seasonEndSetting.value + 'T00:00:00').getTime() - 86400000).toLocaleDateString('de-DE', { day: '2-digit', month: 'long', year: 'numeric' }) + '. Buchungen sind nur bis dahin möglich.' });
+    }
+
     // Fetch all active departures with their tour info (including non-online-bookable ones)
     const { data: departures, error: depError } = await supabase
       .from('departures')

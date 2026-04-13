@@ -270,6 +270,7 @@ export default function BookingWidget({ tours: supabaseTours }: BookingWidgetPro
   });
   const [maxFutureDays, setMaxFutureDays] = useState(DEFAULT_MAX_FUTURE_DAYS);
   const [seasonStart, setSeasonStart] = useState<string | null>(null);
+  const [seasonEnd, setSeasonEnd] = useState<string | null>(null);
 
   // Fetch settings from Supabase
   useEffect(() => {
@@ -280,6 +281,10 @@ export default function BookingWidget({ tours: supabaseTours }: BookingWidgetPro
     fetch('/api/settings?key=season_start')
       .then(r => r.ok ? r.json() : null)
       .then(d => { if (d?.value) setSeasonStart(d.value); })
+      .catch(() => {});
+    fetch('/api/settings?key=season_end')
+      .then(r => r.ok ? r.json() : null)
+      .then(d => { if (d?.value) setSeasonEnd(d.value); })
       .catch(() => {});
   }, []);
 
@@ -1163,10 +1168,11 @@ export default function BookingWidget({ tours: supabaseTours }: BookingWidgetPro
                       const isToday = dateObj.getTime() === todayObj.getTime();
                       const isTooFar = dateObj.getTime() > todayObj.getTime() + maxFutureDays * 86400000;
                       const isBeforeSeason = seasonStart ? dateStr < seasonStart : false;
+                      const isAfterSeason = seasonEnd ? dateStr >= seasonEnd : false;
                       // Today after 18:00 Berlin time = no more tours, treat as past
                       const berlinHour = new Date().toLocaleString('en-US', { timeZone: 'Europe/Berlin', hour: 'numeric', hour12: false });
                       const isTodayEvening = isToday && parseInt(berlinHour) >= 18;
-                      const isDisabled = isPast || isTooFar || isBeforeSeason || isTodayEvening;
+                      const isDisabled = isPast || isTooFar || isBeforeSeason || isAfterSeason || isTodayEvening;
                       const isSelected = dateStr === selectedDate;
                       const isFuture = !isPast && !isTooFar;
 
