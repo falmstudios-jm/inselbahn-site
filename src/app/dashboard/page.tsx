@@ -377,10 +377,18 @@ export default function DeparturesPage() {
   // Suppress unused var warning
   void getCapacityColor;
 
+  // Tour filter
+  const [tourFilter, setTourFilter] = useState<'all' | 'premium' | 'unterland'>('all');
+  const filteredDepartures = departures.filter((d) => {
+    if (tourFilter === 'all') return true;
+    if (tourFilter === 'premium') return d.tour_slug.includes('premium');
+    return d.tour_slug.includes('unterland');
+  });
+
   // Total passengers today
-  const totalPassengers = departures.reduce((sum, d) => sum + d.booked, 0);
-  const totalOnline = departures.reduce((sum, d) => sum + d.online_count, 0);
-  const totalVorOrt = departures.reduce((sum, d) => sum + d.vor_ort_count, 0);
+  const totalPassengers = filteredDepartures.reduce((sum, d) => sum + d.booked, 0);
+  const totalOnline = filteredDepartures.reduce((sum, d) => sum + d.online_count, 0);
+  const totalVorOrt = filteredDepartures.reduce((sum, d) => sum + d.vor_ort_count, 0);
 
   if (loading) {
     return (
@@ -437,9 +445,26 @@ export default function DeparturesPage() {
         </button>
       )}
 
+      {/* Tour filter toggle */}
+      <div className="flex gap-1 mb-4 bg-gray-100 rounded-xl p-1">
+        {([['all', 'Alles'], ['premium', 'Premium'], ['unterland', 'Unterland']] as const).map(([key, label]) => (
+          <button
+            key={key}
+            onClick={() => setTourFilter(key)}
+            className={`flex-1 py-2 text-sm font-semibold rounded-lg transition-all ${
+              tourFilter === key
+                ? 'bg-white text-dark shadow-sm'
+                : 'text-gray-500'
+            }`}
+          >
+            {label}
+          </button>
+        ))}
+      </div>
+
       {/* Departure cards */}
       <div className="space-y-3">
-        {departures.map((dep) => {
+        {filteredDepartures.map((dep) => {
           const colors = getTourColor(dep.tour_slug);
           const pct = getCapacityPercent(dep);
           const freeSpots = dep.remaining;

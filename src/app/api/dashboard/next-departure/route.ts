@@ -25,11 +25,13 @@ export async function GET() {
       assignedTourId = staff?.assigned_tour_id || null;
     }
 
-    // Current Berlin time
+    // Current Berlin time — show departure for 15 min after start (grace period for last-minute sales)
+    const GRACE_MINUTES = 15;
     const nowBerlin = new Date().toLocaleString('en-US', { timeZone: 'Europe/Berlin' });
     const now = new Date(nowBerlin);
     const today = now.toISOString().slice(0, 10);
-    const currentTimeStr = `${String(now.getHours()).padStart(2, '0')}:${String(now.getMinutes()).padStart(2, '0')}:00`;
+    const graceTime = new Date(now.getTime() - GRACE_MINUTES * 60 * 1000);
+    const currentTimeStr = `${String(graceTime.getHours()).padStart(2, '0')}:${String(graceTime.getMinutes()).padStart(2, '0')}:00`;
 
     // Fetch active departures with tour info (filtered by assigned tour if set)
     let depQuery = supabase
