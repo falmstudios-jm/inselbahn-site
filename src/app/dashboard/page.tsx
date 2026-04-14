@@ -74,6 +74,10 @@ export default function DeparturesPage() {
   const [unblockId, setUnblockId] = useState<string | null>(null);
   const [unblockSubmitting, setUnblockSubmitting] = useState(false);
 
+  // Cancel departure state
+  const [cancelDepId, setCancelDepId] = useState<string | null>(null);
+  const [cancelSubmitting, setCancelSubmitting] = useState(false);
+
   const todayISO = new Date().toLocaleDateString('en-CA', { timeZone: 'Europe/Berlin' });
   const isToday = selectedDate === todayISO;
 
@@ -372,6 +376,41 @@ export default function DeparturesPage() {
     } finally {
       setUnblockSubmitting(false);
     }
+  };
+
+  // Cancel departure handler — blocks all seats with GESPERRT
+  const handleCancelDeparture = async (departureId: string) => {
+    setCancelSubmitting(true);
+    try {
+      const dep = departures.find(d => d.departure_id === departureId);
+      const seatsToBlock = dep ? dep.remaining : 0;
+      if (seatsToBlock <= 0) {
+        setCancelDepId(null);
+        setCancelSubmitting(false);
+        return;
+      }
+      const res = await fetch('/api/dashboard/sell', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          mode: 'block',
+          departure_id: departureId,
+          booking_date: selectedDate,
+          adults: seatsToBlock,
+          customer_name: 'GESPERRT — Tour fällt aus',
+          payment_method: 'manual_entry',
+          total_amount: 0,
+          notes: 'Tour fällt aus',
+        }),
+      });
+      const data = await res.json();
+      if (data.success) {
+        setCancelDepId(null);
+        loadDepartures();
+        loadRevenue();
+      }
+    } catch { /* silent */ }
+    finally { setCancelSubmitting(false); }
   };
 
   // Suppress unused var warning
@@ -725,6 +764,42 @@ export default function DeparturesPage() {
                         <path strokeLinecap="round" strokeLinejoin="round" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z" />
                       </svg>
                       Pl&auml;tze blockieren
+                    </button>
+                  )}
+
+                  {/* Cancel departure button */}
+                  {cancelDepId === dep.departure_id ? (
+                    <div className="mt-2 bg-red-50 rounded-xl border border-red-200 p-4">
+                      <p className="text-sm font-semibold text-red-700 mb-3">
+                        Tour wirklich absagen? Alle freien Pl&auml;tze werden gesperrt.
+                      </p>
+                      <div className="flex gap-2">
+                        <button
+                          onClick={() => handleCancelDeparture(dep.departure_id)}
+                          disabled={cancelSubmitting}
+                          className="flex-1 py-2.5 bg-red-600 text-white font-semibold rounded-xl text-sm disabled:opacity-50"
+                        >
+                          {cancelSubmitting ? 'Wird abgesagt...' : 'Ja, absagen'}
+                        </button>
+                        <button
+                          onClick={() => setCancelDepId(null)}
+                          className="flex-1 py-2.5 bg-gray-200 text-gray-700 font-semibold rounded-xl text-sm"
+                        >
+                          Abbrechen
+                        </button>
+                      </div>
+                    </div>
+                  ) : (
+                    <button
+                      onClick={() => setCancelDepId(dep.departure_id)}
+                      className="w-full mt-2 py-2.5 rounded-xl bg-red-50 text-red-600 font-semibold text-sm border border-red-200 flex items-center justify-center gap-2 active:bg-red-100"
+                    >
+                      <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+                        <circle cx="12" cy="12" r="10" />
+                        <line x1="15" y1="9" x2="9" y2="15" />
+                        <line x1="9" y1="9" x2="15" y2="15" />
+                      </svg>
+                      Tour f&auml;llt aus
                     </button>
                   )}
                 </div>

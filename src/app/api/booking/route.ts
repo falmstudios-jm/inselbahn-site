@@ -371,6 +371,24 @@ export async function POST(req: Request) {
         console.error('Gift card booking email error:', emailErr);
       }
 
+      // Schedule post-tour feedback email via QStash
+      try {
+        const { Client: QStashClient } = await import('@upstash/qstash');
+        const durationMin = tour?.duration_minutes || 90;
+        const departureDateTime = new Date(`${input.booking_date}T${departure.departure_time}`);
+        const feedbackTime = new Date(departureDateTime.getTime() + (durationMin + 20) * 60 * 1000);
+        if (feedbackTime > new Date() && process.env.QSTASH_TOKEN) {
+          const qstash = new QStashClient({ token: process.env.QSTASH_TOKEN });
+          await qstash.publishJSON({
+            url: `${BASE_URL}/api/feedback`,
+            body: { booking_id: booking.id },
+            notBefore: Math.floor(feedbackTime.getTime() / 1000),
+          });
+        }
+      } catch (qErr) {
+        console.error('QStash feedback scheduling failed (gift card):', qErr);
+      }
+
       return NextResponse.json({
         skip_payment: true,
         booking_id: booking.id,

@@ -61,8 +61,42 @@ export default function PreparePage() {
   const [sellSubmitting, setSellSubmitting] = useState(false);
   const [sellConfirmation, setSellConfirmation] = useState<string | null>(null);
   const [sellError, setSellError] = useState('');
+  const [holdId, setHoldId] = useState<string | null>(null);
 
   const confirmTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
+  const holdTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
+
+  // Reserve seats when cart changes (debounced 300ms)
+  const updateHold = useCallback((adults: number, children: number) => {
+    if (holdTimer.current) clearTimeout(holdTimer.current);
+    holdTimer.current = setTimeout(async () => {
+      if (!departure) return;
+      const bookingDate = tomorrowDate || new Date().toLocaleDateString('en-CA', { timeZone: 'Europe/Berlin' });
+      try {
+        const res = await fetch('/api/dashboard/hold', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            departure_id: departure.departure_id,
+            booking_date: bookingDate,
+            adults, children,
+            hold_id: holdId,
+          }),
+        });
+        const data = await res.json();
+        if (data.hold_id !== undefined) setHoldId(data.hold_id);
+      } catch { /* silent */ }
+    }, 300);
+  }, [departure, tomorrowDate, holdId]);
+
+  // Release hold on unmount
+  useEffect(() => {
+    return () => {
+      if (holdId) {
+        fetch(`/api/dashboard/hold?id=${holdId}`, { method: 'DELETE' }).catch(() => {});
+      }
+    };
+  }, [holdId]);
 
   // Live clock - update every second
   useEffect(() => {
@@ -175,6 +209,11 @@ export default function PreparePage() {
       const data = await res.json();
 
       if (data.success) {
+        // Release the hold (the sell API created the real booking)
+        if (holdId) {
+          fetch(`/api/dashboard/hold?id=${holdId}`, { method: 'DELETE' }).catch(() => {});
+          setHoldId(null);
+        }
         setSellConfirmation(data.booking_reference);
         // Reset after 3 seconds
         if (confirmTimer.current) clearTimeout(confirmTimer.current);
@@ -447,7 +486,7 @@ export default function PreparePage() {
               <span className="font-medium text-dark">Erwachsene</span>
               <div className="flex items-center gap-3">
                 <button
-                  onClick={() => setSellAdults(Math.max(0, sellAdults - 1))}
+                  onClick={() => { const v = Math.max(0, sellAdults - 1); setSellAdults(v); updateHold(v, sellChildren); }}
                   className="w-[60px] h-[60px] rounded-full bg-gray-100 flex items-center justify-center text-2xl font-bold text-dark active:bg-gray-200"
                 >
                   &minus;
@@ -456,7 +495,7 @@ export default function PreparePage() {
                   {sellAdults}
                 </span>
                 <button
-                  onClick={() => setSellAdults(sellAdults + 1)}
+                  onClick={() => { const v = sellAdults + 1; setSellAdults(v); updateHold(v, sellChildren); }}
                   className="w-[60px] h-[60px] rounded-full bg-gray-100 flex items-center justify-center text-2xl font-bold text-dark active:bg-gray-200"
                 >
                   +
@@ -468,7 +507,7 @@ export default function PreparePage() {
               <span className="font-medium text-dark">Kinder</span>
               <div className="flex items-center gap-3">
                 <button
-                  onClick={() => setSellChildren(Math.max(0, sellChildren - 1))}
+                  onClick={() => { const v = Math.max(0, sellChildren - 1); setSellChildren(v); updateHold(sellAdults, v); }}
                   className="w-[60px] h-[60px] rounded-full bg-gray-100 flex items-center justify-center text-2xl font-bold text-dark active:bg-gray-200"
                 >
                   &minus;
@@ -477,7 +516,7 @@ export default function PreparePage() {
                   {sellChildren}
                 </span>
                 <button
-                  onClick={() => setSellChildren(sellChildren + 1)}
+                  onClick={() => { const v = sellChildren + 1; setSellChildren(v); updateHold(sellAdults, v); }}
                   className="w-[60px] h-[60px] rounded-full bg-gray-100 flex items-center justify-center text-2xl font-bold text-dark active:bg-gray-200"
                 >
                   +

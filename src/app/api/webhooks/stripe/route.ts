@@ -255,9 +255,10 @@ async function confirmBookingAndSendEmail(bookingId: string, paymentIntentId: st
 
   // Schedule post-tour feedback email via QStash
   try {
-    if (dep?.departure_time && tour?.duration_minutes) {
+    if (dep?.departure_time) {
+      const durationMin = tour?.duration_minutes || 90; // fallback 90 min
       const departureDateTime = new Date(`${booking.booking_date}T${dep.departure_time}`);
-      const feedbackTime = new Date(departureDateTime.getTime() + (tour.duration_minutes + 20) * 60 * 1000);
+      const feedbackTime = new Date(departureDateTime.getTime() + (durationMin + 20) * 60 * 1000);
 
       if (feedbackTime > new Date()) {
         const qstash = new QStashClient({ token: process.env.QSTASH_TOKEN! });
@@ -266,7 +267,11 @@ async function confirmBookingAndSendEmail(bookingId: string, paymentIntentId: st
           body: { booking_id: booking.id },
           notBefore: Math.floor(feedbackTime.getTime() / 1000),
         });
+      } else {
+        console.log('Feedback email not scheduled: feedbackTime in the past', { feedbackTime: feedbackTime.toISOString(), now: new Date().toISOString() });
       }
+    } else {
+      console.log('Feedback email not scheduled: missing departure_time', { dep_id: booking.departure_id });
     }
   } catch (qstashErr) {
     console.error('Failed to schedule feedback email via QStash:', qstashErr);
