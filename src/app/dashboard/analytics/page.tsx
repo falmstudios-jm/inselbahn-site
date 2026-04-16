@@ -36,7 +36,8 @@ interface AnalyticsData {
   };
   falmstudios: {
     online_bookings: number;
-    fee_per_booking: number;
+    online_passengers: number;
+    fee_per_passenger: number;
     total_fee: number;
     next_billing_date: string;
   };
@@ -539,16 +540,24 @@ export default function AnalyticsPage() {
                       </td>
                     </tr>
                     <tr className="border-b border-gray-50">
-                      <td className="py-2 text-gray-600">Gebühr pro Buchung</td>
+                      <td className="py-2 text-gray-600">
+                        Online-Passagiere
+                      </td>
                       <td className="py-2 text-right font-medium text-gray-800">
-                        {formatEuro(data.falmstudios.fee_per_booking)}
+                        {data.falmstudios.online_passengers}
+                      </td>
+                    </tr>
+                    <tr className="border-b border-gray-50">
+                      <td className="py-2 text-gray-600">Gebühr pro Passagier</td>
+                      <td className="py-2 text-right font-medium text-gray-800">
+                        {formatEuro(data.falmstudios.fee_per_passenger)}
                       </td>
                     </tr>
                     <tr className="border-b border-gray-50">
                       <td className="py-2 text-gray-600">Berechnung</td>
                       <td className="py-2 text-right text-xs text-gray-500 font-mono">
-                        {data.falmstudios.online_bookings} x{' '}
-                        {formatEuro(data.falmstudios.fee_per_booking)}
+                        {data.falmstudios.online_passengers} x{' '}
+                        {formatEuro(data.falmstudios.fee_per_passenger)}
                       </td>
                     </tr>
                     <tr>

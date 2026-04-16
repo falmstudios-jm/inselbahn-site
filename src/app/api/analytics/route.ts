@@ -2,7 +2,7 @@ import { NextRequest, NextResponse } from 'next/server';
 import { getSession } from '@/lib/dashboard-auth';
 import { getSupabaseAdmin } from '@/lib/supabase-admin';
 
-const FALMSTUDIOS_FEE_PER_BOOKING = 0.8; // 0.80 EUR per online booking
+const FALMSTUDIOS_FEE_PER_PASSENGER = 0.8; // 0.80 EUR per online passenger
 
 export async function GET(req: NextRequest) {
   try {
@@ -203,9 +203,14 @@ export async function GET(req: NextRequest) {
     const chatSuccessRate =
       totalChats > 0 ? Math.round((successCount / totalChats) * 100) : 0;
 
-    // ── falmstudios fee ──
+    // ── falmstudios fee ── (per online passenger, not per booking)
     const onlineConfirmedCount = onlineBookings.length;
-    const falmstudiosFee = onlineConfirmedCount * FALMSTUDIOS_FEE_PER_BOOKING;
+    const onlinePassengerCount = onlineBookings.reduce(
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      (sum, b: any) => sum + (b.adults || 0) + (b.children || 0) + (b.children_free || 0),
+      0
+    );
+    const falmstudiosFee = onlinePassengerCount * FALMSTUDIOS_FEE_PER_PASSENGER;
 
     // Next billing date: 1st of next month
     const now = new Date();
@@ -246,7 +251,8 @@ export async function GET(req: NextRequest) {
       },
       falmstudios: {
         online_bookings: onlineConfirmedCount,
-        fee_per_booking: FALMSTUDIOS_FEE_PER_BOOKING,
+        online_passengers: onlinePassengerCount,
+        fee_per_passenger: FALMSTUDIOS_FEE_PER_PASSENGER,
         total_fee: Math.round(falmstudiosFee * 100) / 100,
         next_billing_date: nextBillingDate,
       },

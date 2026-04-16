@@ -2,7 +2,7 @@ import { NextResponse } from 'next/server';
 import { getSupabaseAdmin } from '@/lib/supabase-admin';
 import { Resend } from 'resend';
 
-const FEE_PER_BOOKING = 0.80;
+const FEE_PER_PASSENGER = 0.80;
 const RECIPIENT_EMAIL = 'j.martens@falmstudios.com';
 const SENDER_EMAIL = 'Inselbahn Helgoland <buchung@helgolandbahn.de>';
 
@@ -33,10 +33,10 @@ export async function GET(req: Request) {
 
     const supabase = getSupabaseAdmin();
 
-    // Count confirmed ONLINE bookings for this month
-    const { count, error } = await supabase
+    // Fetch confirmed ONLINE bookings for this month — sum all passengers
+    const { data: monthBookings, error } = await supabase
       .from('bookings')
-      .select('id', { count: 'exact', head: true })
+      .select('adults, children, children_free')
       .eq('status', 'confirmed')
       .eq('payment_method', 'online')
       .gte('created_at', `${monthStart}T00:00:00`)
@@ -47,12 +47,16 @@ export async function GET(req: Request) {
       return NextResponse.json({ error: 'DB error' }, { status: 500 });
     }
 
-    const bookingCount = count || 0;
-    const totalFee = bookingCount * FEE_PER_BOOKING;
+    const bookingCount = monthBookings?.length || 0;
+    const passengerCount = (monthBookings || []).reduce(
+      (sum, b) => sum + (b.adults || 0) + (b.children || 0) + (b.children_free || 0),
+      0
+    );
+    const totalFee = passengerCount * FEE_PER_PASSENGER;
     const totalFeeFormatted = totalFee.toFixed(2).replace('.', ',');
 
-    if (bookingCount === 0) {
-      return NextResponse.json({ skipped: true, reason: 'No online bookings this month' });
+    if (passengerCount === 0) {
+      return NextResponse.json({ skipped: true, reason: 'No online passengers this month' });
     }
 
     // Send fee summary email
@@ -79,7 +83,11 @@ export async function GET(req: Request) {
           <td style="padding:8px 0;border-bottom:1px solid #eee;text-align:right;">${bookingCount}</td>
         </tr>
         <tr>
-          <td style="padding:8px 0;border-bottom:1px solid #eee;">Gebühr pro Buchung</td>
+          <td style="padding:8px 0;border-bottom:1px solid #eee;">Online-Passagiere</td>
+          <td style="padding:8px 0;border-bottom:1px solid #eee;text-align:right;">${passengerCount}</td>
+        </tr>
+        <tr>
+          <td style="padding:8px 0;border-bottom:1px solid #eee;">Gebühr pro Passagier</td>
           <td style="padding:8px 0;border-bottom:1px solid #eee;text-align:right;">0,80 €</td>
         </tr>
         <tr>
@@ -106,6 +114,7 @@ export async function GET(req: Request) {
       success: true,
       month: monthName,
       bookings: bookingCount,
+      passengers: passengerCount,
       fee: totalFee,
     });
   } catch (err) {
