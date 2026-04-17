@@ -95,12 +95,14 @@ export async function GET(req: NextRequest) {
         }
       }
     }
-    // Detect GESPERRT/our_cancellation bookings = departure is cancelled by operator
-    if (confirmedBookings) {
-      for (const b of confirmedBookings) {
-        if (b.status === 'our_cancellation' && b.customer_name?.startsWith('GESPERRT')) {
-          cancelledDepartures.add(b.departure_id);
-        }
+    // Fetch cancelled departures from departure_cancellations table
+    const { data: cancellations } = await supabase
+      .from('departure_cancellations')
+      .select('departure_id')
+      .eq('cancelled_date', date);
+    if (cancellations) {
+      for (const c of cancellations) {
+        cancelledDepartures.add(c.departure_id);
       }
     }
 

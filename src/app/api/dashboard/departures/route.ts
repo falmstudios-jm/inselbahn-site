@@ -44,6 +44,16 @@ export async function GET(req: NextRequest) {
       return NextResponse.json({ error: 'Fehler beim Laden' }, { status: 500 });
     }
 
+    // Fetch cancellations for this date
+    const { data: cancellations } = await supabase
+      .from('departure_cancellations')
+      .select('departure_id, reason')
+      .eq('cancelled_date', today);
+    const cancelledMap = new Map<string, string>();
+    for (const c of cancellations || []) {
+      cancelledMap.set(c.departure_id, c.reason || 'Fällt aus');
+    }
+
     // Build booking counts per departure with online/vor_ort breakdown
     const bookingCounts = new Map<string, { total: number; reserved: number; online: number; vor_ort: number }>();
     for (const b of bookings || []) {
@@ -76,6 +86,8 @@ export async function GET(req: NextRequest) {
 
       const counts = bookingCounts.get(dep.id) || { total: 0, reserved: 0, online: 0, vor_ort: 0 };
 
+      const cancelledReason = cancelledMap.get(dep.id) || null;
+
       return {
         departure_id: dep.id,
         departure_time: dep.departure_time,
@@ -89,6 +101,8 @@ export async function GET(req: NextRequest) {
         vor_ort_count: counts.vor_ort,
         price_adult: tour.price_adult,
         price_child: tour.price_child,
+        cancelled: !!cancelledReason,
+        cancelled_reason: cancelledReason,
       };
     });
 

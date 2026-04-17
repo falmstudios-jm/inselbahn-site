@@ -49,12 +49,21 @@ export async function GET() {
       depQuery = depQuery.eq('tour_id', assignedTourId);
     }
 
-    const { data: departures, error: depError } = await depQuery;
+    // Fetch more than 1 — we'll filter out cancelled ones
+    const { data: allDepartures, error: depError } = await depQuery.limit(10);
 
     if (depError) {
       console.error('Next departure error:', depError);
       return NextResponse.json({ error: 'Fehler beim Laden' }, { status: 500 });
     }
+
+    // Filter out departures cancelled for today
+    const { data: todayCancellations } = await supabase
+      .from('departure_cancellations')
+      .select('departure_id')
+      .eq('cancelled_date', today);
+    const cancelledIds = new Set((todayCancellations || []).map(c => c.departure_id));
+    const departures = (allDepartures || []).filter(d => !cancelledIds.has(d.id)).slice(0, 1);
 
     if (!departures || departures.length === 0) {
       // No more departures today — find the first departure tomorrow
@@ -70,13 +79,21 @@ export async function GET() {
         `)
         .eq('is_active', true)
         .order('departure_time')
-        .limit(1);
+        .limit(10);
 
       if (assignedTourId) {
         tomorrowQuery = tomorrowQuery.eq('tour_id', assignedTourId);
       }
 
-      const { data: tomorrowDeps } = await tomorrowQuery;
+      const { data: allTomorrowDeps } = await tomorrowQuery;
+
+      // Filter out tomorrow's cancelled departures
+      const { data: tomorrowCancellations } = await supabase
+        .from('departure_cancellations')
+        .select('departure_id')
+        .eq('cancelled_date', tomorrowStr);
+      const tomorrowCancelledIds = new Set((tomorrowCancellations || []).map(c => c.departure_id));
+      const tomorrowDeps = (allTomorrowDeps || []).filter(d => !tomorrowCancelledIds.has(d.id)).slice(0, 1);
 
       if (tomorrowDeps && tomorrowDeps.length > 0) {
         const tDep = tomorrowDeps[0];
