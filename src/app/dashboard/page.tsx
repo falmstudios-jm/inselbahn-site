@@ -355,14 +355,10 @@ export default function DeparturesPage() {
   const handleUnblock = async (bookingId: string) => {
     setUnblockSubmitting(true);
     try {
-      const res = await fetch('/api/dashboard/refund', {
+      const res = await fetch('/api/dashboard/unblock', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          booking_id: bookingId,
-          amount: 0,
-          reason: 'Blockierung aufgehoben',
-        }),
+        body: JSON.stringify({ booking_id: bookingId }),
       });
       const data = await res.json();
       if (data.success) {
@@ -370,9 +366,11 @@ export default function DeparturesPage() {
         setUnblockId(null);
         loadDepartures();
         loadRevenue();
+      } else {
+        console.error('Unblock failed:', data.error);
       }
-    } catch {
-      // silent
+    } catch (err) {
+      console.error('Unblock error:', err);
     } finally {
       setUnblockSubmitting(false);
     }
@@ -586,7 +584,9 @@ export default function DeparturesPage() {
                     ) : (
                       <div className="divide-y divide-gray-200">
                         {passengers.map((p) => {
-                          const isBlocked = p.customer_name === 'BLOCKIERT';
+                          const isBlocked =
+                            p.customer_name === 'BLOCKIERT' ||
+                            p.customer_name?.startsWith('GESPERRT');
                           const isRefunded = p.status === 'refunded' || p.status === 'partial_refund';
 
                           return (
@@ -629,7 +629,7 @@ export default function DeparturesPage() {
                               <div className="flex-1 min-w-0">
                                 <div className="font-medium text-dark truncate flex items-center gap-2">
                                   {isBlocked ? (
-                                    <span className="text-gray-500">BLOCKIERT</span>
+                                    <span className="text-gray-500">{p.customer_name}</span>
                                   ) : (
                                     p.customer_name
                                   )}
