@@ -7,6 +7,29 @@ import Header from "@/components/Header";
 import Footer from "@/components/Footer";
 import { trackEvent } from "@/lib/plausible";
 
+function PaxRow({ label, value, max, onChange }: { label: string; value: number; max: number; onChange: (v: number) => void }) {
+  return (
+    <div className="flex items-center justify-between">
+      <span className="text-sm text-dark/80">{label}</span>
+      <div className="flex items-center gap-2">
+        <button
+          onClick={() => onChange(Math.max(0, value - 1))}
+          className="w-9 h-9 rounded-full bg-white border border-gray-200 flex items-center justify-center text-lg font-bold text-dark active:bg-gray-50"
+        >
+          −
+        </button>
+        <span className="w-8 text-center text-lg font-bold">{value}</span>
+        <button
+          onClick={() => onChange(Math.min(max, value + 1))}
+          className="w-9 h-9 rounded-full bg-white border border-gray-200 flex items-center justify-center text-lg font-bold text-dark active:bg-gray-50"
+        >
+          +
+        </button>
+      </div>
+    </div>
+  );
+}
+
 interface BookingDetails {
   id: string;
   booking_reference: string;
@@ -170,6 +193,10 @@ function CancelPageContent() {
   const [cancelling, setCancelling] = useState(false);
   const [cancelled, setCancelled] = useState(false);
   const [cancelError, setCancelError] = useState("");
+  const [refundMode, setRefundMode] = useState<'full' | 'partial'>('full');
+  const [refAdults, setRefAdults] = useState(0);
+  const [refChildren, setRefChildren] = useState(0);
+  const [refChildrenFree, setRefChildrenFree] = useState(0);
 
   const canCancel = useCallback(() => {
     if (!booking) return false;
@@ -222,10 +249,16 @@ function CancelPageContent() {
     setCancelError("");
 
     try {
+      const payload: Record<string, unknown> = { cancel_token: token };
+      if (refundMode === 'partial') {
+        payload.refund_adults = refAdults;
+        payload.refund_children = refChildren;
+        payload.refund_children_free = refChildrenFree;
+      }
       const res = await fetch(`/api/booking/${bookingId}/cancel`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ cancel_token: token }),
+        body: JSON.stringify(payload),
       });
 
       if (!res.ok) {
@@ -568,11 +601,63 @@ function CancelPageContent() {
               </div>
             )}
 
+            {/* Partial / full toggle */}
+            {isAllowed && (booking.adults + booking.children + (booking.children_free || 0)) > 1 && (
+              <div className="bg-gray-50 border border-gray-200 rounded-xl p-4">
+                <p className="font-semibold text-dark text-sm mb-3">Was m&ouml;chten Sie erstatten?</p>
+                <div className="flex gap-1 mb-4 bg-white rounded-lg p-1 border border-gray-200">
+                  <button
+                    onClick={() => setRefundMode('full')}
+                    className={`flex-1 py-2 text-sm font-semibold rounded-md ${refundMode === 'full' ? 'bg-primary text-white' : 'text-gray-600'}`}
+                  >
+                    Komplette Buchung
+                  </button>
+                  <button
+                    onClick={() => setRefundMode('partial')}
+                    className={`flex-1 py-2 text-sm font-semibold rounded-md ${refundMode === 'partial' ? 'bg-primary text-white' : 'text-gray-600'}`}
+                  >
+                    Einzelne Personen
+                  </button>
+                </div>
+                {refundMode === 'partial' && (
+                  <div className="space-y-3">
+                    <p className="text-xs text-dark/60">
+                      Der Platz wird freigegeben und der Betrag automatisch erstattet.
+                    </p>
+                    {booking.adults > 0 && (
+                      <PaxRow
+                        label={`Erwachsene (max ${booking.adults})`}
+                        value={refAdults}
+                        max={booking.adults}
+                        onChange={setRefAdults}
+                      />
+                    )}
+                    {booking.children > 0 && (
+                      <PaxRow
+                        label={`Kinder (max ${booking.children})`}
+                        value={refChildren}
+                        max={booking.children}
+                        onChange={setRefChildren}
+                      />
+                    )}
+                    {(booking.children_free || 0) > 0 && (
+                      <PaxRow
+                        label={`Kleinkinder (max ${booking.children_free})`}
+                        value={refChildrenFree}
+                        max={booking.children_free || 0}
+                        onChange={setRefChildrenFree}
+                      />
+                    )}
+                  </div>
+                )}
+              </div>
+            )}
+
             {/* Action */}
             {isAllowed ? (
               <button
                 onClick={handleCancel}
-                disabled={cancelling}
+                disabled={cancelling || (refundMode === 'partial' && refAdults + refChildren + refChildrenFree === 0)}
                 className={`w-full py-4 rounded-xl font-semibold text-base transition-colors flex items-center justify-center gap-2 ${
                   cancelling
                     ? "bg-red-200 text-red-400 cursor-not-allowed"
@@ -603,8 +688,10 @@ function CancelPageContent() {
                   </svg>
                 )}
                 {cancelling
-                  ? "Wird storniert..."
-                  : "Buchung stornieren"}
+                  ? "Wird bearbeitet..."
+                  : refundMode === 'partial'
+                    ? `${refAdults + refChildren + refChildrenFree} Person${refAdults + refChildren + refChildrenFree === 1 ? '' : 'en'} erstatten`
+                    : "Buchung stornieren"}
               </button>
             ) : (
               <div className="bg-amber-50 border border-amber-200 rounded-xl px-5 py-4 text-center">

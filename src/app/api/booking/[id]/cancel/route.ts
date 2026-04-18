@@ -16,7 +16,17 @@ export async function POST(
   try {
     const { id } = await params;
     const body = await req.json();
-    const { cancel_token } = body;
+    const { cancel_token, refund_adults, refund_children, refund_children_free } = body as {
+      cancel_token?: string;
+      refund_adults?: number;
+      refund_children?: number;
+      refund_children_free?: number;
+    };
+
+    const hasPartial =
+      (refund_adults || 0) > 0 ||
+      (refund_children || 0) > 0 ||
+      (refund_children_free || 0) > 0;
 
     if (!cancel_token) {
       return NextResponse.json(
@@ -88,12 +98,41 @@ export async function POST(
       );
     }
 
+    // Determine refund amount: full booking, or a subset of passengers
+    const totalAmount = Number(booking.total_amount);
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    const tour = (booking.departures as any)?.tours;
+    const priceAdult = Number(tour?.price_adult || 0);
+    const priceChild = Number(tour?.price_child || 0);
+
+    let refundAmount = totalAmount;
+    let newAdults = 0;
+    let newChildren = 0;
+    let newChildrenFree = 0;
+
+    if (hasPartial) {
+      const ra = Math.min(refund_adults || 0, booking.adults);
+      const rc = Math.min(refund_children || 0, booking.children);
+      const rcf = Math.min(refund_children_free || 0, booking.children_free || 0);
+
+      refundAmount = Math.min(ra * priceAdult + rc * priceChild, totalAmount);
+      newAdults = booking.adults - ra;
+      newChildren = booking.children - rc;
+      newChildrenFree = (booking.children_free || 0) - rcf;
+    }
+
+    const remainingPassengers = newAdults + newChildren + newChildrenFree;
+    const isFullRefund = !hasPartial || remainingPassengers === 0;
+
     // Handle refund based on payment method
     if (booking.stripe_payment_intent_id) {
       // Stripe payment — issue Stripe refund
       try {
         await getStripe().refunds.create({
           payment_intent: booking.stripe_payment_intent_id,
+          ...(hasPartial && !isFullRefund
+            ? { amount: Math.round(refundAmount * 100) }
+            : {}),
         });
       } catch (stripeErr) {
         console.error('Stripe refund error:', stripeErr);
@@ -138,14 +177,25 @@ export async function POST(
       }
     }
 
-    // Update booking status
-    const refundStatus = booking.stripe_payment_intent_id ? 'refunded' : 'cancelled';
+    // Update booking status (and passenger counts for partial)
+    const refundStatus = isFullRefund
+      ? (booking.stripe_payment_intent_id ? 'refunded' : 'cancelled')
+      : 'partial_refund';
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    const updatePayload: Record<string, any> = {
+      status: refundStatus,
+    };
+    if (isFullRefund) {
+      updatePayload.cancelled_at = new Date().toISOString();
+    } else {
+      updatePayload.adults = newAdults;
+      updatePayload.children = newChildren;
+      updatePayload.children_free = newChildrenFree;
+      updatePayload.total_amount = Math.max(0, totalAmount - refundAmount);
+    }
     const { error: updateError } = await supabase
       .from('bookings')
-      .update({
-        status: refundStatus,
-        cancelled_at: new Date().toISOString(),
-      })
+      .update(updatePayload)
       .eq('id', id);
 
     if (updateError) {
@@ -157,7 +207,6 @@ export async function POST(
     }
 
     // Send cancellation confirmation email
-    const tour = booking.departures?.tours;
     const formattedDate = new Date(
       booking.booking_date + 'T00:00:00'
     ).toLocaleDateString('de-DE', {
@@ -168,16 +217,21 @@ export async function POST(
     });
 
     try {
+      const subject = isFullRefund
+        ? `Stornierungsbestätigung ${booking.booking_reference} — Inselbahn Helgoland`
+        : `Teilerstattung ${booking.booking_reference} — Inselbahn Helgoland`;
       await getResend().emails.send({
         from: 'Inselbahn Helgoland <buchung@helgolandbahn.de>',
         to: booking.customer_email,
-        subject: `Stornierungsbestätigung ${booking.booking_reference} — Inselbahn Helgoland`,
+        subject,
         html: buildCancellationEmail({
           bookingReference: booking.booking_reference,
           customerName: booking.customer_name,
           tourName: tour?.name || 'Inselbahn Tour',
           bookingDate: formattedDate,
-          totalAmount: booking.total_amount,
+          totalAmount: refundAmount,
+          isPartial: !isFullRefund,
+          remainingPassengers,
         }),
       });
     } catch (emailErr) {
@@ -204,11 +258,17 @@ interface CancelEmailParams {
   tourName: string;
   bookingDate: string;
   totalAmount: number;
+  isPartial?: boolean;
+  remainingPassengers?: number;
 }
 
 function buildCancellationEmail(params: CancelEmailParams): string {
-  const { bookingReference, customerName, tourName, bookingDate, totalAmount } =
+  const { bookingReference, customerName, tourName, bookingDate, totalAmount, isPartial, remainingPassengers } =
     params;
+  const title = isPartial ? 'Teilerstattung' : 'Buchung storniert';
+  const greeting = isPartial
+    ? `Hallo ${customerName}, wir haben eine Teilerstattung für Ihre Buchung veranlasst.${remainingPassengers ? ` Ihre Buchung bleibt mit ${remainingPassengers} Person${remainingPassengers === 1 ? '' : 'en'} bestehen.` : ''}`
+    : `Hallo ${customerName}, Ihre Buchung wurde erfolgreich storniert.`;
 
   return `
 <!DOCTYPE html>
@@ -240,7 +300,7 @@ function buildCancellationEmail(params: CancelEmailParams): string {
               <table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="background-color:#F24444;border-radius:8px;">
                 <tr>
                   <td style="padding:16px 20px;text-align:center;">
-                    <p style="margin:0;font-size:18px;font-weight:700;color:#ffffff;">Buchung storniert</p>
+                    <p style="margin:0;font-size:18px;font-weight:700;color:#ffffff;">${title}</p>
                   </td>
                 </tr>
               </table>
@@ -251,7 +311,7 @@ function buildCancellationEmail(params: CancelEmailParams): string {
           <tr>
             <td style="padding:0 24px 32px;">
               <p style="color:#555;font-size:15px;line-height:1.6;margin:0 0 24px;">
-                Hallo ${customerName}, Ihre Buchung wurde erfolgreich storniert.
+                ${greeting}
               </p>
 
               <!-- Booking Details -->

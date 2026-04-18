@@ -2,6 +2,29 @@
 
 import { useState, useEffect, useCallback } from 'react';
 
+function PaxCounter({ label, value, max, onChange }: { label: string; value: number; max: number; onChange: (v: number) => void }) {
+  return (
+    <div className="flex items-center justify-between">
+      <span className="text-sm text-gray-700">{label} <span className="text-gray-400">· max {max}</span></span>
+      <div className="flex items-center gap-2">
+        <button
+          onClick={() => onChange(Math.max(0, value - 1))}
+          className="w-9 h-9 rounded-full bg-gray-100 flex items-center justify-center text-lg font-bold text-dark active:bg-gray-200"
+        >
+          −
+        </button>
+        <span className="w-8 text-center text-lg font-bold">{value}</span>
+        <button
+          onClick={() => onChange(Math.min(max, value + 1))}
+          className="w-9 h-9 rounded-full bg-gray-100 flex items-center justify-center text-lg font-bold text-dark active:bg-gray-200"
+        >
+          +
+        </button>
+      </div>
+    </div>
+  );
+}
+
 interface Passenger {
   id: string;
   customer_name: string;
@@ -27,6 +50,8 @@ interface DepartureSlot {
   remaining: number;
   online_count: number;
   vor_ort_count: number;
+  price_adult?: number;
+  price_child?: number;
   cancelled?: boolean;
   cancelled_reason?: string | null;
 }
@@ -42,6 +67,15 @@ interface RefundState {
   amount: string;
   reason: string;
   customReason: string;
+  mode: 'full' | 'passengers';
+  maxAdults: number;
+  maxChildren: number;
+  maxChildrenFree: number;
+  refundAdults: number;
+  refundChildren: number;
+  refundChildrenFree: number;
+  priceAdult: number;
+  priceChild: number;
 }
 
 interface BlockState {
@@ -244,12 +278,21 @@ export default function DeparturesPage() {
   };
 
   // Refund handlers
-  const openRefund = (p: Passenger) => {
+  const openRefund = (p: Passenger, dep: DepartureSlot) => {
     setRefundState({
       bookingId: p.id,
       amount: String(p.total_amount),
       reason: 'Zu gro\u00df f\u00fcr Fahrzeug',
       customReason: '',
+      mode: 'full',
+      maxAdults: p.adults,
+      maxChildren: p.children,
+      maxChildrenFree: p.children_free || 0,
+      refundAdults: 0,
+      refundChildren: 0,
+      refundChildrenFree: 0,
+      priceAdult: Number(dep.price_adult || 0),
+      priceChild: Number(dep.price_child || 0),
     });
     setRefundError('');
   };
@@ -265,28 +308,37 @@ export default function DeparturesPage() {
         : refundState.reason;
 
     try {
+      const payload: Record<string, unknown> = {
+        booking_id: refundState.bookingId,
+        reason,
+      };
+
+      if (refundState.mode === 'passengers') {
+        payload.refund_adults = refundState.refundAdults;
+        payload.refund_children = refundState.refundChildren;
+        payload.refund_children_free = refundState.refundChildrenFree;
+      } else {
+        payload.amount = parseFloat(refundState.amount) || 0;
+      }
+
       const res = await fetch('/api/dashboard/refund', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          booking_id: refundState.bookingId,
-          amount: parseFloat(refundState.amount) || 0,
-          reason,
-        }),
+        body: JSON.stringify(payload),
       });
 
       const data = await res.json();
 
       if (data.success) {
-        // Update passenger in local state
-        setPassengers((prev) =>
-          prev.map((p) =>
-            p.id === refundState.bookingId
-              ? { ...p, status: data.status }
-              : p
-          )
-        );
         setRefundState(null);
+        // Reload passenger list to get updated counts
+        if (expandedId) {
+          const pRes = await fetch(
+            `/api/dashboard/passengers?departure_id=${expandedId}&date=${selectedDate}`
+          );
+          const pData = await pRes.json();
+          setPassengers(pData.passengers || []);
+        }
         loadDepartures();
         loadRevenue();
       } else {
@@ -692,9 +744,9 @@ export default function DeparturesPage() {
                                     Freigeben
                                   </button>
                                 )
-                              ) : !isRefunded ? (
+                              ) : !isRefunded || p.status === 'partial_refund' ? (
                                 <button
-                                  onClick={() => openRefund(p)}
+                                  onClick={() => openRefund(p, dep)}
                                   className="text-xs font-semibold px-2 py-1.5 rounded bg-red-100 text-red-700 shrink-0 active:bg-red-200"
                                 >
                                   Erstatten
@@ -923,22 +975,78 @@ export default function DeparturesPage() {
               </button>
             </div>
 
-            {/* Amount */}
-            <div className="mb-4">
-              <label className="block text-sm font-medium text-gray-600 mb-1">
-                Erstattungsbetrag (&euro;)
-              </label>
-              <input
-                type="number"
-                inputMode="decimal"
-                step="0.01"
-                value={refundState.amount}
-                onChange={(e) =>
-                  setRefundState((s) => s ? { ...s, amount: e.target.value } : s)
-                }
-                className="w-full p-3 border border-gray-300 rounded-lg text-lg focus:outline-none focus:ring-2 focus:ring-red-500/50"
-              />
+            {/* Mode toggle */}
+            <div className="flex gap-1 mb-4 bg-gray-100 rounded-xl p-1">
+              <button
+                onClick={() => setRefundState((s) => s ? { ...s, mode: 'full' } : s)}
+                className={`flex-1 py-2 text-sm font-semibold rounded-lg ${refundState.mode === 'full' ? 'bg-white text-dark shadow-sm' : 'text-gray-500'}`}
+              >
+                Betrag
+              </button>
+              <button
+                onClick={() => setRefundState((s) => s ? { ...s, mode: 'passengers' } : s)}
+                className={`flex-1 py-2 text-sm font-semibold rounded-lg ${refundState.mode === 'passengers' ? 'bg-white text-dark shadow-sm' : 'text-gray-500'}`}
+              >
+                Personen
+              </button>
             </div>
+
+            {refundState.mode === 'full' ? (
+              <div className="mb-4">
+                <label className="block text-sm font-medium text-gray-600 mb-1">
+                  Erstattungsbetrag (&euro;)
+                </label>
+                <input
+                  type="number"
+                  inputMode="decimal"
+                  step="0.01"
+                  value={refundState.amount}
+                  onChange={(e) =>
+                    setRefundState((s) => s ? { ...s, amount: e.target.value } : s)
+                  }
+                  className="w-full p-3 border border-gray-300 rounded-lg text-lg focus:outline-none focus:ring-2 focus:ring-red-500/50"
+                />
+              </div>
+            ) : (
+              <div className="mb-4 space-y-3">
+                <p className="text-xs text-gray-500">
+                  Pl&auml;tze werden freigegeben (online buchbar) und der Betrag automatisch berechnet.
+                </p>
+                {refundState.maxAdults > 0 && (
+                  <PaxCounter
+                    label={`Erwachsene (${refundState.priceAdult.toFixed(2)} €)`}
+                    value={refundState.refundAdults}
+                    max={refundState.maxAdults}
+                    onChange={(v) => setRefundState((s) => s ? { ...s, refundAdults: v } : s)}
+                  />
+                )}
+                {refundState.maxChildren > 0 && (
+                  <PaxCounter
+                    label={`Kinder (${refundState.priceChild.toFixed(2)} €)`}
+                    value={refundState.refundChildren}
+                    max={refundState.maxChildren}
+                    onChange={(v) => setRefundState((s) => s ? { ...s, refundChildren: v } : s)}
+                  />
+                )}
+                {refundState.maxChildrenFree > 0 && (
+                  <PaxCounter
+                    label="Kleinkind (0 €)"
+                    value={refundState.refundChildrenFree}
+                    max={refundState.maxChildrenFree}
+                    onChange={(v) => setRefundState((s) => s ? { ...s, refundChildrenFree: v } : s)}
+                  />
+                )}
+                <div className="bg-red-50 rounded-lg p-3 text-sm">
+                  <span className="text-gray-600">Erstattung: </span>
+                  <span className="font-bold text-red-600">
+                    {(
+                      refundState.refundAdults * refundState.priceAdult +
+                      refundState.refundChildren * refundState.priceChild
+                    ).toFixed(2).replace('.', ',')} €
+                  </span>
+                </div>
+              </div>
+            )}
 
             {/* Reason dropdown */}
             <div className="mb-4">
@@ -984,7 +1092,12 @@ export default function DeparturesPage() {
 
             <button
               onClick={handleRefund}
-              disabled={refundSubmitting || !refundState.amount || parseFloat(refundState.amount) <= 0}
+              disabled={
+                refundSubmitting ||
+                (refundState.mode === 'full'
+                  ? !refundState.amount || parseFloat(refundState.amount) <= 0
+                  : refundState.refundAdults + refundState.refundChildren + refundState.refundChildrenFree === 0)
+              }
               className="w-full bg-red-600 text-white font-bold py-4 rounded-xl text-lg disabled:opacity-50 active:scale-[0.98] transition-transform"
             >
               {refundSubmitting ? 'Erstatte...' : 'Erstatten'}

@@ -12,25 +12,40 @@ export async function POST(req: Request) {
 
   try {
     const body = await req.json();
-    const { booking_id, amount, reason } = body as {
+    const { booking_id, amount, reason, refund_adults, refund_children, refund_children_free } = body as {
       booking_id?: string;
       amount?: number;
       reason?: string;
+      refund_adults?: number;
+      refund_children?: number;
+      refund_children_free?: number;
     };
 
-    if (!booking_id || amount === undefined || amount <= 0) {
+    const hasPassengerRefund =
+      (refund_adults || 0) > 0 ||
+      (refund_children || 0) > 0 ||
+      (refund_children_free || 0) > 0;
+
+    if (!booking_id) {
       return NextResponse.json(
-        { error: 'booking_id und gültiger Betrag erforderlich' },
+        { error: 'booking_id erforderlich' },
+        { status: 400 }
+      );
+    }
+
+    if (!hasPassengerRefund && (amount === undefined || amount <= 0)) {
+      return NextResponse.json(
+        { error: 'Betrag oder Passagiere erforderlich' },
         { status: 400 }
       );
     }
 
     const supabase = getSupabaseAdmin();
 
-    // Fetch booking
+    // Fetch booking + tour prices
     const { data: booking, error: bookingError } = await supabase
       .from('bookings')
-      .select('*')
+      .select('*, departures:departure_id(*, tours:tour_id(price_adult, price_child))')
       .eq('id', booking_id)
       .single();
 
@@ -49,8 +64,46 @@ export async function POST(req: Request) {
     }
 
     const totalAmount = Number(booking.total_amount);
-    const refundAmount = Math.min(amount, totalAmount);
-    const isFullRefund = refundAmount >= totalAmount;
+
+    // If passenger refund mode: compute amount server-side based on remaining tour prices
+    let computedRefundAmount = amount ?? 0;
+    let newAdults = booking.adults;
+    let newChildren = booking.children;
+    let newChildrenFree = booking.children_free || 0;
+
+    if (hasPassengerRefund) {
+      const ra = Math.min(refund_adults || 0, booking.adults);
+      const rc = Math.min(refund_children || 0, booking.children);
+      const rcf = Math.min(refund_children_free || 0, booking.children_free || 0);
+
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      const tour = (booking.departures as any)?.tours;
+      const priceAdult = Number(tour?.price_adult || 0);
+      const priceChild = Number(tour?.price_child || 0);
+
+      // Children-free have no price
+      computedRefundAmount = ra * priceAdult + rc * priceChild;
+
+      // Prevent refunding more than remaining total
+      computedRefundAmount = Math.min(computedRefundAmount, totalAmount);
+
+      newAdults = booking.adults - ra;
+      newChildren = booking.children - rc;
+      newChildrenFree = (booking.children_free || 0) - rcf;
+
+      if (newAdults < 0 || newChildren < 0 || newChildrenFree < 0) {
+        return NextResponse.json(
+          { error: 'Zu viele Passagiere zur Erstattung' },
+          { status: 400 }
+        );
+      }
+    }
+
+    const refundAmount = Math.min(computedRefundAmount, totalAmount);
+    const remainingPassengers = newAdults + newChildren + newChildrenFree;
+    const isFullRefund = hasPassengerRefund
+      ? remainingPassengers === 0
+      : refundAmount >= totalAmount;
 
     // Handle Stripe refund
     if (booking.stripe_payment_intent_id) {
@@ -113,14 +166,24 @@ export async function POST(req: Request) {
       .filter(Boolean)
       .join(' | ');
 
-    // Update booking status
+    // Update booking status and, if passenger refund, counts + total
     const newStatus = isFullRefund ? 'refunded' : 'partial_refund';
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    const updatePayload: Record<string, any> = {
+      status: newStatus,
+      notes: notesText,
+    };
+    if (hasPassengerRefund) {
+      updatePayload.adults = newAdults;
+      updatePayload.children = newChildren;
+      updatePayload.children_free = newChildrenFree;
+      updatePayload.total_amount = Math.max(0, totalAmount - refundAmount);
+      // If everyone is refunded, mark fully refunded and record cancelled_at
+      if (isFullRefund) updatePayload.cancelled_at = new Date().toISOString();
+    }
     await supabase
       .from('bookings')
-      .update({
-        status: newStatus,
-        notes: notesText,
-      })
+      .update(updatePayload)
       .eq('id', booking_id);
 
     // Send refund email if customer has a real email
