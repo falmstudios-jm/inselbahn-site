@@ -176,12 +176,13 @@ export async function GET(req: NextRequest) {
     // ── Chat log stats ──
     const { data: chatLogs } = await supabase
       .from('chat_logs')
-      .select('topics, status')
+      .select('topics, status, user_questions, ai_answers, summary, created_at, message_count')
       .gte('created_at', new Date(startDate + 'T00:00:00Z').toISOString())
       .lte(
         'created_at',
         new Date(endDate + 'T23:59:59Z').toISOString()
-      );
+      )
+      .order('created_at', { ascending: false });
 
     const allLogs = chatLogs || [];
     const topicCounts: Record<string, number> = {};
@@ -248,6 +249,15 @@ export async function GET(req: NextRequest) {
         total_chats: totalChats,
         success_rate: chatSuccessRate,
         top_topics: topTopics,
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        recent: allLogs.slice(0, 50).map((l: any) => ({
+          created_at: l.created_at,
+          status: l.status,
+          message_count: l.message_count,
+          topics: l.topics || [],
+          user_questions: l.user_questions || l.summary,
+          ai_answers: l.ai_answers || null,
+        })),
       },
       falmstudios: {
         online_bookings: onlineConfirmedCount,

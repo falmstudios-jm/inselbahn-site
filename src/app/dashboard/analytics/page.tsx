@@ -33,6 +33,14 @@ interface AnalyticsData {
     total_chats: number;
     success_rate: number;
     top_topics: { topic: string; count: number }[];
+    recent: {
+      created_at: string;
+      status: string;
+      message_count: number;
+      topics: string[];
+      user_questions: string | null;
+      ai_answers: string | null;
+    }[];
   };
   falmstudios: {
     online_bookings: number;
@@ -576,6 +584,83 @@ export default function AnalyticsPage() {
                 </p>
               </div>
             </div>
+
+            {/* Chat-Verlauf */}
+            {data.chat.recent && data.chat.recent.length > 0 && (
+              <div className="mt-6 bg-white rounded-2xl shadow-sm border border-gray-100 p-6">
+                <h2 className="text-lg font-semibold text-gray-800 mb-1">
+                  Chat-Verlauf
+                </h2>
+                <p className="text-xs text-gray-500 mb-4">
+                  Die letzten {data.chat.recent.length} Konversationen mit dem Chatbot
+                </p>
+                <div className="space-y-3">
+                  {data.chat.recent.map((c, i) => {
+                    const statusColor =
+                      c.status === 'success'
+                        ? 'bg-green-100 text-green-700'
+                        : c.status === 'partial'
+                          ? 'bg-amber-100 text-amber-700'
+                          : c.status === 'failed'
+                            ? 'bg-red-100 text-red-700'
+                            : c.status === 'abuse'
+                              ? 'bg-red-200 text-red-800'
+                              : 'bg-gray-100 text-gray-600';
+                    return (
+                      <div
+                        key={i}
+                        className="border border-gray-100 rounded-xl p-4 hover:bg-gray-50 transition-colors"
+                      >
+                        <div className="flex items-center justify-between flex-wrap gap-2 mb-2">
+                          <div className="flex items-center gap-2 flex-wrap">
+                            <span className={`text-[10px] font-bold uppercase px-2 py-0.5 rounded-full ${statusColor}`}>
+                              {c.status}
+                            </span>
+                            {c.topics.map((t) => (
+                              <span
+                                key={t}
+                                className="text-[10px] font-semibold uppercase px-2 py-0.5 rounded-full bg-blue-50 text-blue-700"
+                              >
+                                {t}
+                              </span>
+                            ))}
+                            <span className="text-[10px] text-gray-400">
+                              {c.message_count} Nachrichten
+                            </span>
+                          </div>
+                          <span className="text-xs text-gray-400">
+                            {new Date(c.created_at).toLocaleString('de-DE', {
+                              day: '2-digit', month: '2-digit', year: '2-digit',
+                              hour: '2-digit', minute: '2-digit',
+                            })}
+                          </span>
+                        </div>
+                        {c.user_questions && (
+                          <div className="mb-2">
+                            <p className="text-[11px] font-semibold text-gray-500 uppercase tracking-wide mb-1">
+                              Frage
+                            </p>
+                            <p className="text-sm text-gray-800 leading-snug whitespace-pre-wrap">
+                              {c.user_questions}
+                            </p>
+                          </div>
+                        )}
+                        {c.ai_answers && (
+                          <div>
+                            <p className="text-[11px] font-semibold text-gray-500 uppercase tracking-wide mb-1">
+                              Antwort
+                            </p>
+                            <p className="text-sm text-gray-700 leading-snug whitespace-pre-wrap">
+                              {c.ai_answers}
+                            </p>
+                          </div>
+                        )}
+                      </div>
+                    );
+                  })}
+                </div>
+              </div>
+            )}
           </>
         )}
       </div>

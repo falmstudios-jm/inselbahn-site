@@ -9,6 +9,7 @@ interface ManualInvoice {
   amount: number;
   description: string;
   payment_status: 'paid' | 'stripe' | 'transfer';
+  paid_via: 'stripe' | 'transfer' | 'in_person' | null;
   invoice_number: string | null;
   invoice_data: Record<string, string> | null;
   stripe_url: string | null;
@@ -16,11 +17,15 @@ interface ManualInvoice {
   access_token: string;
 }
 
-const STATUS_LABEL: Record<string, { label: string; color: string }> = {
-  paid: { label: 'Bezahlt', color: 'bg-green-100 text-green-700' },
-  stripe: { label: 'Stripe', color: 'bg-indigo-100 text-indigo-700' },
-  transfer: { label: 'Überweisung', color: 'bg-amber-100 text-amber-700' },
-};
+function statusBadge(inv: ManualInvoice): { label: string; color: string } {
+  if (inv.payment_status === 'paid') {
+    if (inv.paid_via === 'stripe') return { label: 'Bezahlt (Stripe)', color: 'bg-green-100 text-green-700' };
+    if (inv.paid_via === 'transfer') return { label: 'Bezahlt (Überweisung)', color: 'bg-green-100 text-green-700' };
+    return { label: 'Bezahlt (Vor Ort)', color: 'bg-green-100 text-green-700' };
+  }
+  if (inv.payment_status === 'stripe') return { label: 'Stripe-Link', color: 'bg-indigo-100 text-indigo-700' };
+  return { label: 'Überweisung', color: 'bg-amber-100 text-amber-700' };
+}
 
 export default function ManualInvoicesPage() {
   const [invoices, setInvoices] = useState<ManualInvoice[]>([]);
@@ -219,7 +224,7 @@ export default function ManualInvoicesPage() {
       ) : (
         <div className="space-y-2">
           {invoices.map((inv) => {
-            const status = STATUS_LABEL[inv.payment_status];
+            const status = statusBadge(inv);
             const link = `${window.location.origin}/manual-invoice/${inv.access_token}`;
             return (
               <div key={inv.id} className="bg-white border border-gray-200 rounded-xl p-3">
@@ -270,10 +275,14 @@ export default function ManualInvoicesPage() {
                   {inv.payment_status !== 'paid' && (
                     <button
                       onClick={async () => {
+                        // Default: if it was a Stripe link → assume Stripe paid manually marked,
+                        // if it was Überweisung → mark as transfer paid,
+                        // otherwise ask
+                        const paidVia = inv.payment_status === 'stripe' ? 'stripe' : 'transfer';
                         await fetch('/api/dashboard/manual-invoice', {
                           method: 'PATCH',
                           headers: { 'Content-Type': 'application/json' },
-                          body: JSON.stringify({ id: inv.id, payment_status: 'paid' }),
+                          body: JSON.stringify({ id: inv.id, payment_status: 'paid', paid_via: paidVia }),
                         });
                         load();
                       }}

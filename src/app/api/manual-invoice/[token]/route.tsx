@@ -273,6 +273,7 @@ export async function GET(
     description: inv.description,
     amount: Number(inv.amount),
     payment_status: inv.payment_status,
+    paid_via: inv.paid_via,
     stripe_url: inv.stripe_url,
     invoice_data: inv.invoice_data,
     invoice_number: inv.invoice_number,

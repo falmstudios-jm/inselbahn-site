@@ -87,6 +87,10 @@ export async function POST(req: Request) {
       }
     }
 
+    // If issuer marks as already paid upfront, record paid_via='in_person'
+    // (it wasn't Stripe and wasn't a wire transfer the customer just made)
+    const paidVia = status === 'paid' ? 'in_person' : null;
+
     const { data: invoice, error: insertError } = await supabase
       .from('manual_invoices')
       .insert({
@@ -96,6 +100,7 @@ export async function POST(req: Request) {
         amount,
         description,
         payment_status: status,
+        paid_via: paidVia,
         stripe_url: stripeUrl,
         stripe_payment_intent_id: stripePaymentIntentId,
         service_date,
@@ -209,15 +214,22 @@ export async function PATCH(req: Request) {
     return NextResponse.json({ error: 'Nicht autorisiert' }, { status: 401 });
   }
 
-  const { id, payment_status } = await req.json();
+  const { id, payment_status, paid_via } = await req.json();
   if (!id || !payment_status || !['paid', 'stripe', 'transfer'].includes(payment_status)) {
     return NextResponse.json({ error: 'id und gültiger payment_status erforderlich' }, { status: 400 });
   }
+  if (paid_via && !['stripe', 'transfer', 'in_person'].includes(paid_via)) {
+    return NextResponse.json({ error: 'Ungültiger paid_via' }, { status: 400 });
+  }
 
   const supabase = getSupabaseAdmin();
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  const update: Record<string, any> = { payment_status };
+  if (paid_via) update.paid_via = paid_via;
+
   const { error } = await supabase
     .from('manual_invoices')
-    .update({ payment_status })
+    .update(update)
     .eq('id', id);
 
   if (error) {

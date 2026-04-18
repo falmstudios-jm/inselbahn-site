@@ -135,9 +135,9 @@ export async function POST(req: Request) {
             const supabase = getSupabaseAdmin();
             await supabase
               .from('manual_invoices')
-              .update({ payment_status: 'paid' })
+              .update({ payment_status: 'paid', paid_via: 'stripe' })
               .eq('reference', reference);
-            console.log(`Manual invoice ${reference} marked as paid`);
+            console.log(`Manual invoice ${reference} marked as paid via Stripe`);
           }
           break;
         }
