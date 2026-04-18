@@ -203,7 +203,8 @@ export default function DeparturesPage() {
   };
 
   const isPast = (time: string) => {
-    if (!isToday) return false;
+    if (selectedDate < todayISO) return true; // past day → always past
+    if (!isToday) return false; // future day
     const nowBerlin = new Date().toLocaleString('en-US', { timeZone: 'Europe/Berlin' });
     const now = new Date(nowBerlin);
     const [h, m] = time.split(':').map(Number);
@@ -378,8 +379,8 @@ export default function DeparturesPage() {
     }
   };
 
-  // Cancel departure handler — marks the departure as cancelled for this date
-  const handleCancelDeparture = async (departureId: string) => {
+  // Cancel departure handler — marks the departure as cancelled or no-guests
+  const handleCancelDeparture = async (departureId: string, reason: 'Absage' | 'Keine Gäste') => {
     setCancelSubmitting(true);
     try {
       const res = await fetch('/api/dashboard/cancel-departure', {
@@ -388,7 +389,7 @@ export default function DeparturesPage() {
         body: JSON.stringify({
           departure_id: departureId,
           booking_date: selectedDate,
-          reason: 'Tour fällt aus',
+          reason,
         }),
       });
       const data = await res.json();
@@ -772,34 +773,66 @@ export default function DeparturesPage() {
                     </button>
                   )}
 
+                  {/* Reminder banner for past tours with 0 entries */}
+                  {isPast(dep.departure_time) && dep.booked === 0 && !dep.cancelled && (
+                    <div className="mt-2 bg-amber-50 border border-amber-300 rounded-xl p-3">
+                      <p className="text-sm font-semibold text-amber-800 mb-2">
+                        ⚠️ Diese Tour hat noch keine Buchungen.
+                      </p>
+                      <p className="text-xs text-amber-700 mb-3">
+                        Bitte Sammelverkauf nachtragen oder als Absage / Keine G&auml;ste markieren.
+                      </p>
+                      <a
+                        href={`/dashboard/sell?date=${selectedDate}&departure_id=${dep.departure_id}`}
+                        className="block w-full text-center py-2 bg-amber-600 text-white font-semibold rounded-lg text-sm active:bg-amber-700"
+                      >
+                        Sammelverkauf nachtragen
+                      </a>
+                    </div>
+                  )}
+
                   {/* Cancel / uncancel departure */}
                   {dep.cancelled ? (
-                    <button
-                      onClick={() => handleUncancelDeparture(dep.departure_id)}
-                      className="w-full mt-2 py-2.5 rounded-xl bg-gray-100 text-gray-700 font-semibold text-sm border border-gray-200 active:bg-gray-200"
-                    >
-                      Absage r&uuml;ckg&auml;ngig machen
-                    </button>
+                    <div className="mt-2">
+                      {dep.cancelled_reason && (
+                        <p className="text-xs text-gray-500 mb-1 text-center">
+                          Markiert als: <strong>{dep.cancelled_reason}</strong>
+                        </p>
+                      )}
+                      <button
+                        onClick={() => handleUncancelDeparture(dep.departure_id)}
+                        className="w-full py-2.5 rounded-xl bg-gray-100 text-gray-700 font-semibold text-sm border border-gray-200 active:bg-gray-200"
+                      >
+                        R&uuml;ckg&auml;ngig machen
+                      </button>
+                    </div>
                   ) : cancelDepId === dep.departure_id ? (
-                    <div className="mt-2 bg-red-50 rounded-xl border border-red-200 p-4">
-                      <p className="text-sm font-semibold text-red-700 mb-3">
-                        Tour wirklich absagen? Die Tour wird als ausgefallen markiert.
+                    <div className="mt-2 bg-gray-50 rounded-xl border border-gray-200 p-4">
+                      <p className="text-sm font-semibold text-dark mb-3">
+                        Was war der Grund?
                       </p>
-                      <div className="flex gap-2">
+                      <div className="grid grid-cols-2 gap-2 mb-2">
                         <button
-                          onClick={() => handleCancelDeparture(dep.departure_id)}
+                          onClick={() => handleCancelDeparture(dep.departure_id, 'Absage')}
                           disabled={cancelSubmitting}
-                          className="flex-1 py-2.5 bg-red-600 text-white font-semibold rounded-xl text-sm disabled:opacity-50"
+                          className="py-3 bg-red-600 text-white font-semibold rounded-xl text-sm disabled:opacity-50 active:scale-[0.98]"
                         >
-                          {cancelSubmitting ? 'Wird abgesagt...' : 'Ja, absagen'}
+                          Absage
                         </button>
                         <button
-                          onClick={() => setCancelDepId(null)}
-                          className="flex-1 py-2.5 bg-gray-200 text-gray-700 font-semibold rounded-xl text-sm"
+                          onClick={() => handleCancelDeparture(dep.departure_id, 'Keine Gäste')}
+                          disabled={cancelSubmitting}
+                          className="py-3 bg-gray-700 text-white font-semibold rounded-xl text-sm disabled:opacity-50 active:scale-[0.98]"
                         >
-                          Abbrechen
+                          Keine G&auml;ste
                         </button>
                       </div>
+                      <button
+                        onClick={() => setCancelDepId(null)}
+                        className="w-full py-2 text-gray-500 font-medium text-sm"
+                      >
+                        Abbrechen
+                      </button>
                     </div>
                   ) : (
                     <button

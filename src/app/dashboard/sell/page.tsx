@@ -1,6 +1,7 @@
 'use client';
 
 import { useState, useEffect, useCallback } from 'react';
+import { useSearchParams } from 'next/navigation';
 import { useDashboard } from '../dashboard-shell';
 
 interface AvailableSlot {
@@ -19,17 +20,24 @@ type SellMode = 'individual' | 'bulk';
 
 export default function SellPage() {
   const { name: staffName } = useDashboard();
+  const searchParams = useSearchParams();
 
-  // Always today (Berlin timezone), no date selector
+  // Date param for retroactive sales (e.g. yesterday's tours)
   const todayISO = new Date().toLocaleDateString('en-CA', { timeZone: 'Europe/Berlin' });
-  const selectedDate = todayISO;
+  const dateParam = searchParams.get('date');
+  const selectedDate = dateParam || todayISO;
+  const isPastDate = selectedDate < todayISO;
+
+  // Pre-select departure if linked from elsewhere
+  const preSelectDepartureId = searchParams.get('departure_id');
 
   const todayLabel = (() => {
-    const d = new Date(todayISO + 'T12:00:00');
+    const d = new Date(selectedDate + 'T12:00:00');
     const weekday = d.toLocaleDateString('de-DE', { weekday: 'short', timeZone: 'Europe/Berlin' });
     const day = d.getDate();
     const month = d.toLocaleDateString('de-DE', { month: 'short', timeZone: 'Europe/Berlin' });
-    return `Heute, ${weekday} ${day}. ${month}`;
+    if (selectedDate === todayISO) return `Heute, ${weekday} ${day}. ${month}`;
+    return `${weekday} ${day}. ${month}`;
   })();
 
   const [slots, setSlots] = useState<AvailableSlot[]>([]);
@@ -76,6 +84,19 @@ export default function SellPage() {
     setSelectedSlot(null);
     loadSlots();
   }, [loadSlots]);
+
+  // Auto-switch to bulk mode for past dates
+  useEffect(() => {
+    if (isPastDate) setMode('bulk');
+  }, [isPastDate]);
+
+  // Auto-select departure if linked from elsewhere
+  useEffect(() => {
+    if (preSelectDepartureId && slots.length > 0 && !selectedSlot) {
+      const found = slots.find(s => s.departure_id === preSelectDepartureId);
+      if (found) setSelectedSlot(found);
+    }
+  }, [preSelectDepartureId, slots, selectedSlot]);
 
   const formatTime = (time: string) => {
     const [h, m] = time.split(':');
