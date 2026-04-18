@@ -103,8 +103,8 @@ function ManualInvoiceDoc({ data }: { data: InvoiceProps }) {
             <Text style={styles.metaValue}>{fmtDate(data.invoiceDate)}</Text>
           </View>
           <View>
-            <Text style={styles.metaItem}>REFERENZ</Text>
-            <Text style={styles.metaValue}>{data.reference}</Text>
+            <Text style={styles.metaItem}>RECHNUNGSNUMMER</Text>
+            <Text style={styles.metaValue}>{data.invoiceNumber}</Text>
           </View>
         </View>
 
@@ -140,7 +140,7 @@ function ManualInvoiceDoc({ data }: { data: InvoiceProps }) {
 
         <View style={styles.footer}>
           <Text>Helgoländer Dienstleistungs GmbH · Von-Aschen-Str. 594 · 27498 Helgoland</Text>
-          <Text>Geschäftsführer: Klaus Rickmers · HRB 5089 NB · USt-IdNr. nicht vergeben</Text>
+          <Text>Geschäftsführer: Kay Martens · HRB 19416 PI · Amtsgericht Pinneberg · USt-IdNr.: DE173507934</Text>
           <Text style={{ marginTop: 6 }}>Helgoland: Gemäß §1 Abs. 2 UStG wird keine Umsatzsteuer erhoben. Alle Preise sind Endpreise.</Text>
         </View>
       </Page>
@@ -173,21 +173,55 @@ export async function GET(
       return NextResponse.json({ error: 'Bitte zuerst Rechnungsdaten ausfüllen' }, { status: 400 });
     }
 
-    // Generate invoice number if not yet assigned
+    // Assign strictly sequential invoice number (fortlaufend, GoBD-compliant)
+    // Shares the RE-YYYY-NNNN sequence with booking invoices (bookings.invoice_number)
     let invoiceNumber = inv.invoice_number;
     if (!invoiceNumber) {
       const year = new Date().getFullYear();
-      const { count } = await supabase
-        .from('manual_invoices')
-        .select('id', { count: 'exact', head: true })
-        .not('invoice_number', 'is', null)
-        .gte('created_at', `${year}-01-01`);
-      const seq = String((count || 0) + 1).padStart(4, '0');
-      invoiceNumber = `INV-${year}-${seq}`;
-      await supabase
+
+      // Find highest existing invoice number across BOTH bookings and manual_invoices
+      const [bookingInvs, manualInvs] = await Promise.all([
+        supabase
+          .from('bookings')
+          .select('invoice_number')
+          .like('invoice_number', `RE-${year}-%`)
+          .not('invoice_number', 'is', null),
+        supabase
+          .from('manual_invoices')
+          .select('invoice_number')
+          .like('invoice_number', `RE-${year}-%`)
+          .not('invoice_number', 'is', null),
+      ]);
+
+      let maxNum = 4200; // so nextNum starts at 4201
+      const rows = [...(bookingInvs.data || []), ...(manualInvs.data || [])];
+      for (const r of rows) {
+        const parts = r.invoice_number?.split('-');
+        if (parts && parts.length === 3) {
+          const n = parseInt(parts[2], 10);
+          if (!isNaN(n) && n > maxNum) maxNum = n;
+        }
+      }
+      const nextNum = maxNum + 1;
+      invoiceNumber = `RE-${year}-${nextNum}`;
+
+      const { error: updateErr } = await supabase
         .from('manual_invoices')
         .update({ invoice_number: invoiceNumber, invoice_date: new Date().toISOString().slice(0, 10) })
-        .eq('id', inv.id);
+        .eq('id', inv.id)
+        .is('invoice_number', null); // Concurrent safety: only set if still null
+
+      if (updateErr) {
+        console.error('Invoice number save error:', updateErr);
+      }
+
+      // If concurrent request already set one, re-fetch
+      const { data: re } = await supabase
+        .from('manual_invoices')
+        .select('invoice_number')
+        .eq('id', inv.id)
+        .single();
+      if (re?.invoice_number) invoiceNumber = re.invoice_number;
     }
 
     const pdfBuffer = await renderToBuffer(

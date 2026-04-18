@@ -553,14 +553,16 @@ export function InvoiceDocument({ data }: { data: InvoiceData }) {
             <Text style={styles.footerText}>
               Helgoländer Dienstleistungs GmbH{'\n'}
               Von-Aschen-Str. 594{'\n'}
-              27498 Helgoland
+              27498 Helgoland{'\n'}
+              Geschäftsführer: Kay Martens
             </Text>
           </View>
           <View style={styles.footerCol}>
-            <Text style={styles.footerLabel}>Kontakt</Text>
+            <Text style={styles.footerLabel}>Register</Text>
             <Text style={styles.footerText}>
-              info@helgolandbahn.de{'\n'}
-              www.helgolandbahn.de
+              HRB 19416 PI{'\n'}
+              Amtsgericht Pinneberg{'\n'}
+              USt-IdNr.: DE173507934
             </Text>
           </View>
           <View style={styles.footerCol}>

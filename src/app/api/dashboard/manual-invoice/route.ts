@@ -170,7 +170,7 @@ ${paymentBlock}
   }
 }
 
-// List manual invoices (admin only would be nicer but session is enough)
+// List manual invoices
 export async function GET() {
   const session = await getSession();
   if (!session) {
@@ -188,4 +188,28 @@ export async function GET() {
     return NextResponse.json({ error: 'Fehler beim Laden' }, { status: 500 });
   }
   return NextResponse.json({ invoices: data || [] });
+}
+
+// Update payment status (e.g. mark Überweisung as paid)
+export async function PATCH(req: Request) {
+  const session = await getSession();
+  if (!session) {
+    return NextResponse.json({ error: 'Nicht autorisiert' }, { status: 401 });
+  }
+
+  const { id, payment_status } = await req.json();
+  if (!id || !payment_status || !['paid', 'stripe', 'transfer'].includes(payment_status)) {
+    return NextResponse.json({ error: 'id und gültiger payment_status erforderlich' }, { status: 400 });
+  }
+
+  const supabase = getSupabaseAdmin();
+  const { error } = await supabase
+    .from('manual_invoices')
+    .update({ payment_status })
+    .eq('id', id);
+
+  if (error) {
+    return NextResponse.json({ error: 'Fehler beim Aktualisieren' }, { status: 500 });
+  }
+  return NextResponse.json({ success: true });
 }

@@ -241,6 +241,21 @@ export default function ManualInvoicesPage() {
                       PDF
                     </a>
                   )}
+                  {inv.payment_status !== 'paid' && (
+                    <button
+                      onClick={async () => {
+                        await fetch('/api/dashboard/manual-invoice', {
+                          method: 'PATCH',
+                          headers: { 'Content-Type': 'application/json' },
+                          body: JSON.stringify({ id: inv.id, payment_status: 'paid' }),
+                        });
+                        load();
+                      }}
+                      className="flex-1 text-center py-1.5 text-xs font-semibold rounded-lg bg-green-600 text-white"
+                    >
+                      Als bezahlt markieren
+                    </button>
+                  )}
                 </div>
               </div>
             );
