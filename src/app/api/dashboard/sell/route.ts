@@ -41,6 +41,8 @@ async function handleIndividualSale(
     children_free = 0,
     payment_method,
     customer_name,
+    customer_email,
+    custom_total,
   } = body as {
     departure_id?: string;
     booking_date?: string;
@@ -49,6 +51,8 @@ async function handleIndividualSale(
     children_free?: number;
     payment_method?: string;
     customer_name?: string;
+    customer_email?: string;
+    custom_total?: number;
   };
 
   if (!departure_id || !booking_date || !payment_method) {
@@ -110,12 +114,17 @@ async function handleIndividualSale(
     );
   }
 
-  const totalAmount = calculateTotal(
+  const computedTotal = calculateTotal(
     adults as number,
     children as number,
     tour.price_adult,
     tour.price_child
   );
+  // Allow seller to override the total (e.g. group discount); must be >= 0
+  const totalAmount =
+    typeof custom_total === 'number' && custom_total >= 0 && !Number.isNaN(custom_total)
+      ? Math.round(custom_total * 100) / 100
+      : computedTotal;
 
   const bookingReference = generateBookingReference();
 
@@ -155,7 +164,7 @@ async function handleIndividualSale(
       children_free,
       ghost_seats: ghostSeats,
       customer_name: customer_name || (payment_method === 'cash' ? 'Barzahlung' : 'SumUp-Zahlung'),
-      customer_email: 'walkin@helgolandbahn.de',
+      customer_email: customer_email?.trim() || 'walkin@helgolandbahn.de',
       total_amount: totalAmount,
       booking_reference: bookingReference,
       status: 'confirmed',

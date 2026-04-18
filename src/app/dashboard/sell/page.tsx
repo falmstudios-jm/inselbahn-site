@@ -51,6 +51,9 @@ export default function SellPage() {
   const [childrenFree, setChildrenFree] = useState(0);
   const [paymentMethod, setPaymentMethod] = useState<'cash' | 'sumup'>('cash');
   const [customerName, setCustomerName] = useState('');
+  const [customerEmail, setCustomerEmail] = useState('');
+  const [customPrice, setCustomPrice] = useState<string>('');
+  const [priceOverrideOpen, setPriceOverrideOpen] = useState(false);
 
   // Bulk mode state
   const [bulkAdults, setBulkAdults] = useState(0);
@@ -108,9 +111,12 @@ export default function SellPage() {
     return { bg: 'bg-blue-50', text: 'text-[#1B2A4A]', dot: 'bg-[#1B2A4A]' };
   };
 
-  const totalPrice = selectedSlot
+  const computedPrice = selectedSlot
     ? adults * selectedSlot.price_adult + children * selectedSlot.price_child
     : 0;
+  const parsedCustomPrice = parseFloat(customPrice.replace(',', '.'));
+  const useCustomPrice = priceOverrideOpen && !isNaN(parsedCustomPrice) && parsedCustomPrice >= 0;
+  const totalPrice = useCustomPrice ? parsedCustomPrice : computedPrice;
 
   const handleSellIndividual = async () => {
     if (!selectedSlot) return;
@@ -130,12 +136,31 @@ export default function SellPage() {
           children_free: childrenFree,
           payment_method: paymentMethod,
           customer_name: customerName || (paymentMethod === 'cash' ? 'Barzahlung' : 'SumUp-Zahlung'),
+          customer_email: customerEmail.trim() || undefined,
+          custom_total: useCustomPrice ? parsedCustomPrice : undefined,
         }),
       });
 
       const data = await res.json();
 
       if (data.success) {
+        // If customer supplied an email, immediately trigger the invoice link email
+        const emailTrimmed = customerEmail.trim();
+        if (emailTrimmed.includes('@')) {
+          try {
+            await fetch('/api/dashboard/send-invoice-link', {
+              method: 'POST',
+              headers: { 'Content-Type': 'application/json' },
+              body: JSON.stringify({
+                booking_reference: data.booking_reference,
+                email: emailTrimmed,
+              }),
+            });
+          } catch {
+            // silent — confirmation still shows the link section for retry
+          }
+        }
+
         setConfirmation({
           reference: data.booking_reference,
           total: data.total_amount,
@@ -198,6 +223,9 @@ export default function SellPage() {
     setChildrenFree(0);
     setPaymentMethod('cash');
     setCustomerName('');
+    setCustomerEmail('');
+    setCustomPrice('');
+    setPriceOverrideOpen(false);
     setBulkAdults(0);
     setBulkChildren(0);
     setBarAmount('');
@@ -246,7 +274,17 @@ export default function SellPage() {
           )}
 
           {/* Invoice email option */}
-          {!confirmation.isBulk && <InvoiceEmailSection bookingReference={confirmation.reference} />}
+          {!confirmation.isBulk && (
+            customerEmail.includes('@') ? (
+              <div className="bg-green-50 border border-green-200 rounded-lg p-3 mb-4 text-center">
+                <p className="text-green-700 text-sm font-medium">
+                  ✓ Rechnungslink an {customerEmail} gesendet
+                </p>
+              </div>
+            ) : (
+              <InvoiceEmailSection bookingReference={confirmation.reference} />
+            )
+          )}
 
           <button
             onClick={resetForm}
@@ -459,14 +497,79 @@ export default function SellPage() {
             </div>
           </div>
 
+          {/* Invoice email (optional) */}
+          <div className="mb-4">
+            <label className="block text-sm font-medium text-gray-600 mb-1">
+              🧾 Rechnung per E-Mail (optional)
+            </label>
+            <input
+              type="email"
+              value={customerEmail}
+              onChange={(e) => setCustomerEmail(e.target.value)}
+              placeholder="kunde@email.de"
+              className="w-full p-3 border border-gray-300 rounded-lg text-base focus:outline-none focus:ring-2 focus:ring-primary/50"
+            />
+            <p className="text-xs text-dark/40 mt-1">
+              Der Kunde bekommt automatisch einen Link zum Erstellen der Rechnung.
+            </p>
+          </div>
+
+          {/* Price override */}
+          <div className="mb-4">
+            {!priceOverrideOpen ? (
+              <button
+                type="button"
+                onClick={() => {
+                  setPriceOverrideOpen(true);
+                  setCustomPrice(computedPrice.toFixed(2));
+                }}
+                className="text-sm text-dark/50 hover:text-dark transition-colors"
+              >
+                💶 Preis anpassen
+              </button>
+            ) : (
+              <div className="bg-amber-50 border border-amber-200 rounded-lg p-3">
+                <div className="flex items-center justify-between mb-2">
+                  <label className="text-sm font-medium text-dark">Eigener Gesamtpreis (€)</label>
+                  <button
+                    type="button"
+                    onClick={() => {
+                      setPriceOverrideOpen(false);
+                      setCustomPrice('');
+                    }}
+                    className="text-xs text-dark/50"
+                  >
+                    Zurücksetzen
+                  </button>
+                </div>
+                <input
+                  type="text"
+                  inputMode="decimal"
+                  value={customPrice}
+                  onChange={(e) => setCustomPrice(e.target.value)}
+                  placeholder={computedPrice.toFixed(2)}
+                  className="w-full p-3 border border-gray-300 rounded-lg text-base bg-white"
+                />
+                <p className="text-[11px] text-dark/50 mt-1">
+                  Standard: {computedPrice.toFixed(2).replace('.', ',')} €
+                </p>
+              </div>
+            )}
+          </div>
+
           {/* Total + submit */}
           <div className="bg-white rounded-xl p-4 shadow-sm border border-gray-200 mb-4">
             <div className="flex items-center justify-between">
               <span className="text-lg font-medium text-dark">Gesamt</span>
               <span className="text-2xl font-bold text-primary">
-                {totalPrice.toFixed(2)} &euro;
+                {totalPrice.toFixed(2).replace('.', ',')} &euro;
               </span>
             </div>
+            {useCustomPrice && Math.abs(totalPrice - computedPrice) > 0.01 && (
+              <p className="text-xs text-amber-700 mt-1">
+                Preis manuell angepasst (Standard: {computedPrice.toFixed(2).replace('.', ',')} €)
+              </p>
+            )}
           </div>
 
           {error && (
