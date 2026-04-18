@@ -32,6 +32,7 @@ export function DashboardShell({ name, role, staffId, children }: DashboardShell
     { href: '/dashboard', label: 'Fahrten', icon: TabIconFahrten },
     { href: '/dashboard/bookings', label: 'Buchungen', icon: TabIconBuchungen },
     { href: '/dashboard/sell', label: 'Verkauf', icon: TabIconVerkauf },
+    { href: '/dashboard/invoices', label: 'Rechnung', icon: TabIconRechnung },
     { href: '/dashboard/revenue', label: 'Umsatz', icon: TabIconUmsatz },
   ];
 
@@ -125,6 +126,16 @@ function TabIconFahrten({ active }: { active: boolean }) {
       <line x1="16" y1="2" x2="16" y2="6" />
       <line x1="8" y1="2" x2="8" y2="6" />
       <line x1="3" y1="10" x2="21" y2="10" />
+    </svg>
+  );
+}
+
+function TabIconRechnung({ active }: { active: boolean }) {
+  return (
+    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke={active ? '#F24444' : '#9CA3AF'} strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+      <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z" />
+      <polyline points="14 2 14 8 20 8" />
+      <path d="M9 14l2 2 4-4" />
     </svg>
   );
 }

@@ -127,6 +127,21 @@ export async function POST(req: Request) {
       // ── Legacy: Stripe Checkout redirect (kept for safety) ──
       case 'checkout.session.completed': {
         const session = event.data.object;
+
+        // Manual invoice (Sonderfahrt etc.) paid via Stripe link
+        if (session.metadata?.type === 'manual_invoice') {
+          const reference = session.metadata?.reference;
+          if (reference) {
+            const supabase = getSupabaseAdmin();
+            await supabase
+              .from('manual_invoices')
+              .update({ payment_status: 'paid' })
+              .eq('reference', reference);
+            console.log(`Manual invoice ${reference} marked as paid`);
+          }
+          break;
+        }
+
         const bookingId = session.metadata?.booking_id;
 
         if (!bookingId) {
