@@ -56,7 +56,7 @@ export async function GET(
     .from('bookings')
     .select('*, departures:departure_id(*, tours:tour_id(*))')
     .eq('id', id)
-    .eq('status', 'confirmed')
+    .in('status', ['confirmed', 'partial_refund'])
     .single();
 
   if (error || !booking) {

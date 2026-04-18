@@ -9,6 +9,10 @@
       "schedule": "0 5 * * *"
     },
     {
+      "path": "/api/cron/post-tour",
+      "schedule": "0 18 * * *"
+    },
+    {
       "path": "/api/cron/falmstudios-fee",
       "schedule": "0 20 * * *"
     }

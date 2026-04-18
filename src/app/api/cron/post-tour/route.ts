@@ -24,11 +24,12 @@ export async function GET(req: Request) {
       timeZone: 'Europe/Berlin',
     }); // Returns "YYYY-MM-DD"
 
-    // Find confirmed bookings for today that haven't received feedback email
+    // Find bookings for today that haven't received feedback email
+    // Include partial_refund so remaining passengers still get the thank-you
     const { data: bookings, error } = await supabase
       .from('bookings')
       .select('*, departures:departure_id(*, tours:tour_id(*))')
-      .eq('status', 'confirmed')
+      .in('status', ['confirmed', 'partial_refund'])
       .eq('booking_date', berlinDate)
       .eq('feedback_sent', false);
 
@@ -43,18 +44,43 @@ export async function GET(req: Request) {
 
     const resend = getResend();
     let sentCount = 0;
+    const year = new Date().getFullYear();
 
     for (const booking of bookings) {
       const tourName = booking.departures?.tours?.name || 'Inselbahn Tour';
 
+      // Skip walk-in placeholder emails
+      if (!booking.customer_email || booking.customer_email.includes('walkin@') || booking.customer_email.includes('block@') || booking.customer_email.includes('hold@')) {
+        continue;
+      }
+
       try {
+        // Generate a personal discount code
+        const refSuffix = booking.booking_reference?.replace(/^IB-\d{4}-/, '') || 'XXXX';
+        const discountCode = `DANKE-${year}-${refSuffix}`;
+        const validUntil = `${year + 1}-12-31T23:59:59+01:00`;
+
+        await supabase.from('discount_codes').upsert({
+          code: discountCode,
+          type: 'percentage',
+          value: 10,
+          description: `10% Rabatt für ${booking.customer_name}`,
+          max_uses: 1,
+          current_uses: 0,
+          valid_from: new Date().toISOString(),
+          valid_until: validUntil,
+          is_active: true,
+        }, { onConflict: 'code' });
+
         await resend.emails.send({
           from: 'Inselbahn Helgoland <buchung@helgolandbahn.de>',
           to: booking.customer_email,
-          subject: 'Wie war Ihre Tour? \uD83C\uDF0A',
+          subject: 'Schön, dass Sie dabei waren! \uD83C\uDF0A Ihr persönlicher Rabattcode',
           html: buildFeedbackEmail({
             customerName: booking.customer_name,
             tourName,
+            discountCode,
+            validUntil: `31.12.${year + 1}`,
           }),
         });
 
@@ -86,10 +112,13 @@ export async function GET(req: Request) {
 interface FeedbackEmailParams {
   customerName: string;
   tourName: string;
+  discountCode: string;
+  validUntil: string;
 }
 
 function buildFeedbackEmail(params: FeedbackEmailParams): string {
-  const { customerName, tourName } = params;
+  const { customerName, tourName, discountCode, validUntil } = params;
+  const BASE = process.env.NEXT_PUBLIC_BASE_URL || 'https://www.helgolandbahn.de';
 
   return `
 <!DOCTYPE html>
@@ -115,40 +144,42 @@ function buildFeedbackEmail(params: FeedbackEmailParams): string {
             </td>
           </tr>
 
+          <!-- Hero image -->
+          <tr><td style="padding:8px 24px 0;">
+            <img src="${BASE}/images/topdown.jpg" alt="Helgoland von oben" width="552" style="width:100%;border-radius:8px;display:block;" />
+          </td></tr>
+
           <!-- Body -->
           <tr>
-            <td style="padding:0 24px 32px;">
-              <p style="color:#555;font-size:15px;line-height:1.6;margin:0 0 20px;">
-                Hallo ${customerName}, vielen Dank, dass Sie heute mit uns die ${tourName} gemacht haben! Wir hoffen, es hat Ihnen gefallen.
+            <td style="padding:20px 24px 32px;">
+              <p style="color:#555;font-size:15px;line-height:1.6;margin:0 0 24px;">
+                Hallo ${customerName}, vielen Dank, dass Sie mit uns die <strong>${tourName}</strong> gemacht haben! Wir hoffen, Sie hatten eine wunderbare Zeit auf Helgoland.
               </p>
+
+              <!-- Discount code -->
+              <table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="background-color:#F0FFF0;border:2px dashed #4B8B3B;border-radius:12px;margin-bottom:24px;">
+                <tr><td style="padding:24px;text-align:center;">
+                  <p style="margin:0 0 4px;font-size:12px;color:#888;text-transform:uppercase;letter-spacing:1px;">Ihr pers\u00F6nlicher Rabattcode</p>
+                  <p style="margin:0 0 8px;font-size:18px;font-weight:700;color:#333;">10% Rabatt auf Ihre n\u00E4chste Buchung!</p>
+                  <p style="margin:0 0 12px;font-size:28px;font-weight:700;color:#4B8B3B;font-family:monospace;letter-spacing:2px;">${discountCode}</p>
+                  <p style="margin:0 0 4px;font-size:13px;color:#555;">G\u00FCltig bis ${validUntil} \u00B7 Einmalig einl\u00F6sbar</p>
+                  <p style="margin:0;font-size:14px;font-weight:600;color:#4B8B3B;">Teilen Sie diesen Code gerne mit Freunden & Familie!</p>
+                </td></tr>
+              </table>
 
               <!-- Google Rating -->
               <table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="background-color:#F7F7F7;border-radius:8px;margin-bottom:24px;">
                 <tr>
                   <td style="padding:20px;text-align:center;">
-                    <p style="margin:0 0 12px;font-size:14px;font-weight:700;color:#333;">\u2B50 Hat es Ihnen gefallen?</p>
-                    <p style="margin:0 0 16px;font-size:13px;color:#555;">Eine Google-Bewertung hilft anderen Besuchern, uns zu finden \u2014 und uns, noch besser zu werden.</p>
-                    <a href="https://g.page/r/CeEvXFmlaLMwEBE/review" style="display:inline-block;background-color:#F24444;color:#ffffff;font-size:14px;font-weight:700;text-decoration:none;padding:12px 24px;border-radius:6px;">
-                      Jetzt bewerten
-                    </a>
-                  </td>
-                </tr>
-              </table>
-
-              <!-- Helgoland Tips -->
-              <table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="border-left:4px solid #F24444;padding-left:16px;margin-bottom:24px;">
-                <tr>
-                  <td>
-                    <p style="margin:0 0 10px;font-size:14px;font-weight:700;color:#333;">Unsere Helgoland-Tipps f\u00FCr Sie</p>
-                    <p style="margin:0 0 8px;font-size:13px;color:#555;line-height:1.5;">\uD83C\uDF66 Bestes Eis: Gelateria Curniciello am Fahrstuhl</p>
-                    <p style="margin:0 0 8px;font-size:13px;color:#555;line-height:1.5;">\uD83C\uDF7D\uFE0F Restaurant-Tipp: Fragen Sie die Einheimischen \u2014 die besten Empfehlungen wechseln mit der Saison!</p>
-                    <p style="margin:0;font-size:13px;color:#555;line-height:1.5;">\uD83D\uDEB6 Zu Fu\u00DF zur Langen Anna: Vom Fahrstuhl aus ca. 20 Min. \u00FCber den Klippenrandweg</p>
+                    <p style="margin:0 0 10px;font-size:14px;font-weight:700;color:#333;">Hat es Ihnen gefallen?</p>
+                    <p style="margin:0 0 14px;font-size:13px;color:#555;">Eine Google-Bewertung hilft anderen Besuchern, uns zu finden.</p>
+                    <a href="https://g.page/r/CeEvXFmlaLMwEBE/review" style="display:inline-block;background-color:#F24444;color:#fff;font-size:14px;font-weight:700;text-decoration:none;padding:12px 28px;border-radius:6px;">Jetzt bewerten</a>
                   </td>
                 </tr>
               </table>
 
               <!-- Feedback -->
-              <p style="font-size:13px;color:#888;line-height:1.5;margin:0;">
+              <p style="font-size:13px;color:#888;line-height:1.5;margin:16px 0 0;">
                 Anregungen oder Kritik? Schreiben Sie uns gerne an <a href="mailto:info@helgolandbahn.de" style="color:#F24444;text-decoration:none;">info@helgolandbahn.de</a> \u2014 wir freuen uns \u00FCber Ihr Feedback!
               </p>
             </td>

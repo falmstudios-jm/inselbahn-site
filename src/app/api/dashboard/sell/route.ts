@@ -90,7 +90,7 @@ async function handleIndividualSale(
     .select('adults, children, children_free, ghost_seats')
     .eq('departure_id', departure_id)
     .eq('booking_date', booking_date)
-    .eq('status', 'confirmed');
+    .in('status', ['confirmed', 'partial_refund']);
 
   const usedSeats = (existingBookings || []).reduce((sum: number, b: { adults: number; children: number; children_free: number; ghost_seats: number | null }) => {
     return sum + b.adults + b.children + (b.children_free || 0) + (b.ghost_seats || 0);
@@ -125,7 +125,7 @@ async function handleIndividualSale(
     .select('adults, children, children_free, ghost_seats')
     .eq('departure_id', departure_id)
     .eq('booking_date', booking_date)
-    .eq('status', 'confirmed');
+    .in('status', ['confirmed', 'partial_refund']);
 
   const recheckSeats = (recheck || []).reduce((sum: number, b: { adults: number; children: number; children_free: number; ghost_seats: number | null }) => {
     return sum + b.adults + b.children + (b.children_free || 0) + (b.ghost_seats || 0);
@@ -242,7 +242,7 @@ async function handleBulkSale(
     .select('adults, children, children_free, ghost_seats')
     .eq('departure_id', departure_id)
     .eq('booking_date', booking_date)
-    .eq('status', 'confirmed');
+    .in('status', ['confirmed', 'partial_refund']);
 
   const usedSeats = (existingBookings || []).reduce((sum: number, b: { adults: number; children: number; children_free: number; ghost_seats: number | null }) => {
     return sum + b.adults + b.children + (b.children_free || 0) + (b.ghost_seats || 0);
@@ -363,7 +363,7 @@ async function handleBlockSale(
     .select('adults, children, children_free, ghost_seats')
     .eq('departure_id', departure_id)
     .eq('booking_date', booking_date)
-    .eq('status', 'confirmed');
+    .in('status', ['confirmed', 'partial_refund']);
 
   const usedSeats = (existingBookings || []).reduce((sum: number, b: { adults: number; children: number; children_free: number; ghost_seats: number | null }) => {
     return sum + b.adults + b.children + (b.children_free || 0) + (b.ghost_seats || 0);

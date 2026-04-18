@@ -192,6 +192,9 @@ export async function POST(
       updatePayload.children = newChildren;
       updatePayload.children_free = newChildrenFree;
       updatePayload.total_amount = Math.max(0, totalAmount - refundAmount);
+      const refundedCount =
+        (refund_adults || 0) + (refund_children || 0) + (refund_children_free || 0);
+      updatePayload.refunded_passengers = (booking.refunded_passengers || 0) + refundedCount;
     }
     const { error: updateError } = await supabase
       .from('bookings')

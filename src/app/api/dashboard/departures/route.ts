@@ -37,7 +37,7 @@ export async function GET(req: NextRequest) {
       .from('bookings')
       .select('departure_id, adults, children, children_free, ghost_seats, payment_method')
       .eq('booking_date', today)
-      .eq('status', 'confirmed');
+      .in('status', ['confirmed', 'partial_refund']);
 
     if (bookError) {
       console.error('Bookings error:', bookError);

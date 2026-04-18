@@ -38,6 +38,7 @@ interface Passenger {
   stripe_payment_intent_id: string | null;
   gift_card_id: string | null;
   notes: string | null;
+  refunded_passengers?: number | null;
 }
 
 interface DepartureSlot {
@@ -645,7 +646,9 @@ export default function DeparturesPage() {
                           const isBlocked =
                             p.customer_name === 'BLOCKIERT' ||
                             p.customer_name?.startsWith('GESPERRT');
-                          const isRefunded = p.status === 'refunded' || p.status === 'partial_refund';
+                          const isFullyRefunded = p.status === 'refunded';
+                          const isPartialRefund = p.status === 'partial_refund';
+                          const isRefunded = isFullyRefunded; // fully refunded only = grayed out
 
                           return (
                             <div
@@ -691,9 +694,14 @@ export default function DeparturesPage() {
                                   ) : (
                                     p.customer_name
                                   )}
-                                  {isRefunded && (
+                                  {isFullyRefunded && (
                                     <span className="text-xs font-semibold px-1.5 py-0.5 rounded bg-red-100 text-red-700">
                                       Erstattet
+                                    </span>
+                                  )}
+                                  {isPartialRefund && (
+                                    <span className="text-xs font-semibold px-1.5 py-0.5 rounded bg-amber-100 text-amber-700">
+                                      {p.refunded_passengers || 0} Erstattet
                                     </span>
                                   )}
                                 </div>

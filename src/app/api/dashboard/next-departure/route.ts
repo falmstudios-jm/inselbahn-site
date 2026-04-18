@@ -105,7 +105,7 @@ export async function GET() {
           .select('id, booking_reference, customer_name, adults, children, children_free, payment_method, status, total_amount, ghost_seats, wheelchair_seat, stripe_payment_intent_id, gift_card_id, notes')
           .eq('departure_id', tDep.id)
           .eq('booking_date', tomorrowStr)
-          .in('status', ['confirmed', 'our_cancellation']);
+          .in('status', ['confirmed', 'partial_refund', 'our_cancellation']);
 
         const passengers = (tBookings || [])
           .sort((a, b) => {
@@ -173,7 +173,7 @@ export async function GET() {
       .select('id, customer_name, adults, children, children_free, ghost_seats, payment_method, booking_reference, status, total_amount, notes, created_at')
       .eq('departure_id', dep.id)
       .eq('booking_date', today)
-      .eq('status', 'confirmed')
+      .in('status', ['confirmed', 'partial_refund'])
       .order('created_at', { ascending: true });
 
     if (bookError) {

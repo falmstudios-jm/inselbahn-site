@@ -28,7 +28,7 @@ export async function GET(req: NextRequest) {
         )
       `)
       .eq('booking_date', today)
-      .eq('status', 'confirmed')
+      .in('status', ['confirmed', 'partial_refund'])
       .eq('created_by', session.staff_id);
 
     if (error) {

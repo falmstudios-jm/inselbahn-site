@@ -31,7 +31,7 @@ export async function GET(req: NextRequest) {
         )
       `)
       .eq('booking_date', today)
-      .eq('status', 'confirmed');
+      .in('status', ['confirmed', 'partial_refund']);
 
     // Apply staff filter if provided
     if (staffIdFilter) {

@@ -30,7 +30,7 @@ export async function GET(req: Request) {
     const { data: bookings, error } = await supabase
       .from('bookings')
       .select('*, departures:departure_id(*, tours:tour_id(*))')
-      .eq('status', 'confirmed')
+      .in('status', ['confirmed', 'partial_refund'])
       .eq('booking_date', berlinDate)
       .eq('reminder_sent', false);
 
