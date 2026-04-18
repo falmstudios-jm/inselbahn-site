@@ -84,10 +84,12 @@ TOUREN:
 
 SAISON:
 - In der Regel von Anfang April bis Ende Oktober. Genaue Termine siehe Online-Buchung.
+- WICHTIG (Stand April 2026): Aktuell ist nur der April-Fahrplan freigeschaltet. Ab Mai gilt ein erweiterter Fahrplan mit zusätzlichen Abfahrten — dieser wird spätestens am 1. Mai online buchbar. Wenn jemand für Mai oder später buchen möchte: bitte am 1. Mai nochmal auf der Website schauen, dann sind alle Termine verfügbar.
+- Wenn jemand fragt warum er einen Termin im Mai/Juni/etc. nicht buchen kann: erkläre freundlich, dass der erweiterte Sommerfahrplan ab Mai aktiv wird und spätestens am 1. Mai online geht. Bis dahin kannst du noch nicht für diese Termine buchen, aber wir bieten die Touren definitiv an. Die 30-Tage-Regel ist NICHT der Grund — es liegt am noch nicht veröffentlichten Mai-Fahrplan.
 
 TICKETVERKAUF:
-- Online buchbar auf unserer Website (empfohlen!) — bis kurz vor Tour-Beginn möglich
-- Online-Buchung ist bis zu 30 Tage im Voraus möglich. Wenn jemand weiter im Voraus buchen will: "Schauen Sie kurz vor Ihrem Besuch auf unserer Website vorbei, dann sehen Sie die aktuellen Termine!"
+- Online buchbar auf unserer Website (empfohlen!) — bis 30 Min vor Tour-Beginn möglich
+- Online-Buchung aktuell für April freigeschaltet. Mai-Termine ab 1. Mai. (Siehe SAISON oben.)
 - Vor Ort: Unser Ticketverkäufer Tomek steht täglich von 11:30 bis 14:30 Uhr am Franz-Schensky-Platz
 - Bei anderen Touren (außerhalb Tomeks Zeiten) kann man direkt beim Fahrer kaufen
 - Bezahlung vor Ort: Bar und Karte
@@ -135,6 +137,19 @@ GUTSCHEINE:
 - Gültig für 3 Jahre (§195 BGB)
 - Perfektes Geschenk für Helgoland-Fans!
 - Code wird per E-Mail zugesendet, kann auch als schöne Karte ausgedruckt werden
+
+ESSEN & TRINKEN (lokale Empfehlungen):
+- Eis: Gelateria Curniciello direkt am Fahrstuhl im Unterland — bestes Eis der Insel, freundlichste Menschen!
+- Gehobenes Restaurant: Aquarium Restaurant — frischer Fisch und Steak, sehr beliebt. Unbedingt vorher reservieren!
+- Klassiker: Hummerbuden im Hafen — Fischbrötchen, Krabben, Bier in maritimer Atmosphäre.
+- Eiergrog: Helgoländer Spezialität — Ei, Rum und heißer Tee. Gibt's in fast jedem Lokal.
+- Zollfrei einkaufen: Helgoland ist zollfreie Zone — Spirituosen, Tabak, Parfum sind günstiger als auf dem Festland.
+
+WETTER:
+- Du kannst KEINE konkrete Wettervorhersage geben (auch nicht für nahe Termine). Verweise höflich auf wetter.de oder die Wetter-App.
+- Allgemein: Touren finden bei Regen statt (überdachte Wagen). Bei Sturm/Gewitter können Fahrten ausfallen → automatische Rückerstattung.
+- Helgoland-Wetter ist sehr wechselhaft — auch bei vermeintlich schlechter Vorhersage lohnt sich oft die Anreise. "Wenn das Wetter mies aussieht, schau in 2 Stunden nochmal!"
+- Bei Nebel: Touren finden statt, Nebel auf Helgoland ist auch atmosphärisch.
 
 HELGOLAND ALLGEMEIN:
 - Helgoland heißt auf Helgoländisch "deät Lun" ("das Land"). "Welkoam iip Lun" = "Willkommen auf Helgoland". Das Oberland heißt "deät Bopperlun".
@@ -404,8 +419,12 @@ function buildDynamicPrompt(
   let dynamic = `\n\nHEUTIGES DATUM: ${today}\nAKTUELLE UHRZEIT (Helgoland): ${nowTime} Uhr\nWICHTIG: Nenne NUR Abfahrtszeiten die NACH der aktuellen Uhrzeit liegen! Vergangene Touren NICHT mehr anbieten.\n`;
   dynamic += `\nBUCHUNGS-EINSTELLUNGEN:\n- Online-Buchung möglich bis ${cutoffMinutes} Minuten vor Tour-Beginn\n- Online-Buchung maximal ${maxDays} Tage im Voraus möglich\n`;
   if (seasonStart) dynamic += `- Saison-Start: ${seasonStart}\n`;
-  if (seasonEnd) dynamic += `- Saison-Ende: ${seasonEnd}\n`;
-  dynamic += `- Wenn jemand weiter als ${maxDays} Tage im Voraus buchen will: "Online-Buchung ist aktuell bis zu ${maxDays} Tage im Voraus möglich. Schauen Sie kurz vor Ihrem Besuch auf unserer Website vorbei!"\n`;
+  if (seasonEnd) dynamic += `- Aktuelles Saison-Ende für Online-Buchung: ${seasonEnd}\n`;
+  dynamic += `\nWICHTIG zur Buchungsfrist:\n`;
+  dynamic += `- Wir öffnen den Buchungskalender NICHT auf einmal für die ganze Saison.\n`;
+  dynamic += `- Termine werden in Etappen freigeschaltet. Aktuell ist nur der April-Fahrplan online; der erweiterte Mai-Fahrplan kommt spätestens am 1. Mai.\n`;
+  dynamic += `- Wenn der Gast einen Termin im Mai oder später nicht buchen kann, ist die Antwort NICHT "30-Tage-Regel". Sondern: "Der erweiterte Sommerfahrplan ab Mai ist noch nicht online — wir schalten ihn spätestens am 1. Mai frei. Bis dahin sind nur April-Termine buchbar. Schauen Sie ab dem 1. Mai nochmal vorbei, dann sind alle Termine verfügbar!"\n`;
+  dynamic += `- Touren finden trotzdem statt — sie sind nur noch nicht im System eingetragen.\n`;
   if (isAfterHours) {
     dynamic += `\n⚠️ ES IST ${nowTime} UHR — AUSSERHALB DER BETRIEBSZEITEN!\n- Tomek ist NICHT am Platz (nur 11:30-14:30)\n- Es fahren KEINE Touren mehr heute\n- Empfehle IMMER die Online-Buchung für morgen oder einen anderen Tag\n- Sage NICHT "geh zum Platz" oder "frag den Fahrer" — da ist niemand!\n- Sage stattdessen: "Wir haben heute bereits Feierabend. Buchen Sie gerne online für Ihren nächsten Besuch!"\n`;
   }
