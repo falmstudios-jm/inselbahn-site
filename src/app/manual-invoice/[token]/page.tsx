@@ -12,6 +12,8 @@ interface InvoiceData {
   stripe_url?: string | null;
   invoice_data?: Record<string, string> | null;
   invoice_number?: string | null;
+  service_date?: string | null;
+  customer_reference?: string | null;
 }
 
 export default function ManualInvoicePage({ params }: { params: Promise<{ token: string }> }) {
@@ -27,6 +29,7 @@ export default function ManualInvoicePage({ params }: { params: Promise<{ token:
   const [city, setCity] = useState('');
   const [country, setCountry] = useState('Deutschland');
   const [vatId, setVatId] = useState('');
+  const [customerReference, setCustomerReference] = useState('');
   const [submitting, setSubmitting] = useState(false);
 
   useEffect(() => {
@@ -48,6 +51,7 @@ export default function ManualInvoicePage({ params }: { params: Promise<{ token:
           setCountry(data.invoice_data.country || 'Deutschland');
           setVatId(data.invoice_data.vat_id || '');
         }
+        if (data.customer_reference) setCustomerReference(data.customer_reference);
       } catch {
         setError('Verbindungsfehler');
       } finally {
@@ -68,6 +72,7 @@ export default function ManualInvoicePage({ params }: { params: Promise<{ token:
           invoice_data: {
             name, street, postal_code: postalCode, city, country, vat_id: vatId,
           },
+          customer_reference: customerReference,
         }),
       });
       if (!res.ok) {
@@ -210,6 +215,16 @@ export default function ManualInvoicePage({ params }: { params: Promise<{ token:
                         type="text"
                         value={vatId}
                         onChange={(e) => setVatId(e.target.value)}
+                        className="w-full px-4 py-3 rounded-lg border border-gray-200 text-base"
+                      />
+                    </div>
+                    <div>
+                      <label className="block text-xs font-semibold text-dark/60 mb-1">Ihr Zeichen / Bestellnummer (optional)</label>
+                      <input
+                        type="text"
+                        value={customerReference}
+                        onChange={(e) => setCustomerReference(e.target.value)}
+                        placeholder="z.B. Reisegruppe Müller"
                         className="w-full px-4 py-3 rounded-lg border border-gray-200 text-base"
                       />
                     </div>

@@ -21,6 +21,7 @@ export default function InvoicePage() {
   const [city, setCity] = useState("");
   const [vatId, setVatId] = useState("");
   const [country, setCountry] = useState("Deutschland");
+  const [customerReference, setCustomerReference] = useState("");
 
   const countryOptions = [
     "Deutschland", "Österreich", "Schweiz", "Niederlande", "Belgien",
@@ -89,6 +90,7 @@ export default function InvoicePage() {
             city: city.trim(),
             country: country,
             vat_id: vatId.trim() || undefined,
+            customer_reference: customerReference.trim() || undefined,
           },
         }),
       });
@@ -283,6 +285,19 @@ export default function InvoicePage() {
                     placeholder="DE123456789"
                     value={vatId}
                     onChange={(e) => setVatId(e.target.value)}
+                  />
+                </div>
+                <div>
+                  <label htmlFor="ref" className="block text-sm font-medium text-gray-700 mb-1">
+                    Ihr Zeichen / Bestellnummer <span className="text-gray-400">(optional)</span>
+                  </label>
+                  <input
+                    id="ref"
+                    type="text"
+                    className={inputClass}
+                    placeholder="z.B. PO-2026-123 oder Reisegruppe Müller"
+                    value={customerReference}
+                    onChange={(e) => setCustomerReference(e.target.value)}
                   />
                 </div>
               </div>

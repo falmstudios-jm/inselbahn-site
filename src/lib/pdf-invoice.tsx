@@ -281,6 +281,7 @@ export interface InvoiceData {
   invoiceNumber: string;
   invoiceDate: string; // ISO date string
   bookingReference: string;
+  customerReference?: string | null; // Optional own reference / "Ihr Zeichen"
   // Buyer
   buyerCompanyName: string;
   buyerStreet: string;
@@ -290,7 +291,7 @@ export interface InvoiceData {
   buyerVatId?: string;
   // Tour info
   tourName: string;
-  bookingDate: string; // ISO date string
+  bookingDate: string; // ISO date string — Leistungsdatum
   departureTime: string; // e.g. "14:00:00"
   // Line items
   adults: number;
@@ -431,13 +432,19 @@ export function InvoiceDocument({ data }: { data: InvoiceData }) {
             <Text style={styles.detailValue}>{formatGermanDate(data.invoiceDate)}</Text>
           </View>
           <View style={styles.detailItem}>
+            <Text style={styles.detailLabel}>Leistungsdatum</Text>
+            <Text style={styles.detailValue}>{formatGermanDate(data.bookingDate)}</Text>
+          </View>
+          <View style={styles.detailItem}>
             <Text style={styles.detailLabel}>Buchungsnr.</Text>
             <Text style={styles.detailValue}>{data.bookingReference}</Text>
           </View>
-          <View style={styles.detailItem}>
-            <Text style={styles.detailLabel}>Buchungsdatum</Text>
-            <Text style={styles.detailValue}>{formatGermanDate(data.bookingDate)}</Text>
-          </View>
+          {data.customerReference ? (
+            <View style={styles.detailItem}>
+              <Text style={styles.detailLabel}>Ihr Zeichen</Text>
+              <Text style={styles.detailValue}>{data.customerReference}</Text>
+            </View>
+          ) : null}
           <View style={styles.detailItem}>
             <Text style={styles.detailLabel}>Zahlung</Text>
             <Text style={styles.detailValue}>

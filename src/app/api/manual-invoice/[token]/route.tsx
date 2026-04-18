@@ -41,8 +41,10 @@ const styles = StyleSheet.create({
 
 interface InvoiceProps {
   reference: string;
+  customerReference?: string | null;
   invoiceNumber: string;
   invoiceDate: string;
+  serviceDate?: string | null;
   description: string;
   amount: number;
   paymentStatus: 'paid' | 'stripe' | 'transfer';
@@ -106,6 +108,16 @@ function ManualInvoiceDoc({ data }: { data: InvoiceProps }) {
             <Text style={styles.metaItem}>RECHNUNGSNUMMER</Text>
             <Text style={styles.metaValue}>{data.invoiceNumber}</Text>
           </View>
+          <View>
+            <Text style={styles.metaItem}>LEISTUNGSDATUM</Text>
+            <Text style={styles.metaValue}>{data.serviceDate ? fmtDate(data.serviceDate) : '—'}</Text>
+          </View>
+          {data.customerReference ? (
+            <View>
+              <Text style={styles.metaItem}>IHR ZEICHEN</Text>
+              <Text style={styles.metaValue}>{data.customerReference}</Text>
+            </View>
+          ) : null}
         </View>
 
         <View style={styles.table}>
@@ -119,8 +131,16 @@ function ManualInvoiceDoc({ data }: { data: InvoiceProps }) {
           </View>
         </View>
 
+        <View style={[styles.totalRow, { marginTop: 8 }]}>
+          <Text style={[styles.totalLabel, { fontFamily: 'Helvetica' }]}>Nettobetrag</Text>
+          <Text style={[styles.totalAmt, { color: colors.dark, fontSize: 11 }]}>{fmtCur(data.amount)}</Text>
+        </View>
         <View style={styles.totalRow}>
-          <Text style={styles.totalLabel}>Gesamtbetrag</Text>
+          <Text style={[styles.totalLabel, { fontFamily: 'Helvetica' }]}>USt 0% (§1 Abs. 2 UStG)</Text>
+          <Text style={[styles.totalAmt, { color: colors.dark, fontSize: 11 }]}>{fmtCur(0)}</Text>
+        </View>
+        <View style={[styles.totalRow, { borderTopWidth: 1, borderTopColor: colors.border, paddingTop: 6, marginTop: 4 }]}>
+          <Text style={styles.totalLabel}>Gesamtbetrag (brutto = netto)</Text>
           <Text style={styles.totalAmt}>{fmtCur(data.amount)}</Text>
         </View>
 
@@ -228,8 +248,10 @@ export async function GET(
       <ManualInvoiceDoc
         data={{
           reference: inv.reference,
+          customerReference: inv.customer_reference,
           invoiceNumber,
           invoiceDate: inv.invoice_date || new Date().toISOString().slice(0, 10),
+          serviceDate: inv.service_date,
           description: inv.description,
           amount: Number(inv.amount),
           paymentStatus: inv.payment_status,
@@ -254,17 +276,22 @@ export async function GET(
     stripe_url: inv.stripe_url,
     invoice_data: inv.invoice_data,
     invoice_number: inv.invoice_number,
+    service_date: inv.service_date,
+    customer_reference: inv.customer_reference,
   });
 }
 
-// PATCH: customer submits their billing data
+// PATCH: customer submits their billing data + optional own reference
 export async function PATCH(
   req: NextRequest,
   { params }: { params: Promise<{ token: string }> }
 ) {
   const { token } = await params;
   const body = await req.json();
-  const { invoice_data } = body as { invoice_data?: Record<string, string> };
+  const { invoice_data, customer_reference } = body as {
+    invoice_data?: Record<string, string>;
+    customer_reference?: string;
+  };
 
   if (
     !invoice_data ||
@@ -277,9 +304,15 @@ export async function PATCH(
   }
 
   const supabase = getSupabaseAdmin();
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  const update: Record<string, any> = { invoice_data };
+  if (customer_reference !== undefined) {
+    update.customer_reference = customer_reference.trim() || null;
+  }
+
   const { error } = await supabase
     .from('manual_invoices')
-    .update({ invoice_data })
+    .update(update)
     .eq('access_token', token);
 
   if (error) {

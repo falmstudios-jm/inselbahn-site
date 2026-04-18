@@ -14,6 +14,7 @@ const invoiceRequestSchema = z.object({
       postal_code: z.string().min(4),
       city: z.string().min(2),
       vat_id: z.string().optional(),
+      customer_reference: z.string().optional(),
     })
     .optional(),
 });

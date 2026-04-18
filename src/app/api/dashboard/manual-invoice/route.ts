@@ -16,16 +16,24 @@ export async function POST(req: Request) {
 
   try {
     const body = await req.json();
-    const { email, amount, description, payment_status } = body as {
+    const { email, amount, description, payment_status, service_date, customer_reference } = body as {
       email?: string;
       amount?: number;
       description?: string;
       payment_status?: 'paid' | 'stripe' | 'transfer';
+      service_date?: string; // YYYY-MM-DD when the service was rendered (Leistungsdatum)
+      customer_reference?: string; // free-text reference set by the issuer or customer
     };
 
     if (!email || !amount || amount <= 0 || !description) {
       return NextResponse.json(
         { error: 'E-Mail, Betrag und Beschreibung erforderlich' },
+        { status: 400 }
+      );
+    }
+    if (!service_date || !/^\d{4}-\d{2}-\d{2}$/.test(service_date)) {
+      return NextResponse.json(
+        { error: 'Leistungsdatum (YYYY-MM-DD) ist Pflicht für eine korrekte Rechnung' },
         { status: 400 }
       );
     }
@@ -45,9 +53,10 @@ export async function POST(req: Request) {
     if (status === 'stripe') {
       try {
         const stripe = getStripe();
-        const session = await stripe.checkout.sessions.create({
+        // Use automatic_payment_methods so Stripe enables whatever the
+        // account supports (Card, Apple/Google Pay, PayPal if activated, etc.)
+        const checkoutSession = await stripe.checkout.sessions.create({
           mode: 'payment',
-          payment_method_types: ['card', 'sepa_debit', 'paypal'],
           line_items: [
             {
               price_data: {
@@ -66,12 +75,13 @@ export async function POST(req: Request) {
             reference,
           },
         });
-        stripeUrl = session.url;
-        stripePaymentIntentId = session.payment_intent ? String(session.payment_intent) : null;
+        stripeUrl = checkoutSession.url;
+        stripePaymentIntentId = checkoutSession.payment_intent ? String(checkoutSession.payment_intent) : null;
       } catch (e) {
         console.error('Stripe payment link failed:', e);
+        const msg = e instanceof Error ? e.message : 'Unbekannter Fehler';
         return NextResponse.json(
-          { error: 'Stripe-Zahlungslink konnte nicht erstellt werden' },
+          { error: `Stripe-Zahlungslink konnte nicht erstellt werden: ${msg}` },
           { status: 500 }
         );
       }
@@ -88,6 +98,8 @@ export async function POST(req: Request) {
         payment_status: status,
         stripe_url: stripeUrl,
         stripe_payment_intent_id: stripePaymentIntentId,
+        service_date,
+        customer_reference: customer_reference?.trim() || null,
         created_by: session.staff_id,
       })
       .select('id')

@@ -50,12 +50,15 @@ export default function Header() {
     >
       <div className="max-w-7xl mx-auto px-5 md:px-10 lg:px-20 flex items-center justify-between">
         <Link href="/" className="flex-shrink-0">
-          <Image
+          {/* Use plain <img> — the SVG embeds a raster pattern which next/image's
+              optimizer can mangle on some Vercel deploys (rendered as black rect). */}
+          {/* eslint-disable-next-line @next/next/no-img-element */}
+          <img
             src="/images/inselbahn-logo.svg"
             alt="Inselbahn Helgoland"
             width={180}
             height={44}
-            priority
+            style={{ width: 180, height: 44 }}
           />
         </Link>
 

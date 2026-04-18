@@ -30,6 +30,8 @@ export default function ManualInvoicesPage() {
   const [email, setEmail] = useState('');
   const [amount, setAmount] = useState('');
   const [description, setDescription] = useState('');
+  const [serviceDate, setServiceDate] = useState(() => new Date().toLocaleDateString('en-CA', { timeZone: 'Europe/Berlin' }));
+  const [customerReference, setCustomerReference] = useState('');
   const [paymentStatus, setPaymentStatus] = useState<'paid' | 'stripe' | 'transfer'>('transfer');
   const [submitting, setSubmitting] = useState(false);
   const [confirmation, setConfirmation] = useState<{ ref: string; link: string } | null>(null);
@@ -65,12 +67,14 @@ export default function ManualInvoicesPage() {
           amount: parseFloat(amount),
           description: description.trim(),
           payment_status: paymentStatus,
+          service_date: serviceDate,
+          customer_reference: customerReference.trim() || undefined,
         }),
       });
       const data = await res.json();
       if (data.success) {
         setConfirmation({ ref: data.reference, link: data.customer_link });
-        setEmail(''); setAmount(''); setDescription('');
+        setEmail(''); setAmount(''); setDescription(''); setCustomerReference('');
         load();
       } else {
         setError(data.error || 'Fehler');
@@ -146,6 +150,28 @@ export default function ManualInvoicesPage() {
                 required
                 className="w-full px-4 py-3 rounded-lg border border-gray-200 text-base"
               />
+            </div>
+            <div>
+              <label className="block text-xs font-semibold text-dark/60 mb-1">Leistungsdatum *</label>
+              <input
+                type="date"
+                value={serviceDate}
+                onChange={(e) => setServiceDate(e.target.value)}
+                required
+                className="w-full px-4 py-3 rounded-lg border border-gray-200 text-base"
+              />
+              <p className="text-[11px] text-dark/40 mt-1">Wann fand die Tour / Leistung statt?</p>
+            </div>
+            <div>
+              <label className="block text-xs font-semibold text-dark/60 mb-1">Eigene Referenz / Verwendungszweck (optional)</label>
+              <input
+                type="text"
+                value={customerReference}
+                onChange={(e) => setCustomerReference(e.target.value)}
+                placeholder="z.B. Reisegruppe Müller, PO-2026-123"
+                className="w-full px-4 py-3 rounded-lg border border-gray-200 text-base"
+              />
+              <p className="text-[11px] text-dark/40 mt-1">Erscheint als „Ihr Zeichen" auf der Rechnung. Der Kunde kann es später ändern.</p>
             </div>
             <div>
               <label className="block text-xs font-semibold text-dark/60 mb-2">Zahlung</label>

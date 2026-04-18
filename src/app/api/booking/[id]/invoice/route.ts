@@ -90,6 +90,7 @@ export async function GET(
     invoiceNumber,
     invoiceDate: new Date().toISOString().slice(0, 10),
     bookingReference: booking.booking_reference,
+    customerReference: booking.invoice_data.customer_reference || null,
     buyerCompanyName: booking.invoice_data.company_name,
     buyerStreet: booking.invoice_data.street,
     buyerPostalCode: booking.invoice_data.postal_code,
